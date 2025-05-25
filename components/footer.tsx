@@ -77,7 +77,7 @@ export function Footer() {
                 <Linkedin className="h-6 w-6" />
               </a>
               <a
-                href="mailto:henriquemon17@gmail.com"
+                href="https://mail.google.com/mail/u/0/?ogbl#search/urbes?compose=DmwnWsCRkXRJRCfXJvSMzrqjBkLlzBGKgxJVsQvhnBSVCxjRxkRDMXmmJklgVLPrccktmpncMqXb"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Email"
               >

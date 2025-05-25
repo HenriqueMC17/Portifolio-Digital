@@ -78,7 +78,7 @@ export function HeroSection() {
                 <Linkedin className="h-6 w-6" />
               </a>
               <a
-                href="mailto:henriquemon17@gmail.com"
+                href="https://mail.google.com/mail/u/0/?ogbl#inbox?compose=DmwnWsLPtbbGXsfgCfnRmFjhbKHcJSLgJFZHwNzqrLjkWqlBzgnHZDGNLLhJFBtqMJnLbcmDSgWg"
                 className="text-muted-foreground hover:text-primary transition-colors"
                 aria-label="Email"
               >
@@ -95,7 +95,7 @@ export function HeroSection() {
             className="flex justify-center"
           >
             <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/20">
-              <Image src="/profile.png" alt="Henrique Monteiro Cardoso" fill className="object-cover" priority />
+              <Image src="https://media.licdn.com/dms/image/v2/D4D03AQFKZkX8KAg7eA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1719774970076?e=1753920000&v=beta&t=-rUc6PMJ9lPgnuHfx2MFWeGYIMuuVWBN_dwZhpC7piw" alt="Henrique Monteiro Cardoso" fill className="object-cover" priority />
             </div>
           </motion.div>
         </div>

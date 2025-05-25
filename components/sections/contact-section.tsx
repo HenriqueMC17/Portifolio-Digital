@@ -111,7 +111,7 @@ export function ContactSection() {
                     <div className="ml-4">
                       <h4 className="font-medium">Email</h4>
                       <a
-                        href="mailto:henriquemon17@gmail.com"
+                        href="https://mail.google.com/mail/u/0/?ogbl#inbox?compose=DmwnWsLPtbbGXsfgCfnRmFjhbKHcJSLgJFZHwNzqrLjkWqlBzgnHZDGNLLhJFBtqMJnLbcmDSgWg"
                         className="text-muted-foreground hover:text-primary transition-colors"
                       >
                         henriquemon17@gmail.com
@@ -124,9 +124,9 @@ export function ContactSection() {
                       <Phone className="h-6 w-6 text-primary" />
                     </div>
                     <div className="ml-4">
-                      <h4 className="font-medium">Telefone</h4>
+                      <h4 className="font-medium">WhatsApp</h4>
                       <a
-                        href="tel:+5515988027261"
+                        href="http://wa.me/15988027261"
                         className="text-muted-foreground hover:text-primary transition-colors"
                       >
                         +55 (15) 98802-7261
