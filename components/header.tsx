@@ -72,7 +72,7 @@ export function Header() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="text-xl font-bold">
-            Henrique Oliveira
+            Henrique Monteiro Cardoso
           </Link>
 
           {/* Desktop Navigation */}
