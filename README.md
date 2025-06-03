@@ -127,20 +127,6 @@ O site está hospedado na Vercel e pode ser acessado em:
 
 O deploy é automatizado através da integração contínua da Vercel com o GitHub. Cada push para a branch \`main\` aciona um novo deploy.
 
-## 📸 Capturas de Tela
-
-### Página Inicial
-![Página Inicial](https://placeholder.svg?height=200&width=400)
-
-### Seção de Projetos
-![Seção de Projetos](https://placeholder.svg?height=200&width=400)
-
-### Seção de Experiência
-![Seção de Experiência](https://placeholder.svg?height=200&width=400)
-
-### Modo Escuro
-![Modo Escuro](https://placeholder.svg?height=200&width=400)
-
 ## 📬 Contato
 
 - **Email**: [henriquemon17@gmail.com](mailto:henriquemon17@gmail.com)
