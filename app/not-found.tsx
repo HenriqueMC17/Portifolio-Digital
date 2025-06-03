@@ -1,8 +1,9 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { Suspense } from "react"
 
-export default function NotFound() {
+function NotFoundContent() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
       <div className="text-center space-y-6 p-6">
@@ -21,5 +22,24 @@ export default function NotFound() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function NotFound() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen bg-background">
+          <div className="text-center space-y-6 p-6">
+            <div className="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+              <span className="text-4xl">🔍</span>
+            </div>
+            <h1 className="text-3xl font-bold">Carregando...</h1>
+          </div>
+        </div>
+      }
+    >
+      <NotFoundContent />
+    </Suspense>
   )
 }
