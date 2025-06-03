@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useEffect } from "react"
 import { ptBR } from "@/locales/pt-br"
 import { enUS } from "@/locales/en-us"
 
-type Language = "pt-BR" | "en-US"
+export type Language = "pt-BR" | "en-US"
 type Translations = typeof ptBR
 
 interface LanguageContextType {
@@ -14,49 +14,82 @@ interface LanguageContextType {
   t: (key: keyof typeof ptBR) => string
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+// Create context with default values to avoid undefined errors
+const LanguageContext = createContext<LanguageContextType>({
+  language: "pt-BR",
+  setLanguage: () => {},
+  t: (key) => key,
+})
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>("pt-BR")
   const [translations, setTranslations] = useState<Translations>(ptBR)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Verificar se há uma preferência de idioma salva
-    const savedLanguage = localStorage.getItem("language") as Language | null
-    if (savedLanguage) {
-      setLanguage(savedLanguage)
-    } else {
-      // Verificar o idioma do navegador
-      const browserLanguage = navigator.language
-      if (browserLanguage.startsWith("en")) {
-        setLanguage("en-US")
+    setMounted(true)
+    try {
+      // Only access localStorage after component mounts
+      const savedLanguage = localStorage.getItem("language") as Language
+      if (savedLanguage && (savedLanguage === "pt-BR" || savedLanguage === "en-US")) {
+        setLanguage(savedLanguage)
+      } else {
+        // Check browser language
+        const browserLanguage = typeof navigator !== "undefined" ? navigator.language : "pt-BR"
+        if (browserLanguage.startsWith("en")) {
+          setLanguage("en-US")
+        }
       }
+    } catch (error) {
+      console.error("Error accessing localStorage or navigator:", error)
     }
   }, [])
 
   useEffect(() => {
-    // Atualizar as traduções quando o idioma mudar
+    // Update translations when language changes
     if (language === "en-US") {
       setTranslations(enUS)
     } else {
       setTranslations(ptBR)
     }
 
-    // Salvar a preferência de idioma
-    localStorage.setItem("language", language)
-  }, [language])
+    // Save language preference
+    if (mounted) {
+      try {
+        localStorage.setItem("language", language)
+      } catch (error) {
+        console.error("Error writing to localStorage:", error)
+      }
+    }
+  }, [language, mounted])
 
-  const t = (key: keyof typeof ptBR) => {
-    return translations[key] || key
+  const t = (key: keyof typeof ptBR): string => {
+    try {
+      return translations[key] || key
+    } catch (error) {
+      console.error("Translation error for key:", key, error)
+      return key
+    }
   }
 
-  return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
+  const value = {
+    language,
+    setLanguage,
+    t,
+  }
+
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }
 
 export function useLanguage() {
   const context = useContext(LanguageContext)
-  if (context === undefined) {
-    throw new Error("useLanguage must be used within a LanguageProvider")
+  if (!context) {
+    // Return a safe fallback instead of throwing an error
+    return {
+      language: "pt-BR" as Language,
+      setLanguage: () => {},
+      t: (key: string) => key,
+    }
   }
   return context
 }

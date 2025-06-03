@@ -5,10 +5,12 @@ export const enUS = {
   "nav.projects": "Projects",
   "nav.skills": "Skills",
   "nav.experience": "Experience",
+  "nav.certifications": "Certifications",
   "nav.contact": "Contact",
 
   // Home page
   "hero.greeting": "Hello, I'm",
+  "hero.name": "Henrique Monteiro Cardoso",
   "hero.role": "Full Stack Developer",
   "hero.description":
     "Specialized in software development and technological solutions with a focus on quality and user experience.",
@@ -48,6 +50,16 @@ export const enUS = {
   "experience.subtitle": "My journey so far",
   "experience.present": "Present",
 
+  // Certifications
+  "certifications.title": "Certifications & Qualifications",
+  "certifications.subtitle": "Continuous learning and professional development",
+  "certifications.active": "Active Certifications",
+  "certifications.inProgress": "In Progress",
+  "certifications.verify": "Verify Credential",
+  "certifications.progress": "Progress",
+  "certifications.expectedCompletion": "Expected Completion",
+  "certifications.skills": "Skills Acquired",
+
   // Contact
   "contact.title": "Get in Touch",
   "contact.subtitle": "Let's talk about your project",
@@ -68,4 +80,14 @@ export const enUS = {
   // Footer
   "footer.rights": "All rights reserved",
   "footer.madeWith": "Made with",
+
+  // 404
+  "notFound.title": "Page not found",
+  "notFound.description": "The page you are looking for does not exist.",
+  "notFound.backHome": "Back to home",
+
+  // General
+  loading: "Loading...",
+  error: "Error",
+  retry: "Try again",
 }

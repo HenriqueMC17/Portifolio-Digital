@@ -5,10 +5,12 @@ export const ptBR = {
   "nav.projects": "Projetos",
   "nav.skills": "Habilidades",
   "nav.experience": "Experiência",
+  "nav.certifications": "Certificações",
   "nav.contact": "Contato",
 
   // Página inicial
   "hero.greeting": "Olá, eu sou",
+  "hero.name": "Henrique Monteiro Cardoso",
   "hero.role": "Desenvolvedor Full Stack",
   "hero.description":
     "Especializado em desenvolvimento de software e soluções tecnológicas com foco em qualidade e experiência do usuário.",
@@ -48,6 +50,16 @@ export const ptBR = {
   "experience.subtitle": "Minha jornada até aqui",
   "experience.present": "Presente",
 
+  // Certificações
+  "certifications.title": "Certificações & Qualificações",
+  "certifications.subtitle": "Formação contínua e desenvolvimento profissional",
+  "certifications.active": "Certificações Ativas",
+  "certifications.inProgress": "Em Andamento",
+  "certifications.verify": "Verificar Credencial",
+  "certifications.progress": "Progresso",
+  "certifications.expectedCompletion": "Conclusão Prevista",
+  "certifications.skills": "Competências Adquiridas",
+
   // Contato
   "contact.title": "Entre em Contato",
   "contact.subtitle": "Vamos conversar sobre seu projeto",
@@ -68,4 +80,14 @@ export const ptBR = {
   // Rodapé
   "footer.rights": "Todos os direitos reservados",
   "footer.madeWith": "Feito com",
+
+  // 404
+  "notFound.title": "Página não encontrada",
+  "notFound.description": "A página que você está procurando não existe.",
+  "notFound.backHome": "Voltar ao início",
+
+  // Geral
+  loading: "Carregando...",
+  error: "Erro",
+  retry: "Tentar novamente",
 }

@@ -1,27 +1,28 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, Poppins } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { LanguageProvider } from "@/contexts/language-context"
+import { AnimationProvider } from "@/contexts/animation-context"
+import { Analytics } from "@/components/analytics"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { LanguageProvider } from "@/contexts/language-context"
-import { ScrollProgressIndicator } from "@/components/scroll-progress-indicator"
-import { Analytics } from "@/components/analytics"
-import { Toaster } from "@/components/ui/toaster"
 import { Suspense } from "react"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
-const poppins = Poppins({
-  weight: ["300", "400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-poppins",
-})
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Henrique Monteiro Cardoso | Desenvolvedor Full Stack",
+  title: "Portfólio - Desenvolvedor Full Stack",
   description:
-    "Sou um estudante dedicado e apaixonado por tecnologia. Acredito que a combinação de conhecimento técnico e sensibilidade humana pode criar soluções inovadoras que impactam positivamente a sociedade. Aqui, compartilho meus projetos, ideias e experiências que refletem essa visão.",
+    "Portfólio profissional de desenvolvedor full stack especializado em React, Next.js e tecnologias modernas.",
+  keywords: ["desenvolvedor", "full stack", "react", "nextjs", "javascript", "typescript"],
+  authors: [{ name: "Henrique Monteiro Cardoso" }],
+  openGraph: {
+    title: "Portfólio - Desenvolvedor Full Stack",
+    description: "Portfólio profissional de desenvolvedor full stack",
+    type: "website",
+  },
     generator: 'v0.dev'
 }
 
@@ -32,19 +33,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${inter.variable} ${poppins.variable} font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <LanguageProvider>
-            <ScrollProgressIndicator />
-            <div className="flex min-h-screen flex-col">
-              <Header />
-              <Suspense>
-                <main className="flex-1">{children}</main>
+            <AnimationProvider>
+              <Suspense fallback={<div>Loading...</div>}>
+                <div className="flex min-h-screen flex-col">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
+                <Analytics />
               </Suspense>
-              <Footer />
-            </div>
-            <Analytics />
-            <Toaster />
+            </AnimationProvider>
           </LanguageProvider>
         </ThemeProvider>
       </body>

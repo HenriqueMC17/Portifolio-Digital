@@ -1,16 +1,40 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { useLanguage } from "@/contexts/language-context"
 import { Github, Linkedin, Mail, ArrowDown } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 export function HeroSection() {
-  const { t } = useLanguage()
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [mounted, setMounted] = useState(false)
+  const [translations, setTranslations] = useState({
+    greeting: "Olá, eu sou",
+    role: "Desenvolvedor Full Stack",
+    cta: "Ver Projetos",
+    contact: "Contato",
+  })
+  const languageContext = useLanguage()
+
+  // Safe access to language context after mounting
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Update translations when language context is available
+  useEffect(() => {
+    if (languageContext) {
+      setTranslations({
+        greeting: languageContext.t("hero.greeting") || "Olá, eu sou",
+        role: languageContext.t("hero.role") || "Desenvolvedor Full Stack",
+        cta: languageContext.t("hero.cta") || "Ver Projetos",
+        contact: languageContext.t("hero.contact") || "Contato",
+      })
+    }
+  }, [languageContext])
 
   const scrollToNextSection = () => {
     if (scrollRef.current) {
@@ -39,10 +63,10 @@ export function HeroSection() {
             className="text-center lg:text-left"
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              <span className="text-muted-foreground">{t("hero.greeting")} </span>
-              <span className="text-primary font-poppins">Henrique Monteiro Cardoso</span>
+              <span className="text-muted-foreground">{translations.greeting} </span>
+              <span className="text-primary">Henrique Monteiro Cardoso</span>
             </h1>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-6">{t("hero.role")}</h2>
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-semibold mb-6">{translations.role}</h2>
             <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto lg:mx-0">
               Sou um estudante dedicado e apaixonado por tecnologia. Acredito que a combinação de conhecimento técnico e
               sensibilidade humana pode criar soluções inovadoras que impactam positivamente a sociedade. Aqui,
@@ -51,10 +75,10 @@ export function HeroSection() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 mb-8">
               <Button asChild size="lg">
-                <Link href="#projects">{t("hero.cta")}</Link>
+                <Link href="#projects">{translations.cta}</Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link href="#contact">{t("hero.contact")}</Link>
+                <Link href="#contact">{translations.contact}</Link>
               </Button>
             </div>
 
@@ -95,7 +119,13 @@ export function HeroSection() {
             className="flex justify-center"
           >
             <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-primary/20">
-              <Image src="https://media.licdn.com/dms/image/v2/D4D03AQFKZkX8KAg7eA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1719774970076?e=1753920000&v=beta&t=-rUc6PMJ9lPgnuHfx2MFWeGYIMuuVWBN_dwZhpC7piw" alt="Henrique Monteiro Cardoso" fill className="object-cover" priority />
+              <Image
+                src="https://media.licdn.com/dms/image/v2/D4D03AQFKZkX8KAg7eA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1719774970076?e=1753920000&v=beta&t=-rUc6PMJ9lPgnuHfx2MFWeGYIMuuVWBN_dwZhpC7piw"
+                alt="Henrique Monteiro Cardoso"
+                fill
+                className="object-cover"
+                priority
+              />
             </div>
           </motion.div>
         </div>
