@@ -68,7 +68,7 @@ export function AboutSection() {
                 <div className="flex items-start">
                   <GraduationCap className="w-5 h-5 mr-2 text-primary mt-0.5" />
                   <div>
-                    <h4 className="font-medium">Técnologo em Desenvolvimento de Sistemas</h4>
+                    <h4 className="font-medium">Técnologo em Análise e Desenvolvimento de Sistemas</h4>
                     <p className="text-sm text-muted-foreground">Centro Universitário Facens - 2025-2027</p>
                   </div>
                 </div>
