@@ -6,7 +6,7 @@
 
 Um portfólio profissional moderno e responsivo desenvolvido com Next.js, React e Tailwind CSS, apresentando minhas habilidades, experiências e projetos como Desenvolvedor Full Stack.
 
-![Preview do Portfólio](https://placeholder.svg?height=300&width=600)
+![Preview do Portfólio]([https://placeholder.svg?height=300&width=600](https://v0-portfolio-website-zeta-plum.vercel.app/))
 
 ## 📋 Índice
 
@@ -121,7 +121,7 @@ pnpm dev
 
 O site está hospedado na Vercel e pode ser acessado em:
 
-[https://henriquemonteiro.vercel.app](https://henriquemonteiro.vercel.app)
+[Potifólio Digital - Henrique Monteiro Cardoso](https://v0-portfolio-website-zeta-plum.vercel.app/)
 
 ### Processo de Deploy
 
