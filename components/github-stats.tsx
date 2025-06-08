@@ -1,198 +1,184 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Github, Star, GitFork, Code, Users } from "lucide-react"
 import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Github, Star, GitFork, Users, Calendar, Code, Activity, TrendingUp } from "lucide-react"
+import { getContributionStats, getLanguageConfig } from "@/lib/github"
 
-interface GitHubStats {
+interface GitHubStatsData {
+  totalRepos: number
   totalStars: number
   totalForks: number
-  totalRepos: number
-  totalFollowers: number
-  languages: { [key: string]: number }
-  mostUsedLanguages: { name: string; percentage: number }[]
+  followers: number
+  following: number
+  topLanguages: string[]
+  activeRepos: number
+  accountAge: number
+  lastActivity: string
 }
 
 export function GitHubStats() {
-  const [stats, setStats] = useState<GitHubStats>({
-    totalStars: 0,
-    totalForks: 0,
-    totalRepos: 28,
-    totalFollowers: 0,
-    languages: {},
-    mostUsedLanguages: [
-      { name: "Java", percentage: 75 },
-      { name: "JavaScript", percentage: 15 },
-      { name: "HTML", percentage: 5 },
-      { name: "CSS", percentage: 5 },
-    ],
-  })
+  const [stats, setStats] = useState<GitHubStatsData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
-
-  // Simulação de dados do GitHub
-  // Em um ambiente real, você faria uma chamada à API do GitHub
   useEffect(() => {
-    // Simulação de dados
-    const mockData = {
-      totalStars: 10,
-      totalForks: 5,
-      totalRepos: 28,
-      totalFollowers: 15,
-      languages: {
-        Java: 75,
-        JavaScript: 15,
-        HTML: 5,
-        CSS: 5,
-      },
-      mostUsedLanguages: [
-        { name: "Java", percentage: 75 },
-        { name: "JavaScript", percentage: 15 },
-        { name: "HTML", percentage: 5 },
-        { name: "CSS", percentage: 5 },
-      ],
+    async function fetchStats() {
+      try {
+        const data = await getContributionStats()
+        if (data) {
+          setStats(data)
+        } else {
+          setError("Não foi possível carregar os dados do GitHub")
+        }
+      } catch (err) {
+        setError("Erro ao conectar com o GitHub")
+        console.error("GitHub stats error:", err)
+      } finally {
+        setLoading(false)
+      }
     }
 
-    setStats(mockData)
+    fetchStats()
   }, [])
 
-  return (
-    <section id="github-stats" className="py-20">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Estatísticas do GitHub</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Uma visão geral da minha atividade e contribuições no GitHub.
-          </p>
-          <div className="h-1 w-20 bg-primary mx-auto mt-4"></div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0 }}
-          >
-            <Card className="h-full">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="mb-4 p-3 rounded-full bg-primary/10">
-                  <Code className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold text-primary mb-2">{stats.totalRepos}</h3>
-                <p className="text-muted-foreground">Repositórios</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <Card className="h-full">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="mb-4 p-3 rounded-full bg-primary/10">
-                  <Star className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold text-primary mb-2">{stats.totalStars}</h3>
-                <p className="text-muted-foreground">Estrelas</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Card className="h-full">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="mb-4 p-3 rounded-full bg-primary/10">
-                  <GitFork className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold text-primary mb-2">{stats.totalForks}</h3>
-                <p className="text-muted-foreground">Forks</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <Card className="h-full">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <div className="mb-4 p-3 rounded-full bg-primary/10">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="text-3xl font-bold text-primary mb-2">{stats.totalFollowers}</h3>
-                <p className="text-muted-foreground">Seguidores</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
-
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <Card>
-            <CardContent className="p-6">
-              <h3 className="text-xl font-semibold mb-6">Linguagens Mais Utilizadas</h3>
-              <div className="space-y-4">
-                {stats.mostUsedLanguages.map((lang, index) => (
-                  <div key={index} className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="font-medium">{lang.name}</span>
-                      <span className="text-muted-foreground">{lang.percentage}%</span>
-                    </div>
-                    <div className="h-2 bg-muted rounded-full overflow-hidden">
-                      <motion.div
-                        className={`h-full ${
-                          lang.name === "Java"
-                            ? "bg-blue-500"
-                            : lang.name === "JavaScript"
-                              ? "bg-yellow-500"
-                              : lang.name === "HTML"
-                                ? "bg-orange-500"
-                                : "bg-purple-500"
-                        }`}
-                        initial={{ width: 0 }}
-                        animate={inView ? { width: `${lang.percentage}%` } : {}}
-                        transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
-                      />
-                    </div>
-                  </div>
-                ))}
+  if (loading) {
+    return (
+      <Card className="glass">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Skeleton className="h-5 w-5" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="text-center">
+                <Skeleton className="h-8 w-16 mx-auto mb-2" />
+                <Skeleton className="h-3 w-20 mx-auto" />
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
-        <div className="text-center mt-8">
-          <a
-            href="https://github.com/HenriqueMC17"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            <Github className="mr-2 h-4 w-4" />
-            Ver Perfil no GitHub
-          </a>
-        </div>
-      </div>
-    </section>
+  if (error || !stats) {
+    return (
+      <Card className="glass border-destructive/20">
+        <CardContent className="p-6 text-center">
+          <Github className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">{error || "Dados indisponíveis"}</p>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  const statItems = [
+    {
+      icon: Code,
+      label: "Repositórios",
+      value: stats.totalRepos,
+      color: "text-blue-500",
+    },
+    {
+      icon: Star,
+      label: "Stars",
+      value: stats.totalStars,
+      color: "text-yellow-500",
+    },
+    {
+      icon: GitFork,
+      label: "Forks",
+      value: stats.totalForks,
+      color: "text-green-500",
+    },
+    {
+      icon: Users,
+      label: "Seguidores",
+      value: stats.followers,
+      color: "text-purple-500",
+    },
+  ]
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+      {/* Main Stats Card */}
+      <Card className="glass">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-2">
+              <Github className="h-5 w-5 text-primary" />
+              <span className="font-mono text-sm font-medium">GitHub Stats</span>
+            </div>
+            <Badge variant="outline" className="text-xs">
+              <Activity className="h-3 w-3 mr-1" />
+              Live
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {statItems.map((item, index) => (
+              <motion.div
+                key={item.label}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="flex items-center justify-center mb-2">
+                  <item.icon className={`h-5 w-5 ${item.color}`} />
+                </div>
+                <div className="text-2xl font-bold">{item.value}</div>
+                <div className="text-xs text-muted-foreground">{item.label}</div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Additional Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/40">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Calendar className="h-4 w-4" />
+              <span>{stats.accountAge} anos no GitHub</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <TrendingUp className="h-4 w-4" />
+              <span>{stats.activeRepos} repos ativos</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Top Languages */}
+      <Card className="glass">
+        <CardContent className="p-6">
+          <h3 className="font-semibold mb-4 flex items-center gap-2">
+            <Code className="h-4 w-4" />
+            Linguagens Principais
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {stats.topLanguages.map((language, index) => {
+              const config = getLanguageConfig(language)
+              return (
+                <motion.div
+                  key={language}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Badge variant="secondary" className="text-xs font-mono">
+                    <span className="mr-1">{config.icon}</span>
+                    {language}
+                  </Badge>
+                </motion.div>
+              )
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
   )
 }

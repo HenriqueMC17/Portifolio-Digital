@@ -2,100 +2,74 @@
 
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { useLanguage } from "@/contexts/language-context"
-import { SectionHeading } from "@/components/ui/section-heading"
 import { Card, CardContent } from "@/components/ui/card"
-import { Code, Briefcase } from "lucide-react"
-import { Github } from "lucide-react"
-import { GraduationCap } from "lucide-react"
+import { Code, Users, Target, BookOpen } from "lucide-react"
 
 export function AboutSection() {
-  const { t } = useLanguage()
   const [ref, inView] = useInView({
+    threshold: 0.2,
     triggerOnce: true,
-    threshold: 0.1,
   })
 
-  const stats = [
+  const values = [
     {
-      value: 2,
-      label: t("about.yearsExperience"),
-      icon: <Briefcase className="h-6 w-6 text-primary" />,
+      icon: Code,
+      title: "Desenvolvimento Full Stack",
+      description: "Experiência em Java, JavaScript, TypeScript, Python, C++, C# e tecnologias web",
     },
     {
-      value: 5,
-      label: t("about.projectsCompleted"),
-      icon: <Code className="h-6 w-6 text-primary" />,
+      icon: Users,
+      title: "Gestão e Administração",
+      description: "Sólida experiência em administração, suporte técnico e atendimento ao cliente",
     },
     {
-      value: 28,
-      label: "Repositórios GitHub",
-      icon: <Github className="h-6 w-6 text-primary" />,
+      icon: Target,
+      title: "Foco em Resultados",
+      description: "Comunicação, negociação e trabalho colaborativo para melhoria contínua",
+    },
+    {
+      icon: BookOpen,
+      title: "Aprendizado Contínuo",
+      description: "Estudante de ADS com múltiplas certificações e formação em constante evolução",
     },
   ]
 
   return (
-    <section id="about" className="py-20 bg-muted/30">
+    <section id="about" className="py-20 bg-muted/30" ref={ref}>
       <div className="container mx-auto px-4">
-        <SectionHeading title={t("about.title")} subtitle={t("about.subtitle")} centered />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl font-bold mb-4">Sobre Mim</h2>
+          <p className="text-muted-foreground max-w-4xl mx-auto text-lg leading-relaxed">
+            Meu conjunto de habilidades reflete uma sólida experiência tanto em áreas técnicas, como administração, TI e
+            suporte ao cliente, quanto em aspectos comportamentais que envolvem comunicação, negociação e trabalho
+            colaborativo. A combinação dessas competências me permite não apenas gerenciar processos administrativos e
+            operacionais, mas também desempenhar um papel chave no desenvolvimento de pessoas e na melhoria contínua da
+            eficiência organizacional.
+          </p>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-12">
-          {/* About Text */}
-          <motion.div
-            ref={ref}
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
-            <p className="text-lg">{t("about.description1")}</p>
-            <p className="text-lg">{t("about.description2")}</p>
-
-            <div className="pt-4">
-              <h3 className="text-xl font-semibold mb-4">Tecnologias Favoritas</h3>
-              <div className="flex flex-wrap gap-2">
-                {["Java", "JavaScript", "TypeScript", "Python", "HTML5", "CSS3", "Arduino"].map((tech) => (
-                  <span key={tech} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <h3 className="text-xl font-semibold mb-4">Formação Acadêmica</h3>
-              <div className="space-y-2">
-                <div className="flex items-start">
-                  <GraduationCap className="w-5 h-5 mr-2 text-primary mt-0.5" />
-                  <div>
-                    <h4 className="font-medium">Técnologo em Análise e Desenvolvimento de Sistemas</h4>
-                    <p className="text-sm text-muted-foreground">Centro Universitário Facens - 2025-2027</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                ref={ref}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="h-full">
-                  <CardContent className="p-6 flex flex-col items-center text-center">
-                    <div className="mb-4 p-3 rounded-full bg-primary/10">{stat.icon}</div>
-                    <h3 className="text-3xl font-bold text-primary mb-2">{stat.value}+</h3>
-                    <p className="text-muted-foreground">{stat.label}</p>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {values.map((value, index) => (
+            <motion.div
+              key={value.title}
+              initial={{ opacity: 0, y: 30 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+            >
+              <Card className="h-full hover:shadow-lg transition-shadow">
+                <CardContent className="p-6 text-center">
+                  <value.icon className="h-12 w-12 mx-auto mb-4 text-primary" />
+                  <h3 className="font-semibold mb-2">{value.title}</h3>
+                  <p className="text-sm text-muted-foreground">{value.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

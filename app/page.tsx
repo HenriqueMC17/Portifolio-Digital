@@ -1,30 +1,47 @@
-import type React from "react"
-import { HeroSection } from "@/components/sections/hero-section"
+import { ModernHeader } from "@/components/modern-header"
+import { EnhancedHero } from "@/components/enhanced-hero"
 import { AboutSection } from "@/components/sections/about-section"
+import { ExperienceSection } from "@/components/sections/experience-section"
 import { ProjectsSection } from "@/components/sections/projects-section"
 import { SkillsSection } from "@/components/sections/skills-section"
-import { ExperienceSection } from "@/components/sections/experience-section"
 import { CertificationsSection } from "@/components/sections/certifications-section"
+import { ContributionsSection } from "@/components/sections/contributions-section"
 import { ContactSection } from "@/components/sections/contact-section"
-import { ScrollToTop } from "@/components/scroll-to-top"
-import { GitHubStats } from "@/components/github-stats"
+import { ModernFooter } from "@/components/modern-footer"
+import { AnalyticsConsent } from "@/components/analytics-consent"
+import { Suspense } from "react"
+import { AdvancedSkeleton } from "@/components/advanced-animations"
 
-const SkillTagComponent = ({ children }: { children: React.ReactNode }) => {
-  return <div className="px-2 py-1 bg-zinc-800 rounded-full text-xs font-medium text-zinc-400">{children}</div>
-}
-
-export default function Home() {
+export default function Page() {
   return (
-    <>
-      <HeroSection />
-      <AboutSection />
-      <ProjectsSection />
-      <SkillsSection />
-      <GitHubStats />
-      <ExperienceSection />
-      <CertificationsSection />
-      <ContactSection />
-      <ScrollToTop />
-    </>
+    <div className="min-h-screen bg-background">
+      <ModernHeader />
+      <main>
+        <EnhancedHero />
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={5} />}>
+          <AboutSection />
+        </Suspense>
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={8} />}>
+          <ExperienceSection />
+        </Suspense>
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={6} />}>
+          <ProjectsSection />
+        </Suspense>
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={4} />}>
+          <SkillsSection />
+        </Suspense>
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={10} />}>
+          <CertificationsSection />
+        </Suspense>
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={7} />}>
+          <ContributionsSection />
+        </Suspense>
+        <Suspense fallback={<AdvancedSkeleton className="p-8" lines={5} />}>
+          <ContactSection />
+        </Suspense>
+      </main>
+      <ModernFooter />
+      <AnalyticsConsent />
+    </div>
   )
 }

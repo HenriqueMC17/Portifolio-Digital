@@ -6,7 +6,7 @@
 
 Um portfólio profissional moderno e responsivo desenvolvido com Next.js, React e Tailwind CSS, apresentando minhas habilidades, experiências e projetos como Desenvolvedor Full Stack.
 
-![Preview do Portfólio]([https://placeholder.svg?height=300&width=600](https://v0-portfolio-website-zeta-plum.vercel.app/))
+![Preview do Portfólio](https://placeholder.svg?height=300&width=600)
 
 ## 📋 Índice
 
@@ -92,51 +92,6 @@ portfolio-website/
 ### Instalação
 
 1. Clone o repositório:
-\`\`\`bash
+```bash
 git clone https://github.com/HenriqueMC17/portfolio-website.git
 cd portfolio-website
-\`\`\`
-
-2. Instale as dependências:
-\`\`\`bash
-npm install
-# ou
-yarn install
-# ou
-pnpm install
-\`\`\`
-
-3. Execute o servidor de desenvolvimento:
-\`\`\`bash
-npm run dev
-# ou
-yarn dev
-# ou
-pnpm dev
-\`\`\`
-
-4. Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
-
-## 🌐 Deploy
-
-O site está hospedado na Vercel e pode ser acessado em:
-
-[Potifólio Digital - Henrique Monteiro Cardoso](https://v0-portfolio-website-zeta-plum.vercel.app/)
-
-### Processo de Deploy
-
-O deploy é automatizado através da integração contínua da Vercel com o GitHub. Cada push para a branch \`main\` aciona um novo deploy.
-
-## 📬 Contato
-
-- **Email**: [henriquemon17@gmail.com](mailto:henriquemon17@gmail.com)
-- **LinkedIn**: [Henrique Monteiro Cardoso](https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/)
-- **GitHub**: [HenriqueMC17](https://github.com/HenriqueMC17)
-
-## 📄 Licença
-
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
----
-
-Desenvolvido com ❤️ por Henrique Monteiro Cardoso

@@ -2,273 +2,222 @@
 
 import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
-import { useLanguage } from "@/contexts/language-context"
-import { SectionHeading } from "@/components/ui/section-heading"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Briefcase, TrendingUp, Users, Award } from "lucide-react"
+import { Calendar, MapPin, Building, BookOpen } from "lucide-react"
 
-// Dados de experiência de Henrique - ordenados do mais recente para o mais antigo
 const experiences = [
   {
     id: 1,
-    role: "Auxiliar Comercial",
+    title: "Auxiliar Comercial",
     company: "CCBEU Sorocaba - Centro Cultural Brasil - Estados Unidos",
-    period: "Fevereiro 2025 - Presente",
+    location: "Sorocaba, São Paulo, Brasil",
+    period: "Fevereiro 2025 - Presente (4 meses)",
     description:
-      "Responsável pela gestão completa do ciclo comercial, desde a prospecção até o fechamento de vendas. Atuo como especialista no sistema DKSoft, oferecendo suporte técnico e treinamento para toda a equipe comercial.",
-    detailedResponsibilities: [
-      "Verificação e análise diária de vendas com relatórios de performance",
-      "Geração automatizada de boletos e controle de inadimplência",
-      "Manutenção e otimização de planilhas de controle comercial",
-      "Coordenação de testes de nível para novos alunos",
-      "Monitoramento de KPIs de vendas e contratos",
-      "Gestão estratégica de leads e pipeline de vendas",
-      "Revisão e atualização da carteira de clientes ativos",
-      "Suporte técnico especializado à equipe comercial",
-      "Auditorias de aparelhos e recursos tecnológicos",
-      "Atuação como ponto focal e especialista do sistema DKSoft",
+      "Atuo no atendimento digital via WhatsApp, realizando o primeiro contato com leads e garantindo o correto registro das interações no sistema Bitrix. Responsável pela atualização das planilhas de atendimentos receptivos e pelo acompanhamento dos testes de nível.",
+    responsibilities: [
+      "Atendimento digital via WhatsApp e gestão de leads",
+      "Controle de vendas e emissão de boletos",
+      "Gestão de matrículas no sistema DKSoft",
+      "Elaboração de relatórios gerenciais e campanhas de e-mail marketing",
+      "Suporte operacional à equipe comercial",
+      "Treinamentos e implementações no sistema DKSoft",
     ],
-    achievements: [
-      "Implementação de melhorias no sistema de gestão que resultaram em 25% de aumento na eficiência",
-      "Otimização do processo de distribuição de leads, reduzindo tempo de resposta em 40%",
-      "Treinamento de 15+ membros da equipe no uso avançado do sistema DKSoft",
-      "Desenvolvimento de relatórios automatizados que economizam 10h/semana da equipe",
-    ],
-    technologies: ["DKSoft", "Excel Avançado", "Gestão de Vendas", "CRM", "Atendimento ao Cliente", "Power BI"],
-    metrics: {
-      teamSize: "15+ pessoas treinadas",
-      efficiency: "25% aumento na eficiência",
-      timeReduction: "40% redução no tempo de resposta",
-    },
+    technologies: ["Bitrix", "DKSoft", "WhatsApp Business", "Excel", "E-mail Marketing"],
   },
   {
     id: 2,
-    role: "Auxiliar Pedagógico",
+    title: "Auxiliar Pedagógico",
     company: "CCBEU Sorocaba - Centro Cultural Brasil - Estados Unidos",
-    period: "Fevereiro 2024 - Abril 2024",
+    location: "Sorocaba, São Paulo, Brasil",
+    period: "Fevereiro 2025 - Abril 2025 (3 meses)",
     description:
-      "Responsável pela gestão acadêmica e suporte pedagógico, com foco em otimização de processos educacionais e acompanhamento de alunos EAD. Desenvolvi soluções tecnológicas para melhorar a experiência educacional.",
-    detailedResponsibilities: [
-      "Desenvolvimento e adaptação de planilhas avançadas para organização de dados acadêmicos",
-      "Atendimento personalizado a alunos com dúvidas acadêmicas e administrativas",
-      "Coordenação e agendamento de tutorias e aulas de reposição",
-      "Gerenciamento de comunicações institucionais multicanal",
-      "Atualização e manutenção da grade horária acadêmica",
-      "Supervisão ativa da carteira de 200+ alunos EAD",
-      "Suporte direto à Diretoria Pedagógica em projetos estratégicos",
-      "Estruturação e moderação de grupos no WhatsApp por turma",
-      "Controle rigoroso de registros de alunos cancelados e transferidos",
-      "Conferência diária de aulas e presença de professores",
+      "Desenvolvi e adaptei planilhas para organização, monitoramento e análise de dados acadêmicos e administrativos de alunos. Realizei atendimento personalizado aos alunos, coordenando o agendamento de tutorias e reposições.",
+    responsibilities: [
+      "Desenvolvimento de planilhas para análise de dados acadêmicos",
+      "Atendimento personalizado e coordenação de tutorias",
+      "Gestão de comunicações institucionais por e-mail",
+      "Supervisão da carteira de alunos EAD",
+      "Estruturação de grupos no WhatsApp",
+      "Conferência diária das aulas ministradas",
     ],
-    achievements: [
-      "Desenvolvimento de sistema de acompanhamento que aumentou retenção de alunos EAD em 30%",
-      "Otimização do processo de agendamento de tutorias, reduzindo conflitos em 50%",
-      "Implementação de melhorias na comunicação que aumentaram satisfação em 35%",
-      "Criação de dashboard de acompanhamento acadêmico para a diretoria",
-    ],
-    technologies: [
-      "Excel Avançado",
-      "Gestão Educacional",
-      "WhatsApp Business",
-      "Sistemas Acadêmicos",
-      "Comunicação Digital",
-    ],
-    metrics: {
-      studentsManaged: "200+ alunos EAD",
-      retention: "30% aumento na retenção",
-      satisfaction: "35% aumento na satisfação",
-    },
+    technologies: ["Excel", "WhatsApp", "E-mail", "Sistemas EAD"],
   },
   {
     id: 3,
-    role: "Aprendiz Auxiliar Administrativo II",
+    title: "Aprendiz Auxiliar Administrativo II - SSMA",
     company: "ASSA ABLOY Group",
-    period: "Junho 2024 - Dezembro 2024",
+    location: "Porto Feliz, São Paulo, Brasil",
+    period: "Junho 2024 - Dezembro 2024 (7 meses)",
     description:
-      "Atuação estratégica na área de Saúde, Segurança e Meio Ambiente (SSMA), com foco em compliance, gestão de EPIs e implementação de melhorias nos processos de segurança. Reconhecido pela excelência na conscientização sobre segurança.",
-    detailedResponsibilities: [
-      "Suporte especializado nas atividades administrativas da área SSMA",
-      "Gerenciamento de planilhas de controle de EPIs e formulários de segurança",
-      "Auxílio na preparação e execução de treinamentos de segurança",
-      "Acompanhamento de indicadores de desempenho de segurança (KPIs)",
-      "Gestão completa da entrega e troca de EPIs para 300+ funcionários",
-      "Facilitação da comunicação entre setores sobre questões de segurança",
-      "Execução de verificações e inventários de equipamentos de segurança",
-      "Suporte técnico em auditorias internas e externas de segurança",
-      "Desenvolvimento de materiais educativos sobre uso correto de EPIs",
+      "Prestava suporte nas atividades administrativas da área de Saúde, Segurança e Meio Ambiente (SSMA), garantindo a execução eficaz de processos relacionados à gestão de EPIs, documentação de segurança e controles internos.",
+    responsibilities: [
+      "Gerenciamento e organização de planilhas e formulários de EPIs",
+      "Preparação e organização de treinamentos de segurança (SIPAT)",
+      "Acompanhamento de indicadores de desempenho SSMA",
+      "Apoio na entrega e troca de EPIs e fardamentos",
+      "Facilitação da comunicação entre setores",
+      "Suporte em auditorias internas",
     ],
-    achievements: [
-      "Reconhecimento oficial pela abordagem inovadora na conscientização do uso correto de EPIs",
-      "Implementação de melhorias que reduziram acidentes de trabalho em 20%",
-      "Otimização do sistema de documentação, aumentando eficiência em 40%",
-      "Desenvolvimento de programa de conscientização que atingiu 100% dos funcionários",
-    ],
-    technologies: [
-      "Excel Avançado",
-      "Intranet Corporativa",
-      "RELATE",
-      "Gestão de Segurança",
-      "Compliance",
-      "Power Point",
-    ],
-    metrics: {
-      employeesManaged: "300+ funcionários",
-      accidentReduction: "20% redução em acidentes",
-      coverage: "100% dos funcionários treinados",
-    },
+    technologies: ["Excel", "Intranet", "RELATE", "Sistemas de Gestão SSMA"],
+    recognition:
+      "Reconhecimento pela forma de abordagem com os colaboradores na conscientização do uso correto de EPIs nas áreas produtivas",
   },
   {
     id: 4,
-    role: "Auxiliar Comercial",
+    title: "Auxiliar Comercial",
     company: "CCBEU Sorocaba - Centro Cultural Brasil - Estados Unidos",
-    period: "Janeiro 2023 - Janeiro 2024",
+    location: "Sorocaba, São Paulo, Brasil",
+    period: "Janeiro 2023 - Janeiro 2024 (1 ano 1 mês)",
     description:
-      "Primeira experiência na área comercial, focada em suporte técnico e treinamento da equipe. Responsável pela migração de sistemas e otimização de processos comerciais, estabelecendo as bases para futuras melhorias.",
-    detailedResponsibilities: [
-      "Suporte técnico especializado à equipe Comercial no Sistema Integrado DKSoft",
-      "Condução de treinamentos mensais para equipe comercial (12 sessões/ano)",
-      "Resolução de problemas técnicos complexos relacionados ao DKSoft",
-      "Migração segura de informações entre sistemas legados e novos",
-      "Resolução de questões críticas no Sistema Integrado Sponte",
-      "Cadastro e atualização de dados de 500+ alunos",
-      "Processamento e baixa de boletos bancários",
-      "Cotação e compra de insumos para operação comercial",
-      "Apoio logístico às atividades escolares e eventos",
+      "Oferecia suporte à equipe Comercial no uso do Sistema Integrado DKSoft e conduzia treinamentos mensais para aprimorar a competência da equipe.",
+    responsibilities: [
+      "Suporte e treinamentos no Sistema DKSoft",
+      "Migração de informações entre sistemas",
+      "Gestão do Sistema Sponte (Cadastro, Contratos, Financeiro)",
+      "Cadastros de alunos e baixa de boletos",
+      "Apoio às atividades escolares",
+      "Recepção de pais e alunos",
     ],
-    achievements: [
-      "Implementação de melhorias no processo de migração que reduziram erros em 60%",
-      "Otimização do uso do Sistema Integrado DKSoft, aumentando produtividade em 30%",
-      "Desenvolvimento de 12 treinamentos eficazes que capacitaram toda a equipe comercial",
-      "Estabelecimento de procedimentos padrão que são utilizados até hoje",
-    ],
-    technologies: ["DKSoft", "Sponte", "Gestão Comercial", "Treinamento", "Migração de Dados", "Excel"],
-    metrics: {
-      studentsRegistered: "500+ alunos cadastrados",
-      errorReduction: "60% redução em erros",
-      trainingSessions: "12 treinamentos realizados",
-    },
+    technologies: ["DKSoft", "Sponte", "Excel", "Sistemas de Gestão Escolar"],
+  },
+]
+
+const education = [
+  {
+    institution: "Centro Universitário Facens",
+    degree: "Tecnólogo em Análise e Desenvolvimento de Sistemas",
+    period: "Fevereiro 2025 - Julho 2027",
+    status: "Em andamento",
+  },
+  {
+    institution: "Colégio Objetivo Zona Norte",
+    degree: "Ensino Médio Completo",
+    period: "Janeiro 2022 - Dezembro 2024",
+    status: "Concluído",
   },
 ]
 
 export function ExperienceSection() {
-  const { t } = useLanguage()
   const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: true,
-    rootMargin: "-100px 0px -50px 0px",
   })
 
   return (
     <section id="experience" className="py-20" ref={ref}>
       <div className="container mx-auto px-4">
-        <SectionHeading title={t("experience.title")} subtitle={t("experience.subtitle")} centered />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl font-bold mb-4">Experiência & Formação</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Minha jornada profissional e acadêmica, com experiências que moldaram minha carreira em tecnologia e
+            administração.
+          </p>
+        </motion.div>
 
-        <div className="mt-12 relative">
-          {/* Timeline Line */}
-          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-1 bg-border" />
+        {/* Experiência Profissional */}
+        <div className="mb-16">
+          <h3 className="text-2xl font-semibold mb-8 flex items-center">
+            <Building className="h-6 w-6 mr-3 text-primary" />
+            Experiência Profissional
+          </h3>
 
-          {/* Experience Cards */}
-          <div className="space-y-12">
-            {experiences.map((exp, index) => (
+          <div className="space-y-6">
+            {experiences.map((experience, index) => (
               <motion.div
-                key={exp.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-                transition={{ duration: 0.6, delay: inView ? index * 0.15 : 0 }}
-                className={`relative md:w-1/2 ${index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"}`}
+                key={experience.id}
+                initial={{ opacity: 0, x: -30 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                {/* Timeline Dot */}
-                <div
-                  className={`absolute top-6 w-6 h-6 rounded-full bg-primary ${
-                    index % 2 === 0 ? "md:right-0 md:-mr-3 left-0 -ml-3 md:left-auto" : "left-0 -ml-3"
-                  }`}
-                />
-
-                {/* Card with offset for timeline */}
-                <div className={`ml-8 ${index % 2 === 0 ? "md:mr-8 md:ml-0" : "md:ml-8"}`}>
-                  <Card className="hover:shadow-lg transition-shadow duration-300">
-                    <CardContent className="p-6">
-                      <div className="flex flex-col md:flex-row justify-between mb-4">
-                        <div>
-                          <h3 className="text-xl font-semibold">{exp.role}</h3>
-                          <div className="flex items-center text-muted-foreground">
-                            <Briefcase className="h-4 w-4 mr-1" />
-                            <span>{exp.company}</span>
-                          </div>
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-lg">{experience.title}</h4>
+                        <p className="text-primary font-medium">{experience.company}</p>
+                      </div>
+                      <div className="flex flex-col lg:items-end text-sm text-muted-foreground mt-2 lg:mt-0">
+                        <div className="flex items-center mb-1">
+                          <Calendar className="h-4 w-4 mr-1" />
+                          {experience.period}
                         </div>
-                        <Badge variant="outline" className="mt-2 md:mt-0 self-start">
-                          {exp.period}
+                        <div className="flex items-center">
+                          <MapPin className="h-4 w-4 mr-1" />
+                          {experience.location}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="text-muted-foreground mb-4">{experience.description}</p>
+
+                    {experience.recognition && (
+                      <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <p className="text-sm text-green-800 dark:text-green-200">
+                          <strong>Reconhecimento:</strong> {experience.recognition}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <h5 className="text-sm font-medium mb-2">Principais responsabilidades:</h5>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        {experience.responsibilities.map((resp, i) => (
+                          <li key={i} className="flex items-start">
+                            <span className="w-2 h-2 bg-primary rounded-full mt-2 mr-2 flex-shrink-0" />
+                            {resp}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {experience.technologies.map((tech) => (
+                        <Badge key={tech} variant="outline">
+                          {tech}
                         </Badge>
-                      </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
-                      <p className="mb-4 text-muted-foreground">{exp.description}</p>
+        {/* Formação Acadêmica */}
+        <div>
+          <h3 className="text-2xl font-semibold mb-8 flex items-center">
+            <BookOpen className="h-6 w-6 mr-3 text-primary" />
+            Formação Acadêmica
+          </h3>
 
-                      {/* Metrics */}
-                      {exp.metrics && (
-                        <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                          <h4 className="font-medium mb-2 flex items-center">
-                            <TrendingUp className="h-4 w-4 mr-1" />
-                            Resultados Quantificáveis:
-                          </h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                            {Object.entries(exp.metrics).map(([key, value]) => (
-                              <div key={key} className="flex justify-between">
-                                <span className="text-muted-foreground capitalize">
-                                  {key.replace(/([A-Z])/g, " $1").toLowerCase()}:
-                                </span>
-                                <span className="font-medium text-primary">{value}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Detailed Responsibilities */}
-                      <div className="mb-4">
-                        <h4 className="font-medium mb-2 flex items-center">
-                          <Users className="h-4 w-4 mr-1" />
-                          Principais Responsabilidades:
-                        </h4>
-                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground max-h-32 overflow-y-auto">
-                          {exp.detailedResponsibilities.slice(0, 5).map((responsibility, i) => (
-                            <li key={i}>{responsibility}</li>
-                          ))}
-                          {exp.detailedResponsibilities.length > 5 && (
-                            <li className="text-primary cursor-pointer">
-                              +{exp.detailedResponsibilities.length - 5} responsabilidades adicionais...
-                            </li>
-                          )}
-                        </ul>
-                      </div>
-
-                      {/* Achievements */}
-                      <div className="mb-4">
-                        <h4 className="font-medium mb-2 flex items-center">
-                          <Award className="h-4 w-4 mr-1" />
-                          Principais Conquistas:
-                        </h4>
-                        <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                          {exp.achievements.map((achievement, i) => (
-                            <li key={i}>{achievement}</li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      {/* Technologies */}
-                      <div>
-                        <h4 className="font-medium mb-2">Tecnologias & Ferramentas:</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {exp.technologies.map((tech, i) => (
-                            <Badge key={i} variant="secondary" className="text-xs">
-                              {tech}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {education.map((edu, index) => (
+              <motion.div
+                key={edu.institution}
+                initial={{ opacity: 0, y: 30 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: experiences.length * 0.1 + index * 0.1 }}
+              >
+                <Card>
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <h4 className="font-semibold text-lg">{edu.degree}</h4>
+                      <Badge variant={edu.status === "Em andamento" ? "default" : "secondary"}>{edu.status}</Badge>
+                    </div>
+                    <p className="text-primary font-medium mb-2">{edu.institution}</p>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {edu.period}
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             ))}
           </div>
