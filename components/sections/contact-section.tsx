@@ -68,7 +68,7 @@ export function ContactSection() {
                     </div>
                     <div className="flex justify-between">
                       <span>Inglês</span>
-                      <span className="text-muted-foreground">Profissional</span>
+                      <span className="text-muted-foreground">intermediário</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Espanhol</span>
