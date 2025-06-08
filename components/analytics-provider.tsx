@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { createContext, useContext, useEffect, useState, type ReactNode, Suspense } from "react"
 import { analytics, type EventType } from "@/lib/analytics"
 import { usePathname, useSearchParams } from "next/navigation"
 
@@ -20,6 +20,21 @@ const AnalyticsContext = createContext<AnalyticsContextType>({
   setEnabled: () => {},
 })
 
+// Separate component for search params tracking
+function SearchParamsTracker({ isEnabled }: { isEnabled: boolean }) {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  // Rastrear mudanças de página
+  useEffect(() => {
+    if (isEnabled && pathname) {
+      analytics.trackPageView(pathname)
+    }
+  }, [pathname, searchParams, isEnabled])
+
+  return null
+}
+
 export function AnalyticsProvider({
   children,
   endpoint,
@@ -30,8 +45,6 @@ export function AnalyticsProvider({
   debug?: boolean
 }) {
   const [isEnabled, setIsEnabled] = useState(true)
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   // Inicializar analytics
   useEffect(() => {
@@ -48,13 +61,6 @@ export function AnalyticsProvider({
       analytics.flush()
     }
   }, [endpoint, isEnabled, debug])
-
-  // Rastrear mudanças de página
-  useEffect(() => {
-    if (isEnabled && pathname) {
-      analytics.trackPageView(pathname)
-    }
-  }, [pathname, searchParams, isEnabled])
 
   // Atualizar estado de habilitado/desabilitado
   useEffect(() => {
@@ -91,7 +97,7 @@ export function AnalyticsProvider({
     return () => {
       observer.disconnect()
     }
-  }, [isEnabled, pathname])
+  }, [isEnabled])
 
   const value = {
     trackEvent: (type: EventType, data?: Record<string, any>, name?: string) => {
@@ -115,7 +121,14 @@ export function AnalyticsProvider({
     },
   }
 
-  return <AnalyticsContext.Provider value={value}>{children}</AnalyticsContext.Provider>
+  return (
+    <AnalyticsContext.Provider value={value}>
+      {children}
+      <Suspense fallback={null}>
+        <SearchParamsTracker isEnabled={isEnabled} />
+      </Suspense>
+    </AnalyticsContext.Provider>
+  )
 }
 
 export function useAnalytics() {

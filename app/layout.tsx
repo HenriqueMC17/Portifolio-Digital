@@ -81,14 +81,14 @@ export default function RootLayout({
             <PerformanceProvider>
               <LanguageProvider>
                 <AnimationProvider>
-                  <Suspense fallback={null}>
-                    <EasterEggProvider>
+                  <EasterEggProvider>
+                    <Suspense fallback={null}>
                       {children}
                       <CustomCursor />
                       <PWAInstaller />
                       <EasterEggPanel />
-                    </EasterEggProvider>
-                  </Suspense>
+                    </Suspense>
+                  </EasterEggProvider>
                 </AnimationProvider>
               </LanguageProvider>
             </PerformanceProvider>
