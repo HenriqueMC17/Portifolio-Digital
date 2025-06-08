@@ -64,7 +64,7 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  cursor: none; /* Hide default cursor for custom cursor */
+  cursor: auto; /* Restaurar cursor padrão */
 }
 
 /* Performance optimizations */
@@ -292,10 +292,8 @@ html {
   background-size: 20px 20px;
 }
 
-/* Custom cursor styles */
-body * {
-  cursor: none !important;
-}
+/* Cursor styles - removido o cursor: none para permitir cursor normal */
+/* Removido: body * { cursor: none !important; } */
 
 /* Accessibility improvements */
 @media (prefers-reduced-motion: reduce) {
@@ -317,4 +315,26 @@ body * {
     background: white !important;
     color: black !important;
   }
+}
+
+/* Utility classes for text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

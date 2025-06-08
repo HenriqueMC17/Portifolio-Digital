@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect } from "react"
-import confetti from "canvas-confetti"
 
 // Tipos de Easter Eggs
 export type EasterEggType = "konami" | "dev" | "matrix" | "disco" | "gravity" | "thanos" | "rainbow" | "birthday"
@@ -14,11 +13,11 @@ export interface EasterEgg {
   trigger: string
   isActive: boolean
   isUnlocked: boolean
-  activate: () => void
+  activate: () => void | (() => void)
   deactivate: () => void
 }
 
-// Sequência do Konami Code
+// Sequências de teclas
 const KONAMI_CODE = [
   "ArrowUp",
   "ArrowUp",
@@ -28,71 +27,104 @@ const KONAMI_CODE = [
   "ArrowRight",
   "ArrowLeft",
   "ArrowRight",
-  "b",
-  "a",
+  "KeyB",
+  "KeyA",
 ]
 
-// Sequência para modo desenvolvedor
-const DEV_CODE = ["d", "e", "v"]
+// Função para criar confetti sem dependência externa
+export function launchConfetti(options: { particleCount?: number; spread?: number; origin?: { y: number } } = {}) {
+  const { particleCount = 100, spread = 70, origin = { y: 0.6 } } = options
 
-// Sequência para modo Matrix
-const MATRIX_CODE = ["m", "a", "t", "r", "i", "x"]
+  // Criar elementos de confetti usando CSS animations
+  const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"]
 
-// Sequência para modo Disco
-const DISCO_CODE = ["d", "i", "s", "c", "o"]
+  for (let i = 0; i < particleCount; i++) {
+    const confetti = document.createElement("div")
+    confetti.style.position = "fixed"
+    confetti.style.left = "50%"
+    confetti.style.top = `${origin.y * 100}%`
+    confetti.style.width = "10px"
+    confetti.style.height = "10px"
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
+    confetti.style.pointerEvents = "none"
+    confetti.style.zIndex = "9999"
+    confetti.style.borderRadius = "50%"
 
-// Sequência para modo Gravidade
-const GRAVITY_CODE = ["g", "r", "a", "v"]
+    const angle = (Math.random() - 0.5) * spread * (Math.PI / 180)
+    const velocity = Math.random() * 500 + 200
+    const gravity = 980
 
-// Sequência para efeito Thanos
-const THANOS_CODE = ["t", "h", "a", "n", "o", "s"]
+    confetti.style.transform = `translate(-50%, -50%)`
+    document.body.appendChild(confetti)
 
-// Sequência para modo Arco-íris
-const RAINBOW_CODE = ["r", "a", "i", "n", "b", "o", "w"]
+    const startTime = Date.now()
 
-// Sequência para modo Aniversário
-const BIRTHDAY_CODE = ["b", "d", "a", "y"]
+    function animate() {
+      const elapsed = (Date.now() - startTime) / 1000
+      const x = Math.sin(angle) * velocity * elapsed
+      const y = Math.cos(angle) * velocity * elapsed + 0.5 * gravity * elapsed * elapsed
 
-// Função para criar confetti
-export function launchConfetti(options = {}) {
-  confetti({
-    particleCount: 100,
-    spread: 70,
-    origin: { y: 0.6 },
-    ...options,
-  })
+      confetti.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${elapsed * 360}deg)`
+      confetti.style.opacity = `${Math.max(0, 1 - elapsed / 3)}`
+
+      if (elapsed < 3) {
+        requestAnimationFrame(animate)
+      } else {
+        document.body.removeChild(confetti)
+      }
+    }
+
+    requestAnimationFrame(animate)
+  }
 }
 
 // Função para criar confetti em formato de emoji
 export function launchEmojiConfetti(emoji: string) {
-  const canvas = document.createElement("canvas")
-  canvas.width = 50
-  canvas.height = 50
-  const ctx = canvas.getContext("2d")
+  const particleCount = 30
+  const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"]
 
-  if (ctx) {
-    ctx.font = "30px serif"
-    ctx.textAlign = "center"
-    ctx.textBaseline = "middle"
-    ctx.fillText(emoji, 25, 25)
+  for (let i = 0; i < particleCount; i++) {
+    const confetti = document.createElement("div")
+    confetti.style.position = "fixed"
+    confetti.style.left = "50%"
+    confetti.style.top = "60%"
+    confetti.style.fontSize = "24px"
+    confetti.style.pointerEvents = "none"
+    confetti.style.zIndex = "9999"
+    confetti.textContent = emoji
 
-    const image = new Image()
-    image.src = canvas.toDataURL()
+    const angle = (Math.random() - 0.5) * 70 * (Math.PI / 180)
+    const velocity = Math.random() * 400 + 150
+    const gravity = 980
 
-    confetti({
-      particleCount: 30,
-      spread: 70,
-      shapes: [
-        () => {
-          return image
-        },
-      ],
-    })
+    confetti.style.transform = `translate(-50%, -50%)`
+    document.body.appendChild(confetti)
+
+    const startTime = Date.now()
+
+    function animate() {
+      const elapsed = (Date.now() - startTime) / 1000
+      const x = Math.sin(angle) * velocity * elapsed
+      const y = Math.cos(angle) * velocity * elapsed + 0.5 * gravity * elapsed * elapsed
+
+      confetti.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${elapsed * 180}deg)`
+      confetti.style.opacity = `${Math.max(0, 1 - elapsed / 3)}`
+
+      if (elapsed < 3) {
+        requestAnimationFrame(animate)
+      } else {
+        if (document.body.contains(confetti)) {
+          document.body.removeChild(confetti)
+        }
+      }
+    }
+
+    requestAnimationFrame(animate)
   }
 }
 
 // Função para aplicar efeito Matrix
-export function applyMatrixEffect() {
+export function applyMatrixEffect(): () => void {
   const canvas = document.createElement("canvas")
   canvas.id = "matrix-canvas"
   canvas.width = window.innerWidth
@@ -103,20 +135,18 @@ export function applyMatrixEffect() {
   canvas.style.zIndex = "9999"
   canvas.style.pointerEvents = "none"
   canvas.style.opacity = "0.8"
+  canvas.setAttribute("aria-hidden", "true")
   document.body.appendChild(canvas)
 
   const ctx = canvas.getContext("2d")
-  if (!ctx) return
+  if (!ctx) return () => {}
 
   const characters =
     "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   const fontSize = 14
-  const columns = canvas.width / fontSize
+  const columns = Math.floor(canvas.width / fontSize)
 
-  const drops: number[] = []
-  for (let i = 0; i < columns; i++) {
-    drops[i] = 1
-  }
+  const drops: number[] = Array(columns).fill(1)
 
   function draw() {
     if (!ctx) return
@@ -132,7 +162,6 @@ export function applyMatrixEffect() {
       if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
         drops[i] = 0
       }
-
       drops[i]++
     }
   }
@@ -141,22 +170,25 @@ export function applyMatrixEffect() {
 
   return () => {
     clearInterval(matrixInterval)
-    document.body.removeChild(canvas)
+    const element = document.getElementById("matrix-canvas")
+    if (element && document.body.contains(element)) {
+      document.body.removeChild(element)
+    }
   }
 }
 
 // Função para aplicar efeito Disco
-export function applyDiscoEffect() {
+export function applyDiscoEffect(): () => void {
   const colors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8B00FF"]
-
   const elements = document.querySelectorAll("*")
   const originalStyles = new Map()
 
   elements.forEach((el) => {
+    const computedStyle = window.getComputedStyle(el)
     originalStyles.set(el, {
-      backgroundColor: window.getComputedStyle(el).backgroundColor,
-      color: window.getComputedStyle(el).color,
-      transition: window.getComputedStyle(el).transition,
+      backgroundColor: computedStyle.backgroundColor,
+      color: computedStyle.color,
+      transition: computedStyle.transition,
     })
     ;(el as HTMLElement).style.transition = "background-color 0.5s, color 0.5s"
   })
@@ -189,15 +221,16 @@ export function applyDiscoEffect() {
 }
 
 // Função para aplicar efeito de gravidade
-export function applyGravityEffect() {
+export function applyGravityEffect(): () => void {
   const elements = document.querySelectorAll("div, p, h1, h2, h3, h4, h5, h6, span, img, button")
   const originalStyles = new Map()
 
   elements.forEach((el) => {
+    const computedStyle = window.getComputedStyle(el)
     originalStyles.set(el, {
-      transform: window.getComputedStyle(el).transform,
-      transition: window.getComputedStyle(el).transition,
-      position: window.getComputedStyle(el).position,
+      transform: computedStyle.transform,
+      transition: computedStyle.transition,
+      position: computedStyle.position,
     })
     ;(el as HTMLElement).style.transition = "transform 1s cubic-bezier(.17,.67,.83,.67)"
 
@@ -219,16 +252,16 @@ export function applyGravityEffect() {
 }
 
 // Função para aplicar efeito Thanos (desintegração)
-export function applyThanosEffect() {
+export function applyThanosEffect(): () => void {
   const elements = document.querySelectorAll("div, p, h1, h2, h3, h4, h5, h6, span, img, button")
   const originalStyles = new Map()
-  const originalHTML = document.body.innerHTML
 
   elements.forEach((el) => {
+    const computedStyle = window.getComputedStyle(el)
     originalStyles.set(el, {
-      opacity: window.getComputedStyle(el).opacity,
-      transition: window.getComputedStyle(el).transition,
-      transform: window.getComputedStyle(el).transform,
+      opacity: computedStyle.opacity,
+      transition: computedStyle.transition,
+      transform: computedStyle.transform,
     })
     ;(el as HTMLElement).style.transition = "opacity 2s, transform 2s"
 
@@ -241,12 +274,19 @@ export function applyThanosEffect() {
   })
 
   return () => {
-    document.body.innerHTML = originalHTML
+    elements.forEach((el) => {
+      const original = originalStyles.get(el)
+      if (original) {
+        ;(el as HTMLElement).style.opacity = original.opacity
+        ;(el as HTMLElement).style.transition = original.transition
+        ;(el as HTMLElement).style.transform = original.transform
+      }
+    })
   }
 }
 
 // Função para aplicar efeito arco-íris
-export function applyRainbowEffect() {
+export function applyRainbowEffect(): () => void {
   const style = document.createElement("style")
   style.id = "rainbow-effect"
   style.innerHTML = `
@@ -270,26 +310,20 @@ export function applyRainbowEffect() {
 
   return () => {
     const styleElement = document.getElementById("rainbow-effect")
-    if (styleElement) {
+    if (styleElement && document.head.contains(styleElement)) {
       document.head.removeChild(styleElement)
     }
   }
 }
 
 // Função para aplicar efeito de aniversário
-export function applyBirthdayEffect() {
-  // Adicionar música de aniversário
-  const audio = new Audio("/birthday-song.mp3")
-  audio.loop = true
-  audio.volume = 0.5
-  audio.play()
-
+export function applyBirthdayEffect(): () => void {
   // Adicionar confetti contínuo
   const confettiInterval = setInterval(() => {
     launchConfetti({
       particleCount: 50,
       spread: 70,
-      origin: { y: Math.random(), x: Math.random() },
+      origin: { y: Math.random() },
     })
   }, 1000)
 
@@ -335,10 +369,13 @@ export function applyBirthdayEffect() {
   document.body.appendChild(message)
 
   return () => {
-    audio.pause()
     clearInterval(confettiInterval)
-    document.body.removeChild(balloons)
-    document.body.removeChild(message)
+    if (document.body.contains(balloons)) {
+      document.body.removeChild(balloons)
+    }
+    if (document.body.contains(message)) {
+      document.body.removeChild(message)
+    }
   }
 }
 
@@ -348,30 +385,32 @@ export function useKeySequence(sequences: { [key: string]: string[] }, onMatch: 
     const pressed: string[] = []
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      pressed.push(e.key.toLowerCase())
+      // Prevenir ativação durante digitação em inputs
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      pressed.push(e.code || e.key.toLowerCase())
 
       for (const [id, sequence] of Object.entries(sequences)) {
         const windowSize = sequence.length
         const windowPressed = pressed.slice(-windowSize)
 
-        if (windowPressed.length === windowSize && windowPressed.every((key, i) => key === sequence[i].toLowerCase())) {
+        if (windowPressed.length === windowSize && windowPressed.every((key, i) => key === sequence[i])) {
           onMatch(id)
           pressed.length = 0
           break
         }
       }
 
-      // Limitar o tamanho do array para evitar vazamento de memória
+      // Limitar o tamanho do array
       if (pressed.length > 20) {
         pressed.shift()
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
+    return () => window.removeEventListener("keydown", handleKeyDown)
   }, [sequences, onMatch])
 }
 
@@ -385,7 +424,10 @@ export function createEasterEggs(): EasterEgg[] {
       trigger: "↑↑↓↓←→←→BA",
       isActive: false,
       isUnlocked: false,
-      activate: () => launchConfetti(),
+      activate: () => {
+        launchConfetti()
+        return () => {}
+      },
       deactivate: () => {},
     },
     {
@@ -407,32 +449,36 @@ export function createEasterEggs(): EasterEgg[] {
         devInfo.style.borderRadius = "5px"
         devInfo.style.fontFamily = "monospace"
         devInfo.style.zIndex = "9999"
+        devInfo.style.fontSize = "12px"
 
         const updateInfo = () => {
+          const memory = (performance as any).memory
           devInfo.innerHTML = `
             <div>Next.js + React + Framer Motion</div>
-            <div>FPS: ${Math.round(1000 / (performance.now() - lastTime))}</div>
-            <div>Memory: ${Math.round(performance.memory?.usedJSHeapSize / 1048576 || 0)}MB</div>
+            <div>Memory: ${memory ? Math.round(memory.usedJSHeapSize / 1048576) : 0}MB</div>
             <div>Window: ${window.innerWidth}x${window.innerHeight}</div>
             <div>DPR: ${window.devicePixelRatio}</div>
             <div>Network: ${(navigator as any).connection?.effectiveType || "unknown"}</div>
           `
-          lastTime = performance.now()
         }
 
-        let lastTime = performance.now()
+        updateInfo()
         const infoInterval = setInterval(updateInfo, 1000)
         document.body.appendChild(devInfo)
 
         return () => {
           clearInterval(infoInterval)
           const element = document.getElementById("dev-info")
-          if (element) document.body.removeChild(element)
+          if (element && document.body.contains(element)) {
+            document.body.removeChild(element)
+          }
         }
       },
       deactivate: () => {
         const element = document.getElementById("dev-info")
-        if (element) document.body.removeChild(element)
+        if (element && document.body.contains(element)) {
+          document.body.removeChild(element)
+        }
       },
     },
     {
@@ -445,7 +491,9 @@ export function createEasterEggs(): EasterEgg[] {
       activate: () => applyMatrixEffect(),
       deactivate: () => {
         const canvas = document.getElementById("matrix-canvas")
-        if (canvas) document.body.removeChild(canvas)
+        if (canvas && document.body.contains(canvas)) {
+          document.body.removeChild(canvas)
+        }
       },
     },
     {
@@ -488,7 +536,9 @@ export function createEasterEggs(): EasterEgg[] {
       activate: () => applyRainbowEffect(),
       deactivate: () => {
         const style = document.getElementById("rainbow-effect")
-        if (style) document.head.removeChild(style)
+        if (style && document.head.contains(style)) {
+          document.head.removeChild(style)
+        }
       },
     },
     {

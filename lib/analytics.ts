@@ -1,6 +1,6 @@
 "use client"
 
-import { v4 as uuidv4 } from "uuid"
+import { generateId } from "@/lib/utils"
 
 // Tipos de eventos
 export type EventType =
@@ -12,11 +12,6 @@ export type EventType =
   | "error"
   | "performance"
   | "easter_egg_activated"
-  | "easter_egg_deactivated"
-  | "easter_eggs_reset"
-  | "pwa_install_prompt"
-  | "pwa_installed"
-  | "pwa_install_dismissed"
   | "custom"
 
 // Interface para eventos
@@ -28,6 +23,8 @@ export interface AnalyticsEvent {
   data?: Record<string, any>
   sessionId: string
   userId?: string
+  userAgent?: string
+  url?: string
 }
 
 // Interface para métricas de performance
@@ -55,7 +52,7 @@ export class Analytics {
   private isEnabled = true
   private isDebug = false
   private batchSize = 10
-  private flushInterval = 30000 // 30 segundos
+  private flushInterval = 30000
   private flushTimer?: NodeJS.Timeout
   private isInitialized = false
 
@@ -71,7 +68,6 @@ export class Analytics {
     }
   }
 
-  // Inicializar analytics
   public init(
     options: {
       endpoint?: string
@@ -83,32 +79,24 @@ export class Analytics {
   ) {
     if (this.isInitialized) return
 
-    const { endpoint, isEnabled, isDebug, batchSize, flushInterval } = options
-
-    if (endpoint) this.endpoint = endpoint
-    if (isEnabled !== undefined) this.isEnabled = isEnabled
-    if (isDebug !== undefined) this.isDebug = isDebug
-    if (batchSize) this.batchSize = batchSize
-    if (flushInterval) this.flushInterval = flushInterval
-
+    Object.assign(this, options)
     this.isInitialized = true
-
-    // Rastrear visualização de página inicial
     this.trackPageView()
   }
 
-  // Rastrear evento
   public trackEvent(type: EventType, data?: Record<string, any>, name?: string) {
     if (!this.isEnabled) return
 
     const event: AnalyticsEvent = {
-      id: uuidv4(),
+      id: generateId(),
       type,
       name,
       timestamp: Date.now(),
-      data,
+      data: this.sanitizeData(data),
       sessionId: this.sessionId,
       userId: this.userId,
+      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
+      url: typeof window !== "undefined" ? window.location.href : undefined,
     }
 
     this.events.push(event)
@@ -117,16 +105,13 @@ export class Analytics {
       console.log("[Analytics]", event)
     }
 
-    // Enviar eventos em lote quando atingir o tamanho do lote
     if (this.events.length >= this.batchSize) {
       this.flush()
     }
   }
 
-  // Rastrear visualização de página
   public trackPageView(path?: string) {
     const url = path || (typeof window !== "undefined" ? window.location.pathname : "")
-
     this.trackEvent("page_view", {
       url,
       title: typeof document !== "undefined" ? document.title : "",
@@ -134,57 +119,14 @@ export class Analytics {
     })
   }
 
-  // Rastrear visualização de seção
   public trackSectionView(sectionId: string) {
     this.trackEvent("section_view", { sectionId })
   }
 
-  // Rastrear clique em botão
-  public trackButtonClick(buttonId: string, buttonText?: string) {
-    this.trackEvent("button_click", { buttonId, buttonText })
-  }
-
-  // Rastrear clique em link
-  public trackLinkClick(url: string, text?: string, isExternal?: boolean) {
-    this.trackEvent("link_click", { url, text, isExternal })
-  }
-
-  // Rastrear envio de formulário
-  public trackFormSubmit(formId: string, success: boolean) {
-    this.trackEvent("form_submit", { formId, success })
-  }
-
-  // Rastrear erro
   public trackError(message: string, source?: string, stack?: string) {
     this.trackEvent("error", { message, source, stack })
   }
 
-  // Rastrear métricas de performance
-  public trackPerformance() {
-    this.trackEvent("performance", this.performanceMetrics)
-  }
-
-  // Obter métricas de performance
-  public getPerformanceMetrics(): PerformanceMetrics {
-    return { ...this.performanceMetrics }
-  }
-
-  // Ativar ou desativar analytics
-  public setEnabled(isEnabled: boolean) {
-    this.isEnabled = isEnabled
-  }
-
-  // Ativar ou desativar modo debug
-  public setDebug(isDebug: boolean) {
-    this.isDebug = isDebug
-  }
-
-  // Definir endpoint para envio de dados
-  public setEndpoint(endpoint: string) {
-    this.endpoint = endpoint
-  }
-
-  // Enviar eventos acumulados
   public flush() {
     if (!this.isEnabled || this.events.length === 0) return
 
@@ -192,26 +134,16 @@ export class Analytics {
     this.events = []
 
     if (this.endpoint) {
-      // Enviar para o endpoint configurado
-      fetch(this.endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ events: eventsToSend }),
-        keepalive: true,
-      }).catch((error) => {
-        console.error("[Analytics] Error sending events:", error)
-        // Recuperar eventos em caso de falha
-        this.events = [...eventsToSend, ...this.events]
-      })
+      this.sendToEndpoint(eventsToSend)
     } else {
-      // Armazenar localmente se não houver endpoint
       this.storeEvents(eventsToSend)
     }
   }
 
-  // Limpar dados de analytics
+  public setEnabled(isEnabled: boolean) {
+    this.isEnabled = isEnabled
+  }
+
   public clear() {
     this.events = []
     if (typeof localStorage !== "undefined") {
@@ -219,181 +151,130 @@ export class Analytics {
     }
   }
 
-  // Gerar ID de sessão
   private generateSessionId(): string {
     return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
   }
 
-  // Obter ou gerar ID de usuário
   private getUserId(): string | undefined {
     if (typeof localStorage === "undefined") return undefined
 
     let userId = localStorage.getItem("analytics_user_id")
-
     if (!userId) {
-      userId = uuidv4()
+      userId = generateId()
       localStorage.setItem("analytics_user_id", userId)
     }
-
     return userId
   }
 
-  // Configurar observador de performance
+  private sanitizeData(data?: Record<string, any>): Record<string, any> | undefined {
+    if (!data) return undefined
+
+    const sanitized: Record<string, any> = {}
+    for (const [key, value] of Object.entries(data)) {
+      if (typeof value === "string") {
+        sanitized[key] = value.slice(0, 1000) // Limitar tamanho
+      } else if (typeof value === "number" || typeof value === "boolean") {
+        sanitized[key] = value
+      } else if (value && typeof value === "object") {
+        sanitized[key] = JSON.stringify(value).slice(0, 1000)
+      }
+    }
+    return sanitized
+  }
+
+  private async sendToEndpoint(events: AnalyticsEvent[]) {
+    try {
+      const response = await fetch(this.endpoint!, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ events }),
+        keepalive: true,
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+    } catch (error) {
+      console.error("[Analytics] Error sending events:", error)
+      this.events = [...events, ...this.events]
+    }
+  }
+
   private setupPerformanceObserver() {
     if (typeof PerformanceObserver === "undefined") return
 
     try {
-      // Largest Contentful Paint
-      const lcpObserver = new PerformanceObserver((entryList) => {
-        const entries = entryList.getEntries()
-        const lastEntry = entries[entries.length - 1]
-        this.performanceMetrics.lcp = lastEntry ? lastEntry.startTime : null
-      })
-
-      lcpObserver.observe({ type: "largest-contentful-paint", buffered: true })
-
-      // First Input Delay
-      const fidObserver = new PerformanceObserver((entryList) => {
-        const entries = entryList.getEntries()
-        const firstEntry = entries[0]
-        if (firstEntry) {
-          this.performanceMetrics.fid = firstEntry.processingStart - firstEntry.startTime
-        }
-      })
-
-      fidObserver.observe({ type: "first-input", buffered: true })
-
-      // Cumulative Layout Shift
-      let clsValue = 0
-      const clsObserver = new PerformanceObserver((entryList) => {
-        for (const entry of entryList.getEntries()) {
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value
-            this.performanceMetrics.cls = clsValue
+      // Web Vitals monitoring
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.entryType === "largest-contentful-paint") {
+            this.performanceMetrics.lcp = entry.startTime
+          }
+          if (entry.entryType === "first-input") {
+            this.performanceMetrics.fid = (entry as any).processingStart - entry.startTime
+          }
+          if (entry.entryType === "layout-shift" && !(entry as any).hadRecentInput) {
+            this.performanceMetrics.cls = (this.performanceMetrics.cls || 0) + (entry as any).value
           }
         }
       })
 
-      clsObserver.observe({ type: "layout-shift", buffered: true })
-
-      // Time to First Byte & First Contentful Paint
-      const navEntry = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming
-      if (navEntry) {
-        this.performanceMetrics.ttfb = navEntry.responseStart
-      }
-
-      const paintEntries = performance.getEntriesByType("paint")
-      const fcpEntry = paintEntries.find((entry) => entry.name === "first-contentful-paint")
-      if (fcpEntry) {
-        this.performanceMetrics.fcp = fcpEntry.startTime
-      }
-
-      // Rastrear métricas após o carregamento da página
-      window.addEventListener("load", () => {
-        setTimeout(() => {
-          this.trackPerformance()
-        }, 3000)
-      })
+      observer.observe({ entryTypes: ["largest-contentful-paint", "first-input", "layout-shift"] })
     } catch (error) {
-      console.error("[Analytics] Error setting up performance observer:", error)
+      console.error("[Analytics] Performance observer error:", error)
     }
   }
 
-  // Configurar listeners de eventos
   private setupEventListeners() {
     if (typeof window === "undefined") return
 
-    // Rastrear cliques em links
-    document.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement
-      const link = target.closest("a")
-
-      if (link) {
-        const url = link.href
-        const text = link.textContent?.trim() || ""
-        const isExternal = link.hostname !== window.location.hostname
-
-        this.trackLinkClick(url, text, isExternal)
-      }
-    })
-
-    // Rastrear cliques em botões
-    document.addEventListener("click", (event) => {
-      const target = event.target as HTMLElement
-      const button = target.closest("button")
-
-      if (button) {
-        const buttonId = button.id || "unknown"
-        const buttonText = button.textContent?.trim() || ""
-
-        this.trackButtonClick(buttonId, buttonText)
-      }
-    })
-
-    // Rastrear envios de formulário
-    document.addEventListener("submit", (event) => {
-      const form = event.target as HTMLFormElement
-      const formId = form.id || "unknown"
-
-      this.trackFormSubmit(formId, true)
-    })
-
-    // Rastrear erros não capturados
+    // Error tracking
     window.addEventListener("error", (event) => {
       this.trackError(event.message, event.filename, event.error?.stack)
     })
 
-    // Rastrear rejeições de promessas não tratadas
     window.addEventListener("unhandledrejection", (event) => {
-      this.trackError(`Unhandled Promise Rejection: ${event.reason}`, "unhandledrejection", event.reason?.stack)
+      this.trackError(`Unhandled Promise Rejection: ${event.reason}`)
     })
 
-    // Rastrear mudanças de visibilidade da página
+    // Page visibility
     document.addEventListener("visibilitychange", () => {
       if (document.visibilityState === "hidden") {
-        // Enviar eventos acumulados antes do usuário sair da página
         this.flush()
       }
     })
 
-    // Rastrear quando o usuário sai da página
     window.addEventListener("beforeunload", () => {
       this.flush()
     })
   }
 
-  // Iniciar timer para envio periódico de eventos
   private startFlushTimer() {
     this.flushTimer = setInterval(() => {
       this.flush()
     }, this.flushInterval)
   }
 
-  // Armazenar eventos localmente
   private storeEvents(events: AnalyticsEvent[]) {
     if (typeof localStorage === "undefined") return
 
     try {
-      const storedEvents = localStorage.getItem("analytics_events")
-      let allEvents: AnalyticsEvent[] = []
-
-      if (storedEvents) {
-        allEvents = JSON.parse(storedEvents)
-      }
+      const stored = localStorage.getItem("analytics_events")
+      let allEvents: AnalyticsEvent[] = stored ? JSON.parse(stored) : []
 
       allEvents = [...allEvents, ...events]
 
-      // Limitar o número de eventos armazenados
       if (allEvents.length > 1000) {
         allEvents = allEvents.slice(-1000)
       }
 
       localStorage.setItem("analytics_events", JSON.stringify(allEvents))
     } catch (error) {
-      console.error("[Analytics] Error storing events:", error)
+      console.error("[Analytics] Storage error:", error)
     }
   }
 }
 
-// Instância singleton
 export const analytics = new Analytics()

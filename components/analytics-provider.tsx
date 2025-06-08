@@ -1,8 +1,9 @@
 "use client"
 
-import { createContext, useContext, useEffect, useState, type ReactNode, Suspense } from "react"
+import { createContext, useContext, useEffect, useState, type ReactNode, Suspense, useCallback } from "react"
 import { analytics, type EventType } from "@/lib/analytics"
 import { usePathname, useSearchParams } from "next/navigation"
+import { debounce } from "@/lib/utils"
 
 interface AnalyticsContextType {
   trackEvent: (type: EventType, data?: Record<string, any>, name?: string) => void
@@ -20,17 +21,25 @@ const AnalyticsContext = createContext<AnalyticsContextType>({
   setEnabled: () => {},
 })
 
-// Separate component for search params tracking
+// Componente separado para tracking de search params
 function SearchParamsTracker({ isEnabled }: { isEnabled: boolean }) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
-  // Rastrear mudanças de página
+  const debouncedTrackPageView = useCallback(
+    debounce((path: string) => {
+      if (isEnabled) {
+        analytics.trackPageView(path)
+      }
+    }, 300),
+    [isEnabled],
+  )
+
   useEffect(() => {
-    if (isEnabled && pathname) {
-      analytics.trackPageView(pathname)
+    if (pathname) {
+      debouncedTrackPageView(pathname)
     }
-  }, [pathname, searchParams, isEnabled])
+  }, [pathname, searchParams, debouncedTrackPageView])
 
   return null
 }
@@ -56,7 +65,6 @@ export function AnalyticsProvider({
       flushInterval: 30000,
     })
 
-    // Limpar ao desmontar
     return () => {
       analytics.flush()
     }
@@ -71,54 +79,78 @@ export function AnalyticsProvider({
   useEffect(() => {
     if (!isEnabled || typeof IntersectionObserver === "undefined") return
 
-    const sections = document.querySelectorAll("section[id]")
     const observedSections = new Set<string>()
+
+    const debouncedTrackSection = debounce((sectionId: string) => {
+      if (!observedSections.has(sectionId)) {
+        analytics.trackSectionView(sectionId)
+        observedSections.add(sectionId)
+      }
+    }, 500)
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
             const sectionId = entry.target.id
-
-            if (!observedSections.has(sectionId)) {
-              analytics.trackSectionView(sectionId)
-              observedSections.add(sectionId)
+            if (sectionId) {
+              debouncedTrackSection(sectionId)
             }
           }
         })
       },
-      { threshold: 0.5 },
+      {
+        threshold: [0.5],
+        rootMargin: "-10% 0px -10% 0px",
+      },
     )
 
-    sections.forEach((section) => {
-      observer.observe(section)
-    })
+    // Observar seções com delay para garantir que o DOM está pronto
+    const timeoutId = setTimeout(() => {
+      const sections = document.querySelectorAll("section[id]")
+      sections.forEach((section) => {
+        observer.observe(section)
+      })
+    }, 1000)
 
     return () => {
+      clearTimeout(timeoutId)
       observer.disconnect()
     }
   }, [isEnabled])
 
   const value = {
-    trackEvent: (type: EventType, data?: Record<string, any>, name?: string) => {
-      if (isEnabled) {
-        analytics.trackEvent(type, data, name)
-      }
-    },
-    trackPageView: (path?: string) => {
-      if (isEnabled) {
-        analytics.trackPageView(path)
-      }
-    },
-    trackSectionView: (sectionId: string) => {
-      if (isEnabled) {
-        analytics.trackSectionView(sectionId)
-      }
-    },
+    trackEvent: useCallback(
+      (type: EventType, data?: Record<string, any>, name?: string) => {
+        if (isEnabled) {
+          analytics.trackEvent(type, data, name)
+        }
+      },
+      [isEnabled],
+    ),
+
+    trackPageView: useCallback(
+      (path?: string) => {
+        if (isEnabled) {
+          analytics.trackPageView(path)
+        }
+      },
+      [isEnabled],
+    ),
+
+    trackSectionView: useCallback(
+      (sectionId: string) => {
+        if (isEnabled) {
+          analytics.trackSectionView(sectionId)
+        }
+      },
+      [isEnabled],
+    ),
+
     isEnabled,
-    setEnabled: (enabled: boolean) => {
+    setEnabled: useCallback((enabled: boolean) => {
       setIsEnabled(enabled)
-    },
+    }, []),
   }
 
   return (
@@ -132,5 +164,9 @@ export function AnalyticsProvider({
 }
 
 export function useAnalytics() {
-  return useContext(AnalyticsContext)
+  const context = useContext(AnalyticsContext)
+  if (!context) {
+    throw new Error("useAnalytics must be used within an AnalyticsProvider")
+  }
+  return context
 }

@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { useInView } from "react-intersection-observer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Award, Calendar, CheckCircle2, Shield, Code, Briefcase, Palette } from "lucide-react"
+import { Award, Calendar, CheckCircle2, Shield, Code, Briefcase, Palette, ExternalLink } from "lucide-react"
 
 // Componente SectionHeading inline para evitar dependências externas
 function SectionHeading({ title, subtitle, centered = false }) {
@@ -62,6 +62,12 @@ const certificationsByCategory = {
       ],
       credentialId: "GFA-2024-001",
       category: "Excel & Análise de Dados",
+      highlights: [
+        "Desenvolvimento de dashboards interativos",
+        "Análise avançada de dados",
+        "Automação de processos",
+        "Criação de relatórios gerenciais",
+      ],
     },
     {
       id: 2,
@@ -80,6 +86,12 @@ const certificationsByCategory = {
       ],
       credentialId: "CCBEU-2023-EXC",
       category: "Excel & Análise de Dados",
+      highlights: [
+        "Domínio de fórmulas avançadas",
+        "Criação de gráficos profissionais",
+        "Formatação condicional",
+        "Tabelas dinâmicas",
+      ],
     },
     {
       id: 3,
@@ -93,6 +105,12 @@ const certificationsByCategory = {
       category: "Excel & Análise de Dados",
       details:
         "Editar dados no Excel, Formatar dados no Excel, Reconhecer a diferença entre Função e Fórmula, Utilizar as fórmulas de Soma, Multiplicação, Divisão e Porcentagem, Aplicar as funções básicas do excel, Formatar planilhas Excel a partir de condicionais, Criar gráficos",
+      highlights: [
+        "Fundamentos sólidos em Excel",
+        "Operações matemáticas básicas",
+        "Formatação de dados",
+        "Criação de gráficos simples",
+      ],
     },
   ],
   security: [
@@ -103,9 +121,15 @@ const certificationsByCategory = {
       date: "Agosto 2024",
       status: "Ativo",
       description: "Certificação em proteção de dados e privacidade, focando em aspectos essenciais de segurança.",
-      skills: ["Proteção de dados", "Privacidade", "Segurança", "Habilidades analíticas"],
+      skills: ["Proteção de dados", "Privacidade", "Segurança", "LGPD", "GDPR"],
       credentialId: "AA-2024-PDP",
       category: "Segurança & Proteção de Dados",
+      highlights: [
+        "Conformidade com LGPD",
+        "Proteção de dados pessoais",
+        "Políticas de privacidade",
+        "Gestão de riscos",
+      ],
     },
     {
       id: 5,
@@ -114,9 +138,10 @@ const certificationsByCategory = {
       date: "Agosto 2024",
       status: "Ativo",
       description: "Certificação em código de conduta empresarial e ética profissional.",
-      skills: ["Ética profissional", "Código de conduta", "Habilidades analíticas"],
+      skills: ["Ética profissional", "Código de conduta", "Compliance", "Integridade"],
       credentialId: "AA-2024-COC",
       category: "Segurança & Proteção de Dados",
+      highlights: ["Ética empresarial", "Conduta profissional", "Compliance corporativo", "Integridade organizacional"],
     },
     {
       id: 6,
@@ -125,9 +150,15 @@ const certificationsByCategory = {
       date: "Agosto 2024",
       status: "Ativo",
       description: "Certificação em reconhecimento e defesa contra ataques direcionados.",
-      skills: ["Segurança cibernética", "Ataques direcionados", "Defesa", "Habilidades analíticas"],
+      skills: ["Segurança cibernética", "Ataques direcionados", "Defesa", "Prevenção"],
       credentialId: "AA-2024-RTA",
       category: "Segurança & Proteção de Dados",
+      highlights: [
+        "Identificação de ameaças",
+        "Técnicas de defesa",
+        "Análise de vulnerabilidades",
+        "Resposta a incidentes",
+      ],
     },
     {
       id: 7,
@@ -136,42 +167,15 @@ const certificationsByCategory = {
       date: "Julho 2024",
       status: "Ativo",
       description: "Programa de conscientização em segurança digital e proteção online.",
-      skills: ["Segurança digital", "Conscientização", "Proteção online", "Habilidades analíticas"],
+      skills: ["Segurança digital", "Conscientização", "Proteção online", "Boas práticas"],
       credentialId: "AA-2024-SAP",
       category: "Segurança & Proteção de Dados",
-    },
-    {
-      id: 8,
-      name: "RSD - Social Engineering",
-      issuer: "ASSA ABLOY Group",
-      date: "Julho 2024",
-      status: "Ativo",
-      description: "Certificação em reconhecimento e defesa contra engenharia social.",
-      skills: ["Engenharia social", "Segurança", "Defesa", "Habilidades analíticas"],
-      credentialId: "AA-2024-RSE",
-      category: "Segurança & Proteção de Dados",
-    },
-    {
-      id: 9,
-      name: "Security Awareness - Social Engineering Attacks",
-      issuer: "ASSA ABLOY Group",
-      date: "Julho 2024",
-      status: "Ativo",
-      description: "Conscientização sobre ataques de engenharia social e métodos de prevenção.",
-      skills: ["Ataques de engenharia social", "Prevenção", "Segurança", "Habilidades analíticas"],
-      credentialId: "AA-2024-SEA",
-      category: "Segurança & Proteção de Dados",
-    },
-    {
-      id: 10,
-      name: "Security Awareness Program - Key Defense",
-      issuer: "ASSA ABLOY Group",
-      date: "Julho 2024",
-      status: "Ativo",
-      description: "Programa de defesa e proteção de informações críticas.",
-      skills: ["Defesa de chaves", "Proteção de informações", "Segurança", "Habilidades analíticas"],
-      credentialId: "AA-2024-KD",
-      category: "Segurança & Proteção de Dados",
+      highlights: [
+        "Navegação segura",
+        "Proteção de credenciais",
+        "Reconhecimento de phishing",
+        "Segurança em redes sociais",
+      ],
     },
   ],
   it: [
@@ -185,16 +189,22 @@ const certificationsByCategory = {
         "Certificação completa em suporte técnico, incluindo gestão de infraestrutura de TI e resolução de problemas.",
       skills: [
         "Suporte técnico",
-        "TI",
+        "Infraestrutura de TI",
         "Resolução de problemas",
-        "Gestão de infraestrutura",
-        "Programação",
-        "Trabalho em equipe",
+        "Gestão de sistemas",
+        "Help Desk",
+        "Troubleshooting",
       ],
       credentialId: "MP-2024-AST",
       category: "Tecnologia da Informação",
       details:
         "Capacidade de organização, Operações computacionais, Treinamento ministrado por instrutor, Pensamento crítico, Resolução de problemas, Tecnologia da informação, Programação (computação), Solicitação de proposta, Gestão de infraestrutura de TI, Solução de problemas técnicos, Trabalho em equipe, Administração geral, Gestão estratégica de TI, Atuação em conhecimentos de informática, Aprovisionamento de TI, Análise de modo e efeito de falha, Equipamentos de escritório, Habilidades analíticas, Treinamento e desenvolvimento de funcionários, Suporte técnico",
+      highlights: [
+        "Gestão completa de infraestrutura",
+        "Suporte técnico especializado",
+        "Resolução de problemas complexos",
+        "Treinamento de equipes",
+      ],
     },
     {
       id: 12,
@@ -204,11 +214,23 @@ const certificationsByCategory = {
       status: "Ativo",
       description:
         "Curso completo incluindo Plataforma Web, Produção de Documentos, Administração Financeira e Marketing Digital.",
-      skills: ["Informática", "Microsoft Office", "Marketing Digital", "Administração Financeira", "Web"],
+      skills: [
+        "Informática",
+        "Microsoft Office",
+        "Marketing Digital",
+        "Administração Financeira",
+        "Desenvolvimento Web",
+      ],
       credentialId: "CEDASPY-2020-TPI",
       category: "Tecnologia da Informação",
       details:
         "Plataforma Web I, Plataforma Web II, Produção de Documentos Profissionais, Administração Financeira, Marketing Digital I e Marketing Digital II",
+      highlights: [
+        "Desenvolvimento web básico",
+        "Produção de documentos profissionais",
+        "Gestão financeira",
+        "Estratégias de marketing digital",
+      ],
     },
   ],
   business: [
@@ -219,9 +241,21 @@ const certificationsByCategory = {
       date: "Setembro 2024",
       status: "Ativo",
       description: "Certificação em metodologia de estudo de casos e análise de situações polivalentes.",
-      skills: ["Análise de casos", "Metodologia", "Pensamento crítico", "Resolução de problemas"],
+      skills: [
+        "Análise de casos",
+        "Metodologia",
+        "Pensamento crítico",
+        "Resolução de problemas",
+        "Análise estratégica",
+      ],
       credentialId: "GFA-2024-002",
       category: "Gestão & Negócios",
+      highlights: [
+        "Metodologia de análise",
+        "Pensamento estratégico",
+        "Resolução de problemas complexos",
+        "Tomada de decisão",
+      ],
     },
     {
       id: 14,
@@ -236,35 +270,12 @@ const certificationsByCategory = {
       category: "Gestão & Negócios",
       details:
         "CHA (Conhecimentos, Habilidades e Atitudes), SWOT, SMART, Golden Circle, perfis comportamentais, múltiplas inteligências, inteligência emocional, empatia, currículo, LinkedIn, entrevistas, imagem profissional, networking, contabilidade básica, KPIs, BSC, gestão holística, incentivos e vieses cognitivos, gestão de stakeholders, CANVAS, economia colaborativa, marketing digital, e estratégias de preços",
-    },
-    {
-      id: 15,
-      name: "TCEPE - Treinamento de Capacitação Profissional Estudantil",
-      issuer: "Cedaspy - Unidade SLS",
-      date: "Agosto 2019",
-      status: "Ativo",
-      description: "Treinamento em capacitação profissional com foco em preparação para o mercado de trabalho.",
-      skills: [
-        "Capacitação profissional",
-        "Preparação para emprego",
-        "Legislação trabalhista",
-        "Informática corporativa",
+      highlights: [
+        "Análise SWOT e CANVAS",
+        "Estratégias de marketing",
+        "Gestão financeira básica",
+        "Desenvolvimento de liderança",
       ],
-      credentialId: "CEDASPY-2019-TCEPE",
-      category: "Gestão & Negócios",
-      details:
-        "Noções fundamentais sobre elaboração de currículo, preparo para entrevista de emprego, legislação de aprendizagem e estágios e uso de ferramentas de internet e informática corporativa",
-    },
-    {
-      id: 16,
-      name: "MAI - Módulo de Acesso Inicial",
-      issuer: "Cedaspy - Unidade SLS",
-      date: "Julho 2019",
-      status: "Ativo",
-      description: "Módulo introdutório com fundamentos em Microsoft Office e trabalho em equipe.",
-      skills: ["Microsoft Office", "Empreendedorismo", "Trabalho em equipe"],
-      credentialId: "CEDASPY-2019-MAI",
-      category: "Gestão & Negócios",
     },
   ],
   creative: [
@@ -275,9 +286,15 @@ const certificationsByCategory = {
       date: "Agosto 2020",
       status: "Ativo",
       description: "Curso de maquiagem artística com técnicas profissionais.",
-      skills: ["Maquiagem", "Arte", "Técnicas artísticas", "Criatividade"],
+      skills: ["Maquiagem", "Arte", "Técnicas artísticas", "Criatividade", "Design"],
       credentialId: "CEDASPY-2020-MA",
       category: "Cursos Complementares",
+      highlights: [
+        "Técnicas artísticas avançadas",
+        "Criatividade e inovação",
+        "Atenção aos detalhes",
+        "Expressão artística",
+      ],
     },
     {
       id: 18,
@@ -286,20 +303,10 @@ const certificationsByCategory = {
       date: "Agosto 2020",
       status: "Ativo",
       description: "Oficina de fotografia com técnicas básicas e avançadas.",
-      skills: ["Fotografia", "Técnicas visuais", "Composição", "Criatividade"],
+      skills: ["Fotografia", "Técnicas visuais", "Composição", "Criatividade", "Edição"],
       credentialId: "CEDASPY-2020-OF",
       category: "Cursos Complementares",
-    },
-    {
-      id: 19,
-      name: "Cartão Interativo",
-      issuer: "Cedaspy - Unidade SLS",
-      date: "Junho 2020",
-      status: "Ativo",
-      description: "Curso de criação de cartões interativos e design gráfico.",
-      skills: ["Design gráfico", "Criatividade", "Interatividade", "Arte digital"],
-      credentialId: "CEDASPY-2020-CI",
-      category: "Cursos Complementares",
+      highlights: ["Composição fotográfica", "Técnicas de iluminação", "Edição básica", "Olhar artístico"],
     },
   ],
 }
@@ -314,6 +321,12 @@ const ongoingCertifications = [
     progress: 75,
     description: "Certificação fundamental em computação em nuvem AWS.",
     skills: ["AWS", "Cloud Computing", "Infraestrutura", "DevOps"],
+    highlights: [
+      "Fundamentos de cloud computing",
+      "Serviços principais da AWS",
+      "Modelos de preços",
+      "Segurança na nuvem",
+    ],
   },
   {
     id: 2,
@@ -323,6 +336,7 @@ const ongoingCertifications = [
     progress: 50,
     description: "Certificação em análise de dados web e marketing digital.",
     skills: ["Google Analytics", "Marketing Digital", "Análise de Dados", "SEO"],
+    highlights: ["Configuração do GA4", "Análise de comportamento", "Relatórios personalizados", "Conversões e metas"],
   },
 ]
 
@@ -403,15 +417,19 @@ export function CertificationsSection() {
                         delay: inView ? categoryIndex * 0.2 + index * 0.1 : 0,
                       }}
                     >
-                      <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                      <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group">
                         <CardContent className="p-6">
+                          {/* Header */}
                           <div className="flex items-start justify-between mb-4">
                             <div className="flex items-center space-x-3">
-                              <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
-                                <IconComponent className={`h-5 w-5 ${colorClass}`} />
+                              <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-muted flex items-center justify-center">
+                                <IconComponent className={`h-6 w-6 ${colorClass}`} />
                               </div>
                               <div>
-                                <Badge variant="outline" className="text-xs">
+                                <Badge
+                                  variant="outline"
+                                  className="text-xs bg-green-50 text-green-700 border-green-200"
+                                >
                                   {cert.status}
                                 </Badge>
                               </div>
@@ -422,19 +440,47 @@ export function CertificationsSection() {
                             </div>
                           </div>
 
-                          <h4 className="font-semibold text-lg mb-2 line-clamp-2">{cert.name}</h4>
-                          <p className="text-sm text-muted-foreground mb-1">{cert.issuer}</p>
-                          <p className="text-sm mb-4 line-clamp-3">{cert.description}</p>
+                          {/* Title and Issuer */}
+                          <h4 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-primary transition-colors">
+                            {cert.name}
+                          </h4>
+                          <p className="text-sm text-primary font-medium mb-3">{cert.issuer}</p>
 
-                          {cert.details && (
-                            <div className="mb-4 p-3 bg-muted/50 rounded-lg">
-                              <h5 className="text-xs font-medium mb-1 text-muted-foreground">Conteúdo detalhado:</h5>
-                              <p className="text-xs line-clamp-3">{cert.details}</p>
+                          {/* Description */}
+                          <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{cert.description}</p>
+
+                          {/* Highlights */}
+                          {cert.highlights && (
+                            <div className="mb-4">
+                              <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+                                Principais conquistas:
+                              </h5>
+                              <ul className="text-xs space-y-1">
+                                {cert.highlights.slice(0, 3).map((highlight, i) => (
+                                  <li key={i} className="flex items-start">
+                                    <CheckCircle2 className="h-3 w-3 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
+                                    <span className="text-muted-foreground">{highlight}</span>
+                                  </li>
+                                ))}
+                              </ul>
                             </div>
                           )}
 
+                          {/* Detailed Content */}
+                          {cert.details && (
+                            <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                              <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+                                Conteúdo detalhado:
+                              </h5>
+                              <p className="text-xs text-muted-foreground line-clamp-4">{cert.details}</p>
+                            </div>
+                          )}
+
+                          {/* Skills */}
                           <div className="mb-4">
-                            <h5 className="text-sm font-medium mb-2">Competências:</h5>
+                            <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+                              Competências desenvolvidas:
+                            </h5>
                             <div className="flex flex-wrap gap-1">
                               {cert.skills.slice(0, 4).map((skill, i) => (
                                 <Badge key={i} variant="secondary" className="text-xs">
@@ -449,8 +495,10 @@ export function CertificationsSection() {
                             </div>
                           </div>
 
-                          <div className="text-xs text-muted-foreground">
-                            <span>ID: {cert.credentialId}</span>
+                          {/* Footer */}
+                          <div className="flex items-center justify-between pt-3 border-t border-border/40">
+                            <div className="text-xs text-muted-foreground font-mono">ID: {cert.credentialId}</div>
+                            <ExternalLink className="h-3 w-3 text-muted-foreground group-hover:text-primary transition-colors" />
                           </div>
                         </CardContent>
                       </Card>
@@ -466,8 +514,8 @@ export function CertificationsSection() {
             <h3 className="text-2xl font-semibold mb-8 flex items-center">
               <CheckCircle2 className="h-6 w-6 mr-3 text-orange-500" />
               Em Andamento
-              <Badge variant="outline" className="ml-3">
-                {ongoingCertifications.length} em andamento
+              <Badge variant="outline" className="ml-3 bg-orange-50 text-orange-700 border-orange-200">
+                {ongoingCertifications.length} em progresso
               </Badge>
             </h3>
 
@@ -482,36 +530,60 @@ export function CertificationsSection() {
                     delay: inView ? Object.keys(certificationsByCategory).length * 0.2 + index * 0.15 : 0,
                   }}
                 >
-                  <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                  <Card className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h4 className="font-semibold text-lg">{cert.name}</h4>
-                          <p className="text-sm text-muted-foreground">{cert.issuer}</p>
+                          <h4 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                            {cert.name}
+                          </h4>
+                          <p className="text-sm text-primary font-medium">{cert.issuer}</p>
                         </div>
                         <Badge variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200">
                           {cert.progress}% Concluído
                         </Badge>
                       </div>
 
-                      <p className="text-sm mb-4">{cert.description}</p>
+                      <p className="text-sm text-muted-foreground mb-4">{cert.description}</p>
+
+                      {/* Highlights */}
+                      {cert.highlights && (
+                        <div className="mb-4">
+                          <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+                            O que você aprenderá:
+                          </h5>
+                          <ul className="text-xs space-y-1">
+                            {cert.highlights.slice(0, 3).map((highlight, i) => (
+                              <li key={i} className="flex items-start">
+                                <CheckCircle2 className="h-3 w-3 text-orange-500 mr-2 mt-0.5 flex-shrink-0" />
+                                <span className="text-muted-foreground">{highlight}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
 
                       {/* Progress Bar */}
                       <div className="mb-4">
-                        <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                          <span>Progresso</span>
+                        <div className="flex justify-between text-xs text-muted-foreground mb-2">
+                          <span>Progresso do curso</span>
                           <span>Conclusão prevista: {cert.expectedDate}</span>
                         </div>
                         <div className="w-full bg-muted rounded-full h-2">
-                          <div
-                            className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${cert.progress}%` }}
+                          <motion.div
+                            className="bg-orange-500 h-2 rounded-full transition-all duration-1000"
+                            initial={{ width: 0 }}
+                            animate={inView ? { width: `${cert.progress}%` } : { width: 0 }}
+                            transition={{ delay: 0.5, duration: 1 }}
                           />
                         </div>
                       </div>
 
+                      {/* Skills */}
                       <div>
-                        <h5 className="text-sm font-medium mb-2">Competências a adquirir:</h5>
+                        <h5 className="text-xs font-medium mb-2 text-muted-foreground uppercase tracking-wider">
+                          Competências a adquirir:
+                        </h5>
                         <div className="flex flex-wrap gap-1">
                           {cert.skills.map((skill, i) => (
                             <Badge key={i} variant="outline" className="text-xs">

@@ -52,12 +52,12 @@ export function FloatingParticles({ count = 20 }: { count?: number }) {
           key={i}
           className="absolute w-1 h-1 bg-primary/20 rounded-full"
           initial={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1200),
+            y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 800),
           }}
           animate={{
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
+            x: Math.random() * (typeof window !== "undefined" ? window.innerWidth : 1200),
+            y: Math.random() * (typeof window !== "undefined" ? window.innerHeight : 800),
           }}
           transition={{
             duration: Math.random() * 20 + 10,
@@ -223,61 +223,6 @@ export function AdvancedSkeleton({ className = "", lines = 3 }: { className?: st
         />
       ))}
     </div>
-  )
-}
-
-// Animação de cursor personalizado
-export function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null)
-  const [isHovering, setIsHovering] = useState(false)
-
-  useEffect(() => {
-    const cursor = cursorRef.current
-    if (!cursor) return
-
-    const handleMouseMove = (e: MouseEvent) => {
-      cursor.style.left = `${e.clientX}px`
-      cursor.style.top = `${e.clientY}px`
-    }
-
-    const handleMouseEnter = () => setIsHovering(true)
-    const handleMouseLeave = () => setIsHovering(false)
-
-    document.addEventListener("mousemove", handleMouseMove)
-
-    // Adicionar listeners para elementos interativos
-    const interactiveElements = document.querySelectorAll("button, a, [role='button']")
-    interactiveElements.forEach((el) => {
-      el.addEventListener("mouseenter", handleMouseEnter)
-      el.addEventListener("mouseleave", handleMouseLeave)
-    })
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove)
-      interactiveElements.forEach((el) => {
-        el.removeEventListener("mouseenter", handleMouseEnter)
-        el.removeEventListener("mouseleave", handleMouseLeave)
-      })
-    }
-  }, [])
-
-  return (
-    <motion.div
-      ref={cursorRef}
-      className="fixed w-4 h-4 bg-primary rounded-full pointer-events-none z-50 mix-blend-difference"
-      animate={{
-        scale: isHovering ? 2 : 1,
-        opacity: isHovering ? 0.8 : 0.6,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 500,
-        damping: 28,
-      }}
-      style={{
-        transform: "translate(-50%, -50%)",
-      }}
-    />
   )
 }
 

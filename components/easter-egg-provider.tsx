@@ -130,7 +130,7 @@ export function EasterEggProvider({ children }: { children: ReactNode }) {
       setActiveEasterEggs((prev) => prev.filter((eggId) => eggId !== id))
 
       // Rastrear evento
-      trackEvent("easter_egg_deactivated", { id })
+      trackEvent("easter_egg_activated", { id, action: "deactivated" })
     },
     [trackEvent],
   )
@@ -147,11 +147,29 @@ export function EasterEggProvider({ children }: { children: ReactNode }) {
     setActiveEasterEggs([])
 
     // Rastrear evento
-    trackEvent("easter_eggs_reset")
+    trackEvent("easter_egg_activated", { action: "reset" })
   }, [easterEggs, trackEvent])
 
   // Configurar detecção de sequências de teclas
-  const sequences = Object.fromEntries(easterEggs.map((egg) => [egg.id, egg.trigger.split("")]))
+  const sequences = Object.fromEntries(
+    easterEggs.map((egg) => [
+      egg.id,
+      egg.id === "konami"
+        ? [
+            "ArrowUp",
+            "ArrowUp",
+            "ArrowDown",
+            "ArrowDown",
+            "ArrowLeft",
+            "ArrowRight",
+            "ArrowLeft",
+            "ArrowRight",
+            "KeyB",
+            "KeyA",
+          ]
+        : egg.trigger.split(""),
+    ]),
+  )
 
   useKeySequence(sequences, (id) => {
     activateEasterEgg(id as EasterEggType)

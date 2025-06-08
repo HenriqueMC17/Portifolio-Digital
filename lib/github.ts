@@ -22,7 +22,6 @@ interface GitHubRepo {
   html_url: string
   homepage: string
   language: string
-  languages_url: string
   stargazers_count: number
   forks_count: number
   created_at: string
@@ -33,19 +32,6 @@ interface GitHubRepo {
   default_branch: string
 }
 
-interface GitHubCommit {
-  sha: string
-  commit: {
-    author: {
-      name: string
-      email: string
-      date: string
-    }
-    message: string
-  }
-  html_url: string
-}
-
 interface GitHubLanguages {
   [key: string]: number
 }
@@ -53,8 +39,8 @@ interface GitHubLanguages {
 const GITHUB_USERNAME = "HenriqueMC17"
 const GITHUB_API_BASE = "https://api.github.com"
 
-// Cache para evitar muitas requisições
-const cache = new Map()
+// Cache otimizado
+const cache = new Map<string, { data: any; timestamp: number }>()
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutos
 
 async function fetchWithCache(url: string, cacheKey: string) {
@@ -64,12 +50,18 @@ async function fetchWithCache(url: string, cacheKey: string) {
   }
 
   try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s timeout
+
     const response = await fetch(url, {
       headers: {
         Accept: "application/vnd.github.v3+json",
         "User-Agent": "Portfolio-Website",
       },
+      signal: controller.signal,
     })
+
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       throw new Error(`GitHub API error: ${response.status}`)
@@ -80,6 +72,13 @@ async function fetchWithCache(url: string, cacheKey: string) {
     return data
   } catch (error) {
     console.error("GitHub API fetch error:", error)
+
+    // Retornar dados em cache mesmo se expirados em caso de erro
+    const cached = cache.get(cacheKey)
+    if (cached) {
+      return cached.data
+    }
+
     return null
   }
 }
@@ -99,28 +98,16 @@ export async function getGitHubRepos(): Promise<GitHubRepo[]> {
 export async function getFeaturedRepos(): Promise<GitHubRepo[]> {
   const repos = await getGitHubRepos()
 
-  // Repositórios específicos que queremos destacar
   const featuredRepoNames = ["Safe-Finance", "Leand-Peage-Safe-Finance"]
 
   const featured = repos.filter(
-    (repo) => featuredRepoNames.includes(repo.name) || repo.stargazers_count > 0 || repo.description?.length > 10,
+    (repo) =>
+      featuredRepoNames.includes(repo.name) ||
+      repo.stargazers_count > 0 ||
+      (repo.description && repo.description.length > 10),
   )
 
-  return featured.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())
-}
-
-export async function getRepoLanguages(repoName: string): Promise<GitHubLanguages> {
-  return (
-    fetchWithCache(`${GITHUB_API_BASE}/repos/${GITHUB_USERNAME}/${repoName}/languages`, `languages-${repoName}`) || {}
-  )
-}
-
-export async function getRecentCommits(repoName: string, limit = 5): Promise<GitHubCommit[]> {
-  const commits = await fetchWithCache(
-    `${GITHUB_API_BASE}/repos/${GITHUB_USERNAME}/${repoName}/commits?per_page=${limit}`,
-    `commits-${repoName}`,
-  )
-  return commits || []
+  return featured.sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()).slice(0, 6) // Limitar a 6 repositórios
 }
 
 export async function getAllLanguages(): Promise<{ [key: string]: number }> {
@@ -150,7 +137,6 @@ export async function getContributionStats() {
     .slice(0, 5)
     .map(([lang]) => lang)
 
-  // Calcular commits aproximados baseado na atividade dos repos
   const recentRepos = repos.filter((repo) => {
     const lastUpdate = new Date(repo.updated_at)
     const sixMonthsAgo = new Date()
@@ -171,24 +157,6 @@ export async function getContributionStats() {
   }
 }
 
-export async function getProjectDetails(repoName: string) {
-  const repo = await fetchWithCache(`${GITHUB_API_BASE}/repos/${GITHUB_USERNAME}/${repoName}`, `repo-${repoName}`)
-
-  if (!repo) return null
-
-  const languages = await getRepoLanguages(repoName)
-  const commits = await getRecentCommits(repoName, 10)
-
-  return {
-    ...repo,
-    languages,
-    recentCommits: commits,
-    lastCommitDate: commits[0]?.commit.author.date,
-    commitCount: commits.length,
-  }
-}
-
-// Função para mapear linguagens do GitHub para ícones/cores
 export function getLanguageConfig(language: string) {
   const configs: { [key: string]: { color: string; icon: string } } = {
     JavaScript: { color: "#f7df1e", icon: "🟨" },
@@ -200,15 +168,11 @@ export function getLanguageConfig(language: string) {
     HTML: { color: "#e34f26", icon: "🌐" },
     CSS: { color: "#1572b6", icon: "🎨" },
     SQL: { color: "#336791", icon: "🗄️" },
-    Shell: { color: "#89e051", icon: "💻" },
-    Dockerfile: { color: "#2496ed", icon: "🐳" },
-    "Jupyter Notebook": { color: "#da5b0b", icon: "📓" },
   }
 
   return configs[language] || { color: "#6b7280", icon: "📄" }
 }
 
-// Função para formatar datas
 export function formatDate(dateString: string): string {
   const date = new Date(dateString)
   const now = new Date()
@@ -222,9 +186,7 @@ export function formatDate(dateString: string): string {
   return `há ${Math.ceil(diffDays / 365)} anos`
 }
 
-// Função para calcular streak de commits (simulada)
 export function calculateCommitStreak(repos: GitHubRepo[]): number {
-  // Simulação baseada na atividade recente dos repositórios
   const recentActivity = repos.filter((repo) => {
     const lastUpdate = new Date(repo.updated_at)
     const oneWeekAgo = new Date()
@@ -232,5 +194,17 @@ export function calculateCommitStreak(repos: GitHubRepo[]): number {
     return lastUpdate > oneWeekAgo
   })
 
-  return Math.min(recentActivity.length * 3, 30) // Máximo de 30 dias
+  return Math.min(recentActivity.length * 3, 30)
+}
+
+// Limpar cache periodicamente
+if (typeof window !== "undefined") {
+  setInterval(() => {
+    const now = Date.now()
+    for (const [key, value] of cache.entries()) {
+      if (now - value.timestamp > CACHE_DURATION * 2) {
+        cache.delete(key)
+      }
+    }
+  }, CACHE_DURATION)
 }
