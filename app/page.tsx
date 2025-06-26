@@ -3,7 +3,7 @@ import { EnhancedHero } from "@/components/enhanced-hero"
 import { AboutSection } from "@/components/sections/about-section"
 import { ExperienceSection } from "@/components/sections/experience-section"
 import { ProjectsSection } from "@/components/sections/projects-section"
-import { SkillsSection } from "@/components/sections/skills-section"
+import { EnhancedSkillsSection } from "@/components/enhanced-skills-section"
 import { CertificationsSection } from "@/components/sections/certifications-section"
 import { ContributionsSection } from "@/components/sections/contributions-section"
 import { ContactSection } from "@/components/sections/contact-section"
@@ -28,7 +28,7 @@ export default function Page() {
           <ProjectsSection />
         </Suspense>
         <Suspense fallback={<AdvancedSkeleton className="p-8" lines={4} />}>
-          <SkillsSection />
+          <EnhancedSkillsSection />
         </Suspense>
         <Suspense fallback={<AdvancedSkeleton className="p-8" lines={10} />}>
           <CertificationsSection />

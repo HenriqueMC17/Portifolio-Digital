@@ -358,9 +358,9 @@ const categoryColors = {
 
 export function CertificationsSection() {
   const [ref, inView] = useInView({
-    threshold: 0.2,
+    threshold: 0.1,
     triggerOnce: true,
-    rootMargin: "-100px 0px -50px 0px",
+    rootMargin: "0px 0px -20% 0px",
   })
 
   // Flatten all certifications for counting
