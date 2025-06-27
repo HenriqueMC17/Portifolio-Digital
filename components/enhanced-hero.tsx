@@ -61,75 +61,32 @@ export function EnhancedHero() {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background Effects */}
-      <motion.div
-        style={{ y: y1, opacity }}
-        className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-1/5"
-      />
-      <motion.div
-        style={{ y: y2, opacity }}
-        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]"
-      />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-chart-1/5" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
 
-      {/* Floating Particles */}
-      {enableAnimations && <FloatingParticles count={15} />}
+      {/* Floating Particles - Responsive count */}
+      {enableAnimations && <FloatingParticles count={Math.max(5, Math.min(15, Math.floor(window.innerWidth / 100)))} />}
 
-      {/* Morphing Shape */}
+      {/* Morphing Shape - Hide on mobile */}
       {enableAnimations && (
-        <motion.div style={{ y: y1 }} className="absolute top-20 right-20 opacity-10">
+        <motion.div style={{ y: y1 }} className="absolute top-20 right-20 opacity-10 hidden md:block">
           <MorphingShape />
         </motion.div>
       )}
-
-      {/* Floating Elements with Parallax */}
-      <motion.div
-        style={{ y: y1 }}
-        className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"
-        animate={
-          enableAnimations
-            ? {
-                scale: [1, 1.2, 1],
-                rotate: [0, 180, 360],
-              }
-            : {}
-        }
-        transition={{
-          duration: 8,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "linear",
-        }}
-      />
-      <motion.div
-        style={{ y: y2 }}
-        className="absolute bottom-20 right-10 w-32 h-32 bg-chart-1/10 rounded-full blur-xl"
-        animate={
-          enableAnimations
-            ? {
-                scale: [1.2, 1, 1.2],
-                rotate: [360, 180, 0],
-              }
-            : {}
-        }
-        transition={{
-          duration: 10,
-          repeat: Number.POSITIVE_INFINITY,
-          ease: "linear",
-          delay: 2,
-        }}
-      />
 
       <div className="container mx-auto px-4 text-center relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-8 max-w-4xl mx-auto"
+          className="space-y-6 md:space-y-8 max-w-4xl mx-auto"
         >
           {/* Status Badge */}
           <motion.div variants={itemVariants} className="flex justify-center">
             <MagneticHover strength={0.2}>
               <Badge
                 variant="outline"
-                className="glass px-4 py-2 text-sm font-medium hover:scale-105 transition-transform"
+                className="glass px-3 py-2 md:px-4 text-xs md:text-sm font-medium hover:scale-105 transition-transform"
               >
                 <motion.div
                   className="w-2 h-2 bg-green-500 rounded-full mr-2"
@@ -141,9 +98,9 @@ export function EnhancedHero() {
             </MagneticHover>
           </motion.div>
 
-          {/* Main Title with Advanced Animations */}
-          <motion.div variants={itemVariants} className="space-y-4">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight">
+          {/* Main Title with Responsive Classes */}
+          <motion.div variants={itemVariants} className="space-y-2 md:space-y-4">
+            <h1 className="hero-title text-responsive-4xl md:text-responsive-5xl lg:text-responsive-6xl font-bold tracking-tight">
               <motion.span
                 className="block"
                 whileHover={enableAnimations ? { scale: 1.05 } : {}}
@@ -160,25 +117,25 @@ export function EnhancedHero() {
               </motion.span>
             </h1>
             <motion.p
-              className="text-xl md:text-2xl text-primary font-semibold"
+              className="hero-subtitle text-responsive-lg md:text-responsive-xl lg:text-responsive-2xl text-primary font-semibold"
               whileHover={enableAnimations ? { scale: 1.02 } : {}}
             >
               {enableAnimations ? <TypewriterText text={t("hero.title")} delay={2000} speed={80} /> : t("hero.title")}
             </motion.p>
           </motion.div>
 
-          {/* Subtitle */}
+          {/* Subtitle - Responsive */}
           <motion.p
             variants={itemVariants}
-            className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+            className="text-responsive-base md:text-responsive-lg lg:text-responsive-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4"
           >
             {t("hero.subtitle")}
           </motion.p>
 
-          {/* Location & Experience */}
+          {/* Location & Experience - Stack on mobile */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground"
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-sm text-muted-foreground"
           >
             <motion.div
               className="flex items-center gap-2"
@@ -196,8 +153,8 @@ export function EnhancedHero() {
             </motion.div>
           </motion.div>
 
-          {/* Tech Stack with Stagger Animation */}
-          <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto">
+          {/* Tech Stack - Responsive grid */}
+          <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-2 max-w-2xl mx-auto px-4">
             {techStack.map((tech, index) => (
               <motion.div
                 key={tech}
@@ -227,10 +184,13 @@ export function EnhancedHero() {
             ))}
           </motion.div>
 
-          {/* CTA Buttons with Advanced Hover Effects */}
-          <motion.div variants={itemVariants} className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* CTA Buttons - Stack on mobile */}
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4"
+          >
             <MagneticHover strength={0.2}>
-              <Button size="lg" className="group relative overflow-hidden" asChild>
+              <Button size="lg" className="group relative overflow-hidden w-full sm:w-auto" asChild>
                 <motion.a
                   href="#contact"
                   whileHover={enableAnimations ? { scale: 1.05 } : {}}
@@ -249,7 +209,12 @@ export function EnhancedHero() {
             </MagneticHover>
 
             <MagneticHover strength={0.2}>
-              <Button size="lg" variant="outline" className="group relative overflow-hidden" asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="group relative overflow-hidden w-full sm:w-auto bg-transparent"
+                asChild
+              >
                 <motion.a
                   href="#projects"
                   whileHover={enableAnimations ? { scale: 1.05 } : {}}
@@ -268,10 +233,10 @@ export function EnhancedHero() {
             </MagneticHover>
           </motion.div>
 
-          {/* GitHub Stats Preview with Enhanced Animation */}
+          {/* GitHub Stats Preview - Responsive */}
           <motion.div
             variants={itemVariants}
-            className="pt-8 max-w-md mx-auto"
+            className="pt-6 md:pt-8 max-w-md mx-auto px-4"
             whileHover={enableAnimations ? { scale: 1.02 } : {}}
             transition={{ type: "spring", stiffness: 300 }}
           >
@@ -279,12 +244,12 @@ export function EnhancedHero() {
           </motion.div>
         </motion.div>
 
-        {/* Enhanced Scroll Indicator */}
+        {/* Enhanced Scroll Indicator - Hide on mobile */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 4 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 hidden md:block"
         >
           <motion.div
             animate={enableAnimations ? { y: [0, 10, 0] } : {}}

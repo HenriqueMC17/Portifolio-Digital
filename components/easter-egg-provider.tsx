@@ -68,6 +68,13 @@ export function EasterEggProvider({ children }: { children: ReactNode }) {
             // Verificar se já está ativo
             if (egg.isActive) return egg
 
+            // Desativar outros easter eggs conflitantes primeiro
+            prev.forEach((otherEgg) => {
+              if (otherEgg.isActive && otherEgg.id !== id) {
+                otherEgg.deactivate()
+              }
+            })
+
             // Ativar o easter egg
             const cleanup = egg.activate()
 
@@ -83,7 +90,9 @@ export function EasterEggProvider({ children }: { children: ReactNode }) {
               })
 
               // Lançar confetti para celebrar
-              launchEmojiConfetti("🥚")
+              setTimeout(() => {
+                launchEmojiConfetti("🥚")
+              }, 500)
 
               // Adicionar à lista de desbloqueados
               setUnlockedEasterEggs((prev) => [...prev, id])
@@ -107,7 +116,7 @@ export function EasterEggProvider({ children }: { children: ReactNode }) {
         return updatedEggs
       })
 
-      setActiveEasterEggs((prev) => [...prev, id])
+      setActiveEasterEggs((prev) => [...prev.filter((eggId) => eggId !== id), id])
     },
     [toast, trackEvent],
   )
@@ -167,7 +176,7 @@ export function EasterEggProvider({ children }: { children: ReactNode }) {
             "KeyB",
             "KeyA",
           ]
-        : egg.trigger.split(""),
+        : egg.trigger.toLowerCase().split(""),
     ]),
   )
 

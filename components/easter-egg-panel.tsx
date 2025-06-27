@@ -51,48 +51,50 @@ export function EasterEggPanel() {
             initial={{ opacity: 0, x: -300 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -300 }}
-            className="fixed left-4 bottom-16 w-80 bg-card shadow-lg rounded-lg p-4 z-40 border"
+            className="easter-egg-panel fixed left-2 md:left-4 bottom-16 w-[calc(100vw-16px)] max-w-80 bg-card shadow-lg rounded-lg p-4 z-40 border"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <Egg className="h-5 w-5 mr-2 text-primary" />
-                <h3 className="font-semibold">Easter Eggs</h3>
+                <h3 className="font-semibold text-sm md:text-base">Easter Eggs</h3>
               </div>
               <Button variant="ghost" size="icon" onClick={togglePanel}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
-            <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+            <div className="space-y-3 max-h-60 md:max-h-80 overflow-y-auto pr-2">
               {easterEggs.map((egg) => (
                 <div key={egg.id} className={`p-3 rounded-lg border ${egg.isUnlocked ? "bg-muted/50" : "bg-muted/20"}`}>
                   <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center">
+                    <div className="flex items-center min-w-0 flex-1">
                       {egg.isUnlocked ? (
-                        <Unlock className="h-4 w-4 mr-2 text-green-500" />
+                        <Unlock className="h-4 w-4 mr-2 text-green-500 flex-shrink-0" />
                       ) : (
-                        <Lock className="h-4 w-4 mr-2 text-muted-foreground" />
+                        <Lock className="h-4 w-4 mr-2 text-muted-foreground flex-shrink-0" />
                       )}
-                      <span className="font-medium">{egg.isUnlocked ? egg.name : "???"}</span>
+                      <span className="font-medium text-sm truncate">{egg.isUnlocked ? egg.name : "???"}</span>
                     </div>
-                    <Badge variant={egg.isActive ? "default" : "outline"} className="text-xs">
+                    <Badge variant={egg.isActive ? "default" : "outline"} className="text-xs ml-2 flex-shrink-0">
                       {egg.isActive ? "Ativo" : "Inativo"}
                     </Badge>
                   </div>
 
-                  <p className="text-xs text-muted-foreground mb-2">
+                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
                     {egg.isUnlocked ? egg.description : "Easter egg bloqueado. Descubra a sequência secreta!"}
                   </p>
 
                   {egg.isUnlocked && (
-                    <div className="flex items-center justify-between">
-                      <div className="text-xs bg-muted px-2 py-1 rounded font-mono">{egg.trigger}</div>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-xs bg-muted px-2 py-1 rounded font-mono flex-shrink-0 min-w-0">
+                        <span className="truncate">{egg.trigger}</span>
+                      </div>
 
                       {egg.isActive ? (
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-7 text-xs"
+                          className="h-7 text-xs flex-shrink-0 bg-transparent"
                           onClick={() => handleDeactivate(egg.id)}
                         >
                           Desativar
@@ -101,7 +103,7 @@ export function EasterEggPanel() {
                         <Button
                           size="sm"
                           variant="default"
-                          className="h-7 text-xs"
+                          className="h-7 text-xs flex-shrink-0"
                           onClick={() => handleActivate(egg.id)}
                         >
                           Ativar
@@ -124,12 +126,12 @@ export function EasterEggPanel() {
               <Button
                 size="sm"
                 variant="outline"
-                className="h-8"
+                className="h-8 bg-transparent"
                 onClick={handleReset}
                 disabled={activeEasterEggs.length === 0}
               >
                 <RefreshCw className="h-3 w-3 mr-1" />
-                Resetar
+                <span className="hidden sm:inline">Resetar</span>
               </Button>
             </div>
           </motion.div>

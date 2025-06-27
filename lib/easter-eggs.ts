@@ -43,20 +43,19 @@ export function launchConfetti(options: { particleCount?: number; spread?: numbe
     confetti.style.position = "fixed"
     confetti.style.left = "50%"
     confetti.style.top = `${origin.y * 100}%`
-    confetti.style.width = "10px"
-    confetti.style.height = "10px"
+    confetti.style.width = "8px"
+    confetti.style.height = "8px"
     confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)]
     confetti.style.pointerEvents = "none"
     confetti.style.zIndex = "9999"
     confetti.style.borderRadius = "50%"
+    confetti.style.transform = "translate(-50%, -50%)"
+
+    document.body.appendChild(confetti)
 
     const angle = (Math.random() - 0.5) * spread * (Math.PI / 180)
     const velocity = Math.random() * 500 + 200
     const gravity = 980
-
-    confetti.style.transform = `translate(-50%, -50%)`
-    document.body.appendChild(confetti)
-
     const startTime = Date.now()
 
     function animate() {
@@ -67,10 +66,12 @@ export function launchConfetti(options: { particleCount?: number; spread?: numbe
       confetti.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) rotate(${elapsed * 360}deg)`
       confetti.style.opacity = `${Math.max(0, 1 - elapsed / 3)}`
 
-      if (elapsed < 3) {
+      if (elapsed < 3 && document.body.contains(confetti)) {
         requestAnimationFrame(animate)
       } else {
-        document.body.removeChild(confetti)
+        if (document.body.contains(confetti)) {
+          document.body.removeChild(confetti)
+        }
       }
     }
 
@@ -127,15 +128,23 @@ export function launchEmojiConfetti(emoji: string) {
 export function applyMatrixEffect(): () => void {
   const canvas = document.createElement("canvas")
   canvas.id = "matrix-canvas"
-  canvas.width = window.innerWidth
-  canvas.height = window.innerHeight
   canvas.style.position = "fixed"
   canvas.style.top = "0"
   canvas.style.left = "0"
-  canvas.style.zIndex = "9999"
+  canvas.style.width = "100vw"
+  canvas.style.height = "100vh"
+  canvas.style.zIndex = "9998"
   canvas.style.pointerEvents = "none"
   canvas.style.opacity = "0.8"
   canvas.setAttribute("aria-hidden", "true")
+
+  // Função para redimensionar canvas
+  function resizeCanvas() {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  }
+
+  resizeCanvas()
   document.body.appendChild(canvas)
 
   const ctx = canvas.getContext("2d")
@@ -143,9 +152,8 @@ export function applyMatrixEffect(): () => void {
 
   const characters =
     "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-  const fontSize = 14
+  const fontSize = Math.max(10, Math.min(16, window.innerWidth / 100))
   const columns = Math.floor(canvas.width / fontSize)
-
   const drops: number[] = Array(columns).fill(1)
 
   function draw() {
@@ -168,8 +176,12 @@ export function applyMatrixEffect(): () => void {
 
   const matrixInterval = setInterval(draw, 33)
 
+  // Listener para redimensionamento
+  window.addEventListener("resize", resizeCanvas)
+
   return () => {
     clearInterval(matrixInterval)
+    window.removeEventListener("resize", resizeCanvas)
     const element = document.getElementById("matrix-canvas")
     if (element && document.body.contains(element)) {
       document.body.removeChild(element)
@@ -321,11 +333,11 @@ export function applyBirthdayEffect(): () => void {
   // Adicionar confetti contínuo
   const confettiInterval = setInterval(() => {
     launchConfetti({
-      particleCount: 50,
-      spread: 70,
-      origin: { y: Math.random() },
+      particleCount: 30,
+      spread: 60,
+      origin: { y: Math.random() * 0.3 + 0.1 },
     })
-  }, 1000)
+  }, 1500)
 
   // Adicionar balões
   const balloons = document.createElement("div")
@@ -336,16 +348,18 @@ export function applyBirthdayEffect(): () => void {
   balloons.style.width = "100%"
   balloons.style.height = "100%"
   balloons.style.pointerEvents = "none"
-  balloons.style.zIndex = "9999"
+  balloons.style.zIndex = "9997"
+  balloons.style.overflow = "hidden"
 
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < Math.min(15, Math.floor(window.innerWidth / 100)); i++) {
     const balloon = document.createElement("div")
     balloon.style.position = "absolute"
-    balloon.style.left = `${Math.random() * 100}%`
-    balloon.style.top = `${Math.random() * 100}%`
-    balloon.style.fontSize = "3rem"
+    balloon.style.left = `${Math.random() * 90 + 5}%`
+    balloon.style.top = `${Math.random() * 80 + 10}%`
+    balloon.style.fontSize = `${Math.max(24, Math.min(48, window.innerWidth / 30))}px`
     balloon.textContent = "🎈"
-    balloon.style.animation = `float ${5 + Math.random() * 10}s ease-in-out infinite`
+    balloon.style.animation = `float ${5 + Math.random() * 5}s ease-in-out infinite`
+    balloon.style.animationDelay = `${Math.random() * 2}s`
     balloons.appendChild(balloon)
   }
 
@@ -353,28 +367,36 @@ export function applyBirthdayEffect(): () => void {
 
   // Adicionar mensagem de aniversário
   const message = document.createElement("div")
+  message.id = "birthday-message"
   message.style.position = "fixed"
   message.style.top = "50%"
   message.style.left = "50%"
   message.style.transform = "translate(-50%, -50%)"
-  message.style.fontSize = "3rem"
+  message.style.fontSize = `${Math.max(24, Math.min(48, window.innerWidth / 25))}px`
   message.style.fontWeight = "bold"
   message.style.textAlign = "center"
   message.style.color = "#FF0000"
-  message.style.textShadow = "2px 2px 4px rgba(0,0,0,0.5)"
-  message.style.zIndex = "10000"
-  message.innerHTML = "Feliz Aniversário!<br>🎉🎂🎁"
+  message.style.textShadow = "2px 2px 4px rgba(0,0,0,0.8)"
+  message.style.zIndex = "9999"
+  message.style.padding = "20px"
+  message.style.backgroundColor = "rgba(255,255,255,0.9)"
+  message.style.borderRadius = "15px"
+  message.style.border = "3px solid #FF0000"
+  message.innerHTML = "🎉 Feliz Aniversário! 🎉<br/>🎂🎁🎈"
   message.style.animation = "pulse-glow 2s infinite"
 
   document.body.appendChild(message)
 
   return () => {
     clearInterval(confettiInterval)
-    if (document.body.contains(balloons)) {
-      document.body.removeChild(balloons)
+    const balloonsEl = document.getElementById("birthday-balloons")
+    const messageEl = document.getElementById("birthday-message")
+
+    if (balloonsEl && document.body.contains(balloonsEl)) {
+      document.body.removeChild(balloonsEl)
     }
-    if (document.body.contains(message)) {
-      document.body.removeChild(message)
+    if (messageEl && document.body.contains(messageEl)) {
+      document.body.removeChild(messageEl)
     }
   }
 }
