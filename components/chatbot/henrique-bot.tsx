@@ -5,77 +5,125 @@ import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import {
-  MessageCircle,
-  Send,
-  X,
-  Bot,
-  User,
-  Minimize2,
-  Maximize2,
-  Lightbulb,
-  Code,
-  Briefcase,
-  GraduationCap,
-} from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { MessageCircle, Send, X, Bot, User, Lightbulb, Sparkles } from "lucide-react"
 
 interface Message {
   id: string
   content: string
   sender: "user" | "bot"
   timestamp: Date
-  type?: "text" | "suggestion"
-}
-
-interface BotResponse {
-  content: string
   suggestions?: string[]
 }
 
-// Base de conhecimento do bot
-const knowledgeBase = {
-  skills: {
-    keywords: ["habilidades", "skills", "tecnologias", "linguagens", "programação"],
+interface KnowledgeBase {
+  [key: string]: {
+    response: string
+    suggestions?: string[]
+    links?: { text: string; url: string }[]
+  }
+}
+
+const knowledgeBase: KnowledgeBase = {
+  // Saudações
+  "olá|oi|hello|hi": {
     response:
-      "Minhas principais habilidades incluem:\n\n🔹 **Linguagens**: Java, JavaScript, TypeScript, Python, C++, C#\n🔹 **Frontend**: React, Next.js, HTML5, CSS3, Tailwind CSS\n🔹 **Backend**: Spring Boot, Node.js\n🔹 **Banco de Dados**: PostgreSQL, MySQL, MongoDB\n🔹 **Ferramentas**: Git, Docker, VS Code\n\nTenho 2+ anos de experiência em desenvolvimento e estou sempre aprendendo novas tecnologias!",
-    suggestions: ["Ver projetos", "Experiência profissional", "Certificações"],
+      "Olá! 👋 Eu sou o HenriqueBot, assistente virtual do Henrique Monteiro Cardoso. Estou aqui para responder suas dúvidas sobre experiência, projetos, habilidades e muito mais!",
+    suggestions: ["Quais são suas habilidades?", "Conte sobre seus projetos", "Como posso entrar em contato?"],
   },
-  projects: {
-    keywords: ["projetos", "portfolio", "trabalhos", "desenvolveu", "criou"],
+
+  // Habilidades
+  "habilidades|skills|tecnologias|stack": {
     response:
-      "Aqui estão meus principais projetos:\n\n🚀 **Safe Finance** - Sistema de gestão financeira com Java e Spring Boot\n💼 **Portfolio Website** - Site moderno com Next.js e animações avançadas\n📊 **Leand Peage** - Extensão do Safe Finance com recursos de investimento\n\nCada projeto resolve problemas reais e demonstra diferentes aspectos das minhas habilidades técnicas.",
-    suggestions: ["Detalhes do Safe Finance", "Como foi feito o portfolio", "Ver código no GitHub"],
+      "🚀 Henrique é especializado em:\n\n**Frontend:** React, Next.js, TypeScript, Tailwind CSS, Framer Motion\n**Backend:** Java, Spring Boot, Node.js, Express\n**Banco de Dados:** PostgreSQL, MongoDB\n**Ferramentas:** Git, Docker, VS Code\n\nEle está sempre aprendendo novas tecnologias e se mantém atualizado com as tendências do mercado!",
+    suggestions: ["Projetos com Java", "Experiência com React", "Certificações"],
   },
-  experience: {
-    keywords: ["experiência", "trabalho", "emprego", "carreira", "profissional"],
+
+  // Projetos
+  "projetos|projects|portfolio": {
     response:
-      "Minha experiência profissional:\n\n🏢 **CCBEU Sorocaba** (2025-atual) - Auxiliar Comercial\n• Gestão de leads no Bitrix\n• Atendimento digital via WhatsApp\n• Melhorias no sistema DKSoft\n\n🏭 **ASSA ABLOY Group** (2024) - Aprendiz Administrativo\n• Suporte em SSMA\n• Gestão de EPIs e treinamentos\n• Reconhecimento por conscientização\n\nSempre focado em melhorar processos e agregar valor!",
-    suggestions: ["Certificações", "Formação acadêmica", "Habilidades técnicas"],
+      "💼 Principais projetos do Henrique:\n\n**Safe Finance** - Sistema de gestão financeira com Java e Spring Boot\n• Redução de 70% no tempo de controle financeiro\n• Interface intuitiva e relatórios detalhados\n\n**Portfolio Website** - Site moderno com Next.js\n• Lighthouse Score 98/100\n• Animações avançadas e Easter Eggs\n• PWA com service workers\n\n**Task Manager API** - API RESTful completa\n• Autenticação JWT\n• 92% de cobertura de testes\n• Documentação Swagger",
+    suggestions: ["Detalhes do Safe Finance", "Como foi feito o portfolio", "Ver projetos no GitHub"],
+    links: [
+      { text: "GitHub", url: "https://github.com/HenriqueMC17" },
+      { text: "Portfolio Live", url: "https://henriquemc.dev" },
+    ],
   },
-  education: {
-    keywords: ["educação", "formação", "estudo", "faculdade", "curso"],
+
+  // Experiência
+  "experiência|experience|trabalho|carreira": {
     response:
-      "Minha formação acadêmica:\n\n🎓 **Centro Universitário Facens** (2025-2027)\n• Análise e Desenvolvimento de Sistemas\n• Foco em desenvolvimento de software\n\n📚 **Certificações Relevantes**:\n• Excel Profissionalizante (2024)\n• Analista em Suporte Técnico (2024)\n• Gestão de Pequenos Negócios (2022)\n• Múltiplas certificações em segurança e TI\n\nSempre investindo em aprendizado contínuo!",
-    suggestions: ["Ver todas as certificações", "Projetos acadêmicos", "Habilidades técnicas"],
+      "💼 Experiência profissional do Henrique:\n\n**Auxiliar Comercial - CCBEU Sorocaba** (Fev 2025 - Presente)\n• Gestão de leads no Bitrix CRM\n• Atendimento digital e suporte\n• Melhorias no sistema DKSoft\n\n**Aprendiz Administrativo - ASSA ABLOY** (Jun - Dez 2024)\n• Reconhecimento por conscientização em SSMA\n• Gestão de EPIs e segurança\n• Suporte administrativo\n\nSempre focado em aprendizado contínuo e crescimento profissional!",
+    suggestions: ["Certificações", "Formação acadêmica", "Próximos passos na carreira"],
   },
-  contact: {
-    keywords: ["contato", "email", "linkedin", "github", "falar"],
+
+  // Formação
+  "formação|educação|faculdade|curso": {
     response:
-      "Vamos conversar! Você pode me encontrar em:\n\n📧 **Email**: henrique.monteiro.cardoso@outlook.com\n💼 **LinkedIn**: linkedin.com/in/henrique-monteiro-cardoso\n🐙 **GitHub**: github.com/HenriqueMC17\n📱 **WhatsApp**: Disponível via formulário de contato\n\nEstou sempre aberto a novas oportunidades e conversas sobre tecnologia!",
-    suggestions: ["Ver portfolio completo", "Projetos recentes", "Disponibilidade"],
+      "🎓 Formação do Henrique:\n\n**Análise e Desenvolvimento de Sistemas**\nCentro Universitário Facens (2025-2027)\n\n**Certificações (18+):**\n• Excel Profissionalizante\n• Analista Suporte Técnico\n• Gestão de Negócios\n• Desenvolvimento Web\n• E muito mais!\n\nSempre investindo em conhecimento e especialização!",
+    suggestions: ["Ver todas as certificações", "Projetos acadêmicos", "Planos de estudo"],
   },
+
+  // Contato
+  "contato|contact|email|linkedin": {
+    response:
+      "📞 Entre em contato com Henrique:\n\n**Email:** henrique.monteiro.cardoso@outlook.com\n**LinkedIn:** henrique-monteiro-cardoso\n**GitHub:** HenriqueMC17\n**Localização:** Sorocaba/SP (Disponível para remoto)\n\nEle está sempre aberto a novas oportunidades e colaborações!",
+    suggestions: ["Agendar uma conversa", "Ver portfolio completo", "Projetos em colaboração"],
+    links: [
+      { text: "LinkedIn", url: "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/" },
+      { text: "GitHub", url: "https://github.com/HenriqueMC17" },
+      { text: "Email", url: "mailto:henrique.monteiro.cardoso@outlook.com" },
+    ],
+  },
+
+  // Java
+  "java|spring|spring boot": {
+    response:
+      "☕ Henrique tem sólida experiência com Java:\n\n**Safe Finance** - Sistema completo com Spring Boot\n• Arquitetura MVC bem estruturada\n• JPA para persistência de dados\n• Thymeleaf para templates\n• Validação robusta de dados\n\n**Conhecimentos:**\n• Spring Framework (Boot, Security, Data)\n• Hibernate/JPA\n• Maven/Gradle\n• Testes unitários com JUnit\n• API REST com Spring Boot",
+    suggestions: ["Ver código no GitHub", "Outros projetos Java", "Certificações Java"],
+  },
+
+  // JavaScript/React
+  "javascript|react|next|typescript": {
+    response:
+      "⚛️ Henrique domina o ecossistema JavaScript moderno:\n\n**Frontend Skills:**\n• React com hooks e context\n• Next.js 14 com App Router\n• TypeScript para type safety\n• Tailwind CSS para styling\n• Framer Motion para animações\n\n**Projetos Destacados:**\n• Portfolio com Next.js (98/100 Lighthouse)\n• Componentes reutilizáveis\n• PWA com service workers\n• Integração com APIs",
+    suggestions: ["Ver portfolio live", "Projetos React", "Aprender TypeScript"],
+  },
+
+  // Oportunidades
+  "vaga|oportunidade|trabalho|emprego|hiring": {
+    response:
+      "🎯 Henrique está aberto a novas oportunidades!\n\n**Procurando por:**\n• Desenvolvedor Full Stack\n• Desenvolvedor Java\n• Desenvolvedor Frontend React\n• Estágio ou Junior\n\n**Modalidade:** Presencial (Sorocaba/SP) ou Remoto\n**Disponibilidade:** Imediata\n**Diferencial:** Proativo, aprende rápido, trabalha bem em equipe\n\nVamos conversar sobre como ele pode contribuir com sua equipe!",
+    suggestions: ["Ver currículo completo", "Agendar entrevista", "Projetos relevantes"],
+    links: [
+      { text: "LinkedIn", url: "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/" },
+      { text: "Email", url: "mailto:henrique.monteiro.cardoso@outlook.com" },
+    ],
+  },
+
+  // Default
   default: {
     response:
-      "Olá! 👋 Sou o HenriqueBot, assistente virtual do Henrique Monteiro Cardoso.\n\nPosso te ajudar com informações sobre:\n• Habilidades e tecnologias\n• Projetos e portfolio\n• Experiência profissional\n• Formação e certificações\n• Formas de contato\n\nO que você gostaria de saber?",
-    suggestions: ["Minhas habilidades", "Ver projetos", "Experiência profissional", "Como entrar em contato"],
+      "🤔 Desculpe, não entendi sua pergunta. Posso ajudar com informações sobre:\n\n• Habilidades e tecnologias\n• Projetos e portfolio\n• Experiência profissional\n• Formação e certificações\n• Contato e oportunidades\n\nTente reformular sua pergunta ou escolha uma das sugestões!",
+    suggestions: ["Quais são suas habilidades?", "Conte sobre seus projetos", "Como posso entrar em contato?"],
   },
 }
 
 export function HenriqueBot() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isMinimized, setIsMinimized] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      content:
+        "Olá! 👋 Eu sou o HenriqueBot, assistente virtual do Henrique Monteiro Cardoso. Como posso ajudar você hoje?",
+      sender: "bot",
+      timestamp: new Date(),
+      suggestions: ["Quais são suas habilidades?", "Conte sobre seus projetos", "Como posso entrar em contato?"],
+    },
+  ])
   const [inputValue, setInputValue] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -88,93 +136,31 @@ export function HenriqueBot() {
     scrollToBottom()
   }, [messages])
 
-  useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      // Mensagem de boas-vindas
-      setTimeout(() => {
-        addBotMessage(knowledgeBase.default.response, knowledgeBase.default.suggestions)
-      }, 500)
-    }
-  }, [isOpen])
+  const findResponse = (input: string): KnowledgeBase[string] => {
+    const normalizedInput = input.toLowerCase().trim()
 
-  const addBotMessage = (content: string, suggestions?: string[]) => {
-    const botMessage: Message = {
-      id: Date.now().toString(),
-      content,
-      sender: "bot",
-      timestamp: new Date(),
-    }
-    setMessages((prev) => [...prev, botMessage])
+    for (const [keywords, response] of Object.entries(knowledgeBase)) {
+      if (keywords === "default") continue
 
-    // Adicionar sugestões se fornecidas
-    if (suggestions) {
-      setTimeout(() => {
-        suggestions.forEach((suggestion, index) => {
-          setTimeout(() => {
-            const suggestionMessage: Message = {
-              id: `${Date.now()}-${index}`,
-              content: suggestion,
-              sender: "bot",
-              timestamp: new Date(),
-              type: "suggestion",
-            }
-            setMessages((prev) => [...prev, suggestionMessage])
-          }, index * 200)
-        })
-      }, 1000)
+      const keywordList = keywords.split("|")
+      if (keywordList.some((keyword) => normalizedInput.includes(keyword))) {
+        return response
+      }
     }
+
+    return knowledgeBase.default
   }
 
-  const findBestResponse = (input: string): BotResponse => {
-    const lowerInput = input.toLowerCase()
+  const handleSendMessage = async (content: string) => {
+    if (!content.trim()) return
 
-    for (const [key, data] of Object.entries(knowledgeBase)) {
-      if (key === "default") continue
-
-      const hasKeyword = data.keywords.some((keyword) => lowerInput.includes(keyword.toLowerCase()))
-
-      if (hasKeyword) {
-        return {
-          content: data.response,
-          suggestions: data.suggestions,
-        }
-      }
-    }
-
-    // Respostas específicas para perguntas comuns
-    if (lowerInput.includes("quem") && (lowerInput.includes("você") || lowerInput.includes("é"))) {
-      return {
-        content:
-          "Sou o HenriqueBot! 🤖 Sou um assistente virtual criado para representar o Henrique Monteiro Cardoso e ajudar você a conhecer melhor seu perfil profissional, projetos e habilidades.\n\nFui desenvolvido com JavaScript e integrado ao portfolio para oferecer uma experiência interativa única!",
-        suggestions: ["Sobre o Henrique", "Ver projetos", "Habilidades técnicas"],
-      }
-    }
-
-    if (lowerInput.includes("disponível") || lowerInput.includes("vaga") || lowerInput.includes("trabalho")) {
-      return {
-        content:
-          "O Henrique está **DISPONÍVEL** para novas oportunidades! 🚀\n\n• Desenvolvedor Full Stack em formação\n• Experiência em Java, JavaScript, TypeScript\n• Interesse em projetos desafiadores\n• Disponível para trabalho remoto ou presencial em Sorocaba/SP\n\nVamos conversar sobre como ele pode contribuir com seu projeto!",
-        suggestions: ["Ver experiência", "Entrar em contato", "Ver projetos"],
-      }
-    }
-
-    return {
-      content:
-        "Interessante! 🤔 Não tenho informações específicas sobre isso, mas posso te ajudar com:\n\n• Habilidades e tecnologias do Henrique\n• Projetos e portfolio\n• Experiência profissional\n• Certificações e formação\n• Formas de contato\n\nO que você gostaria de saber?",
-      suggestions: ["Minhas habilidades", "Ver projetos", "Experiência profissional"],
-    }
-  }
-
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return
-
-    // Adicionar mensagem do usuário
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: inputValue,
+      content,
       sender: "user",
       timestamp: new Date(),
     }
+
     setMessages((prev) => [...prev, userMessage])
     setInputValue("")
     setIsTyping(true)
@@ -182,172 +168,185 @@ export function HenriqueBot() {
     // Simular delay de digitação
     setTimeout(
       () => {
-        const response = findBestResponse(inputValue)
+        const response = findResponse(content)
+        const botMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: response.response,
+          sender: "bot",
+          timestamp: new Date(),
+          suggestions: response.suggestions,
+        }
+
+        setMessages((prev) => [...prev, botMessage])
         setIsTyping(false)
-        addBotMessage(response.content, response.suggestions)
       },
       1000 + Math.random() * 1000,
     )
   }
 
   const handleSuggestionClick = (suggestion: string) => {
-    setInputValue(suggestion)
-    handleSendMessage()
+    handleSendMessage(suggestion)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
-      handleSendMessage()
+      handleSendMessage(inputValue)
     }
   }
 
   return (
     <>
       {/* Chat Button */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            className="fixed bottom-6 right-6 z-50"
-          >
-            <Button
-              onClick={() => setIsOpen(true)}
-              size="lg"
-              className="rounded-full h-14 w-14 shadow-lg hover:shadow-xl transition-all duration-300 bg-primary hover:bg-primary/90"
-            >
-              <MessageCircle className="h-6 w-6" />
-            </Button>
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 2, type: "spring" }}
+        className="fixed bottom-6 right-6 z-40"
+      >
+        <Button
+          onClick={() => setIsOpen(true)}
+          className="w-14 h-14 rounded-full shadow-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white border-0 transition-all duration-300 hover:scale-110"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
 
-            {/* Notification Badge */}
-            <div className="absolute -top-2 -right-2 h-6 w-6 bg-red-500 rounded-full flex items-center justify-center">
-              <span className="text-white text-xs font-bold">!</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Notification Badge */}
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: [0, 1.2, 1] }}
+          transition={{ delay: 3, duration: 0.5 }}
+          className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center"
+        >
+          <Sparkles className="h-3 w-3 text-white" />
+        </motion.div>
+      </motion.div>
 
-      {/* Chat Window */}
+      {/* Chat Modal */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 100, scale: 0.8 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              height: isMinimized ? "60px" : "500px",
-            }}
-            exit={{ opacity: 0, y: 100, scale: 0.8 }}
-            className="fixed bottom-6 right-6 w-96 bg-background border rounded-lg shadow-2xl z-50 overflow-hidden"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="fixed bottom-24 right-6 w-96 h-[600px] z-50 shadow-2xl"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <Bot className="h-6 w-6" />
-                  <div className="absolute -bottom-1 -right-1 h-3 w-3 bg-green-500 rounded-full border-2 border-white"></div>
+            <Card className="h-full flex flex-col bg-white border-0 shadow-2xl">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                      <Bot className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">HenriqueBot</CardTitle>
+                      <p className="text-white/80 text-sm">Assistente Virtual</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setIsOpen(false)}
+                    className="text-white hover:bg-white/20 rounded-full"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
-                <div>
-                  <h3 className="font-semibold">HenriqueBot</h3>
-                  <p className="text-xs opacity-90">Assistente Virtual</p>
-                </div>
-              </div>
+              </CardHeader>
 
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsMinimized(!isMinimized)}
-                  className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20"
-                >
-                  {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsOpen(false)}
-                  className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/20"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Chat Content */}
-            {!isMinimized && (
-              <>
-                {/* Messages */}
-                <div className="flex-1 p-4 h-80 overflow-y-auto space-y-4">
-                  {messages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
-                    >
-                      {message.sender === "bot" && (
-                        <div className="flex items-start gap-2">
-                          <Bot className="h-6 w-6 text-primary mt-1 flex-shrink-0" />
-                          <div className="max-w-xs">
-                            {message.type === "suggestion" ? (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleSuggestionClick(message.content)}
-                                className="text-left h-auto p-2 whitespace-normal"
-                              >
-                                <Lightbulb className="h-3 w-3 mr-1 flex-shrink-0" />
-                                {message.content}
-                              </Button>
-                            ) : (
-                              <div className="bg-muted p-3 rounded-lg">
-                                <div className="text-sm whitespace-pre-line">{message.content}</div>
-                              </div>
-                            )}
+              <CardContent className="flex-1 flex flex-col p-0">
+                <ScrollArea className="flex-1 p-4">
+                  <div className="space-y-4">
+                    {messages.map((message) => (
+                      <motion.div
+                        key={message.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+                      >
+                        <div
+                          className={`flex items-start gap-2 max-w-[80%] ${
+                            message.sender === "user" ? "flex-row-reverse" : "flex-row"
+                          }`}
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                              message.sender === "user" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
+                            }`}
+                          >
+                            {message.sender === "user" ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                           </div>
-                        </div>
-                      )}
 
-                      {message.sender === "user" && (
-                        <div className="flex items-start gap-2">
-                          <div className="max-w-xs">
-                            <div className="bg-primary text-primary-foreground p-3 rounded-lg">
-                              <div className="text-sm">{message.content}</div>
+                          <div
+                            className={`rounded-2xl px-4 py-2 ${
+                              message.sender === "user" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+                            <div
+                              className={`text-xs mt-1 ${
+                                message.sender === "user" ? "text-blue-100" : "text-gray-500"
+                              }`}
+                            >
+                              {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </div>
                           </div>
-                          <User className="h-6 w-6 text-muted-foreground mt-1 flex-shrink-0" />
                         </div>
-                      )}
-                    </div>
-                  ))}
+                      </motion.div>
+                    ))}
 
-                  {/* Typing Indicator */}
-                  {isTyping && (
-                    <div className="flex justify-start">
-                      <div className="flex items-start gap-2">
-                        <Bot className="h-6 w-6 text-primary mt-1" />
-                        <div className="bg-muted p-3 rounded-lg">
+                    {/* Suggestions */}
+                    {messages.length > 0 && messages[messages.length - 1].suggestions && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex flex-wrap gap-2"
+                      >
+                        {messages[messages.length - 1].suggestions!.map((suggestion, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            className="text-xs rounded-full"
+                          >
+                            <Lightbulb className="h-3 w-3 mr-1" />
+                            {suggestion}
+                          </Button>
+                        ))}
+                      </motion.div>
+                    )}
+
+                    {/* Typing Indicator */}
+                    {isTyping && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-start gap-2"
+                      >
+                        <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                          <Bot className="h-4 w-4 text-gray-600" />
+                        </div>
+                        <div className="bg-gray-100 rounded-2xl px-4 py-2">
                           <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                             <div
-                              className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
+                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                               style={{ animationDelay: "0.1s" }}
-                            ></div>
+                            />
                             <div
-                              className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-bounce"
+                              className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
                               style={{ animationDelay: "0.2s" }}
-                            ></div>
+                            />
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  )}
-
+                      </motion.div>
+                    )}
+                  </div>
                   <div ref={messagesEndRef} />
-                </div>
+                </ScrollArea>
 
-                {/* Input */}
+                {/* Input Area */}
                 <div className="p-4 border-t">
                   <div className="flex gap-2">
                     <Input
@@ -356,45 +355,25 @@ export function HenriqueBot() {
                       onKeyPress={handleKeyPress}
                       placeholder="Digite sua pergunta..."
                       className="flex-1"
+                      disabled={isTyping}
                     />
-                    <Button onClick={handleSendMessage} disabled={!inputValue.trim() || isTyping} size="icon">
+                    <Button
+                      onClick={() => handleSendMessage(inputValue)}
+                      disabled={!inputValue.trim() || isTyping}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
                       <Send className="h-4 w-4" />
                     </Button>
                   </div>
 
-                  {/* Quick Actions */}
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSuggestionClick("Minhas habilidades")}
-                      className="text-xs h-6"
-                    >
-                      <Code className="h-3 w-3 mr-1" />
-                      Habilidades
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSuggestionClick("Ver projetos")}
-                      className="text-xs h-6"
-                    >
-                      <Briefcase className="h-3 w-3 mr-1" />
-                      Projetos
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSuggestionClick("Experiência profissional")}
-                      className="text-xs h-6"
-                    >
-                      <GraduationCap className="h-3 w-3 mr-1" />
-                      Experiência
-                    </Button>
+                  <div className="flex items-center justify-center mt-2">
+                    <Badge variant="secondary" className="text-xs">
+                      Powered by HenriqueBot AI
+                    </Badge>
                   </div>
                 </div>
-              </>
-            )}
+              </CardContent>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>

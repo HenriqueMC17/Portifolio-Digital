@@ -1,627 +1,626 @@
 "use client"
 
-import type React from "react"
-
-import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { Card, CardContent } from "@/components/ui/card"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
-  Github,
   ExternalLink,
-  Star,
-  GitFork,
-  Clock,
-  Target,
-  TrendingUp,
-  Zap,
-  Play,
+  Github,
   Code,
-  Database,
+  Globe,
+  Smartphone,
+  Server,
+  Zap,
+  TrendingUp,
+  Clock,
+  Users,
+  Target,
   Lightbulb,
-  CheckCircle2,
+  CheckCircle,
+  AlertTriangle,
+  BookOpen,
 } from "lucide-react"
-import { useState } from "react"
 
-interface ProjectMetrics {
-  timeReduction?: string
-  costSaving?: string
-  userImpact?: string
-  performanceGain?: string
-  efficiency?: string
-}
-
-interface TechnicalDecision {
-  decision: string
-  reason: string
-  alternative?: string
-}
-
-interface LessonLearned {
-  lesson: string
-  category: "technical" | "business" | "personal"
-}
-
-interface EnhancedProject {
+interface Project {
   id: string
-  name: string
+  title: string
   description: string
   longDescription: string
-  problem: string
-  solution: string
-  whereUsed: string
-  stack: string[]
-  metrics: ProjectMetrics
-  lessonsLearned: LessonLearned[]
-  technicalDecisions: TechnicalDecision[]
-  githubUrl: string
+  category: "web" | "mobile" | "backend" | "fullstack"
+  technologies: string[]
+  githubUrl?: string
   liveUrl?: string
-  videoUrl?: string
-  screenshots: string[]
-  status: "completed" | "in-progress" | "planning"
-  category: "web" | "mobile" | "desktop" | "api"
+  imageUrl: string
   featured: boolean
-  stars?: number
-  forks?: number
-  lastUpdate: string
+  status: "completed" | "in-progress" | "planning"
+  impact: {
+    problem: string
+    solution: string
+    metrics: {
+      label: string
+      value: string
+      improvement: string
+    }[]
+    technicalDecisions: {
+      decision: string
+      reasoning: string
+    }[]
+    lessonsLearned: string[]
+    challenges: string[]
+  }
+  timeline: {
+    start: string
+    end?: string
+    duration: string
+  }
+  team?: {
+    size: number
+    role: string
+  }
 }
 
-const enhancedProjects: EnhancedProject[] = [
+const categoryConfig = {
+  web: {
+    icon: Globe,
+    label: "Web App",
+    color: "bg-blue-500",
+  },
+  mobile: {
+    icon: Smartphone,
+    label: "Mobile",
+    color: "bg-green-500",
+  },
+  backend: {
+    icon: Server,
+    label: "Backend",
+    color: "bg-purple-500",
+  },
+  fullstack: {
+    icon: Code,
+    label: "Full Stack",
+    color: "bg-orange-500",
+  },
+}
+
+const statusConfig = {
+  completed: {
+    icon: CheckCircle,
+    label: "Concluído",
+    color: "text-green-600",
+  },
+  "in-progress": {
+    icon: Zap,
+    label: "Em Desenvolvimento",
+    color: "text-yellow-600",
+  },
+  planning: {
+    icon: Target,
+    label: "Planejamento",
+    color: "text-blue-600",
+  },
+}
+
+const projects: Project[] = [
   {
     id: "safe-finance",
-    name: "Safe Finance",
-    description: "Sistema completo de gestão financeira pessoal com dashboard interativo",
+    title: "Safe Finance",
+    description: "Sistema completo de gestão financeira pessoal com Java e Spring Boot",
     longDescription:
-      "Safe Finance é uma aplicação web robusta desenvolvida para resolver o problema comum de controle financeiro pessoal. O sistema oferece uma interface intuitiva para gerenciamento de receitas, despesas, categorização automática e relatórios detalhados.",
-    problem: "Dificuldade em controlar gastos pessoais e falta de visibilidade sobre padrões de consumo",
-    solution: "Sistema web com dashboard interativo, categorização automática, alertas de gastos e relatórios visuais",
-    whereUsed: "Uso pessoal e demonstração para potenciais empregadores",
-    stack: ["Java", "Spring Boot", "PostgreSQL", "HTML5", "CSS3", "JavaScript", "Bootstrap"],
-    metrics: {
-      timeReduction: "70% menos tempo para controle financeiro",
-      efficiency: "95% de precisão na categorização",
-      userImpact: "Controle total sobre 100% dos gastos mensais",
-    },
-    lessonsLearned: [
-      {
-        lesson: "Importância da validação de dados tanto no frontend quanto no backend",
-        category: "technical",
-      },
-      {
-        lesson: "Necessidade de feedback visual imediato para melhor UX",
-        category: "business",
-      },
-      {
-        lesson: "Planejamento de arquitetura evita refatorações custosas",
-        category: "personal",
-      },
-    ],
-    technicalDecisions: [
-      {
-        decision: "PostgreSQL como banco de dados",
-        reason: "Melhor suporte para transações complexas e integridade referencial",
-        alternative: "MySQL seria mais simples, mas menos robusto",
-      },
-      {
-        decision: "Spring Boot para o backend",
-        reason: "Ecossistema maduro, segurança integrada e facilidade de deploy",
-        alternative: "Node.js seria mais rápido para prototipagem",
-      },
-    ],
-    githubUrl: "https://github.com/HenriqueMC17/Safe-Finance",
-    liveUrl: "https://safe-finance-demo.vercel.app",
-    screenshots: ["/placeholder.svg?height=400&width=600"],
-    status: "completed",
-    category: "web",
+      "Safe Finance é uma aplicação web completa para controle financeiro pessoal, desenvolvida com Java e Spring Boot. O sistema permite gerenciar receitas, despesas, categorias e gerar relatórios detalhados com gráficos interativos.",
+    category: "fullstack",
+    technologies: ["Java", "Spring Boot", "PostgreSQL", "Thymeleaf", "Bootstrap", "Chart.js"],
+    githubUrl: "https://github.com/HenriqueMC17/SafeFinance",
+    imageUrl: "/placeholder.svg?height=300&width=500",
     featured: true,
-    stars: 12,
-    forks: 3,
-    lastUpdate: "2024-09-15",
+    status: "completed",
+    impact: {
+      problem:
+        "Dificuldade em controlar gastos pessoais e falta de visibilidade sobre padrões de consumo, levando a decisões financeiras inadequadas.",
+      solution:
+        "Sistema web intuitivo que centraliza todas as informações financeiras com categorização automática, relatórios visuais e alertas inteligentes.",
+      metrics: [
+        {
+          label: "Redução no tempo de controle",
+          value: "70%",
+          improvement: "De 2h/semana para 30min/semana",
+        },
+        {
+          label: "Precisão nos relatórios",
+          value: "95%",
+          improvement: "Eliminação de erros manuais",
+        },
+        {
+          label: "Economia identificada",
+          value: "R$ 500/mês",
+          improvement: "Através de análise de padrões",
+        },
+      ],
+      technicalDecisions: [
+        {
+          decision: "Spring Boot + JPA",
+          reasoning: "Facilita desenvolvimento rápido e manutenção, com ORM robusto para operações de banco",
+        },
+        {
+          decision: "PostgreSQL",
+          reasoning: "Banco relacional confiável com suporte a JSON para dados flexíveis",
+        },
+        {
+          decision: "Thymeleaf + Bootstrap",
+          reasoning: "Renderização server-side para melhor SEO e responsividade nativa",
+        },
+      ],
+      lessonsLearned: [
+        "Importância da validação de dados tanto no frontend quanto backend",
+        "Otimização de queries com JPA para melhor performance",
+        "Design patterns como Repository e Service para código limpo",
+      ],
+      challenges: [
+        "Implementação de relatórios complexos com múltiplas agregações",
+        "Sincronização de dados em tempo real sem comprometer performance",
+        "Criação de interface intuitiva para usuários não técnicos",
+      ],
+    },
+    timeline: {
+      start: "2024-03",
+      end: "2024-06",
+      duration: "3 meses",
+    },
+    team: {
+      size: 1,
+      role: "Desenvolvedor Full Stack",
+    },
   },
   {
     id: "portfolio-website",
-    name: "Portfolio Website",
-    description: "Portfólio profissional moderno com animações avançadas e Easter Eggs",
+    title: "Portfolio Website",
+    description: "Site pessoal moderno com Next.js, animações avançadas e Easter Eggs interativos",
     longDescription:
-      "Este portfólio representa o estado da arte em desenvolvimento frontend, combinando Next.js 15, TypeScript, Framer Motion e uma arquitetura PWA completa. Inclui integração em tempo real com GitHub, sistema de analytics próprio e múltiplos Easter Eggs interativos.",
-    problem: "Necessidade de um portfólio que demonstrasse habilidades técnicas avançadas e se destacasse no mercado",
-    solution: "Website moderno com animações sofisticadas, integração de APIs, PWA e recursos únicos como Easter Eggs",
-    whereUsed: "Apresentação profissional para recrutadores e networking",
-    stack: ["Next.js 15", "TypeScript", "Tailwind CSS", "Framer Motion", "GitHub API", "Vercel"],
-    metrics: {
-      performanceGain: "Lighthouse Score 98/100",
-      userImpact: "50+ visualizações semanais",
-      efficiency: "100% responsivo em todos os dispositivos",
-    },
-    lessonsLearned: [
-      {
-        lesson: "Animações devem melhorar a UX, não apenas impressionar",
-        category: "business",
-      },
-      {
-        lesson: "Performance é crucial mesmo com muitas animações",
-        category: "technical",
-      },
-      {
-        lesson: "Detalhes fazem a diferença na percepção profissional",
-        category: "personal",
-      },
-    ],
-    technicalDecisions: [
-      {
-        decision: "Next.js 15 com App Router",
-        reason: "Server Components, melhor SEO e performance otimizada",
-        alternative: "React SPA seria mais simples mas menos otimizado",
-      },
-      {
-        decision: "Framer Motion para animações",
-        reason: "Controle granular e performance superior",
-        alternative: "CSS animations seriam mais leves mas menos flexíveis",
-      },
-    ],
-    githubUrl: "https://github.com/HenriqueMC17/portfolio-website",
-    liveUrl: "https://henriquemc.dev",
-    videoUrl: "/placeholder-video.mp4",
-    screenshots: ["/placeholder.svg?height=400&width=600"],
-    status: "completed",
+      "Portfolio pessoal desenvolvido com Next.js 14, TypeScript e Tailwind CSS. Inclui animações com Framer Motion, sistema de Easter Eggs, PWA, analytics customizado e integração com GitHub API.",
     category: "web",
+    technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Supabase", "Vercel"],
+    githubUrl: "https://github.com/HenriqueMC17/portfolio",
+    liveUrl: "https://henriquemc.dev",
+    imageUrl: "/placeholder.svg?height=300&width=500",
     featured: true,
-    stars: 8,
-    forks: 2,
-    lastUpdate: "2024-12-20",
+    status: "completed",
+    impact: {
+      problem:
+        "Necessidade de uma presença digital profissional que demonstrasse habilidades técnicas e criatividade de forma interativa.",
+      solution:
+        "Website moderno com design único, animações fluidas, recursos interativos e otimização para performance e SEO.",
+      metrics: [
+        {
+          label: "Lighthouse Score",
+          value: "98/100",
+          improvement: "Performance otimizada",
+        },
+        {
+          label: "Tempo de carregamento",
+          value: "1.2s",
+          improvement: "Otimização de imagens e código",
+        },
+        {
+          label: "Taxa de engajamento",
+          value: "85%",
+          improvement: "Easter Eggs e interatividade",
+        },
+      ],
+      technicalDecisions: [
+        {
+          decision: "Next.js 14 com App Router",
+          reasoning: "SSR/SSG para melhor SEO, roteamento moderno e otimizações automáticas",
+        },
+        {
+          decision: "Framer Motion",
+          reasoning: "Animações fluidas e performáticas com controle granular",
+        },
+        {
+          decision: "Supabase",
+          reasoning: "Backend-as-a-Service para analytics e dados dinâmicos",
+        },
+      ],
+      lessonsLearned: [
+        "Balanceamento entre animações e performance",
+        "Implementação de PWA com service workers",
+        "Otimização de Core Web Vitals",
+      ],
+      challenges: [
+        "Criação de sistema de Easter Eggs sem impactar performance",
+        "Responsividade complexa com animações",
+        "Integração de múltiplas APIs de forma eficiente",
+      ],
+    },
+    timeline: {
+      start: "2024-11",
+      end: "2025-01",
+      duration: "2 meses",
+    },
+    team: {
+      size: 1,
+      role: "Desenvolvedor Full Stack",
+    },
   },
   {
-    id: "leand-peage",
-    name: "Leand Peage Safe Finance",
-    description: "Extensão do Safe Finance com recursos avançados de investimentos",
+    id: "task-manager-api",
+    title: "Task Manager API",
+    description: "API RESTful para gerenciamento de tarefas com autenticação JWT",
     longDescription:
-      "Evolução do Safe Finance com funcionalidades avançadas para controle de investimentos, análise de portfólio e projeções financeiras. Inclui integração com APIs de cotações e relatórios automatizados.",
-    problem: "Necessidade de controle mais sofisticado incluindo investimentos e planejamento financeiro",
-    solution: "Plataforma integrada com módulos de investimento, análise de risco e projeções automáticas",
-    whereUsed: "Projeto acadêmico e demonstração de habilidades avançadas",
-    stack: ["Java", "Spring Boot", "React", "PostgreSQL", "APIs Financeiras"],
-    metrics: {
-      efficiency: "80% de automação nos relatórios",
-      userImpact: "Controle completo de portfólio de investimentos",
-    },
-    lessonsLearned: [
-      {
-        lesson: "Integração com APIs externas requer tratamento robusto de erros",
-        category: "technical",
-      },
-      {
-        lesson: "Dados financeiros exigem precisão absoluta",
-        category: "business",
-      },
-    ],
-    technicalDecisions: [
-      {
-        decision: "Separação em microserviços",
-        reason: "Escalabilidade e manutenibilidade",
-        alternative: "Monolito seria mais simples inicialmente",
-      },
-    ],
-    githubUrl: "https://github.com/HenriqueMC17/Leand-Peage-Safe-Finance",
-    screenshots: ["/placeholder.svg?height=400&width=600"],
-    status: "in-progress",
-    category: "web",
+      "API completa para gerenciamento de tarefas desenvolvida com Node.js e Express. Inclui autenticação JWT, validação de dados, documentação Swagger e testes automatizados.",
+    category: "backend",
+    technologies: ["Node.js", "Express", "MongoDB", "JWT", "Swagger", "Jest"],
+    githubUrl: "https://github.com/HenriqueMC17/task-manager-api",
+    imageUrl: "/placeholder.svg?height=300&width=500",
     featured: false,
-    stars: 5,
-    forks: 1,
-    lastUpdate: "2024-11-30",
+    status: "completed",
+    impact: {
+      problem: "Necessidade de uma API robusta e bem documentada para aplicações de produtividade.",
+      solution: "API RESTful completa com autenticação, validação e documentação automática.",
+      metrics: [
+        {
+          label: "Cobertura de testes",
+          value: "92%",
+          improvement: "Qualidade e confiabilidade",
+        },
+        {
+          label: "Tempo de resposta",
+          value: "<100ms",
+          improvement: "Otimização de queries",
+        },
+        {
+          label: "Uptime",
+          value: "99.9%",
+          improvement: "Tratamento de erros robusto",
+        },
+      ],
+      technicalDecisions: [
+        {
+          decision: "MongoDB",
+          reasoning: "Flexibilidade para estruturas de dados variáveis e escalabilidade horizontal",
+        },
+        {
+          decision: "JWT",
+          reasoning: "Autenticação stateless e segura para APIs distribuídas",
+        },
+        {
+          decision: "Swagger",
+          reasoning: "Documentação automática e interface de testes integrada",
+        },
+      ],
+      lessonsLearned: [
+        "Importância da documentação automática de APIs",
+        "Estratégias de teste para APIs RESTful",
+        "Implementação segura de autenticação JWT",
+      ],
+      challenges: [
+        "Implementação de middleware de autenticação robusto",
+        "Validação complexa de dados de entrada",
+        "Otimização de queries MongoDB para performance",
+      ],
+    },
+    timeline: {
+      start: "2024-08",
+      end: "2024-09",
+      duration: "1 mês",
+    },
+    team: {
+      size: 1,
+      role: "Desenvolvedor Backend",
+    },
   },
 ]
 
-const statusConfig = {
-  completed: { label: "Concluído", color: "bg-green-100 text-green-800", icon: CheckCircle2 },
-  "in-progress": { label: "Em Desenvolvimento", color: "bg-yellow-100 text-yellow-800", icon: Clock },
-  planning: { label: "Planejamento", color: "bg-blue-100 text-blue-800", icon: Lightbulb },
-}
-
-const categoryConfig: Record<EnhancedProject["category"], { label: string; icon: React.ElementType }> = {
-  web: { label: "Web", icon: Code },
-  mobile: { label: "Mobile", icon: Zap },
-  desktop: { label: "Desktop", icon: Database },
-  api: { label: "API", icon: Database },
-}
-
 export function EnhancedProjectsSection() {
-  const [ref, inView] = useInView({
-    threshold: 0.1,
-    triggerOnce: true,
-  })
+  const [selectedCategory, setSelectedCategory] = useState<string>("all")
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
 
-  const [selectedProject, setSelectedProject] = useState<EnhancedProject | null>(null)
-  const [activeTab, setActiveTab] = useState("overview")
+  const filteredProjects = projects.filter(
+    (project) => selectedCategory === "all" || project.category === selectedCategory,
+  )
 
-  const featuredProjects = enhancedProjects.filter((p) => p.featured)
-  const allProjects = enhancedProjects
+  const categories = [
+    { value: "all", label: "Todos" },
+    { value: "web", label: "Web" },
+    { value: "mobile", label: "Mobile" },
+    { value: "backend", label: "Backend" },
+    { value: "fullstack", label: "Full Stack" },
+  ]
 
   return (
-    <section id="enhanced-projects" className="py-20" ref={ref}>
+    <section id="projects" className="py-20 bg-muted/30">
       <div className="container mx-auto px-4">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
         >
-          <h2 className="text-3xl font-bold mb-4">Projetos & Case Studies</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Análise detalhada dos projetos com impacto real, decisões técnicas e lições aprendidas
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Projetos em Destaque</h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Soluções reais para problemas reais, com foco em impacto e qualidade técnica
           </p>
         </motion.div>
 
-        {/* Featured Projects */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-semibold mb-8 flex items-center gap-2">
-            <Star className="h-6 w-6 text-yellow-500" />
-            Projetos em Destaque
-          </h3>
+        {/* Category Filter */}
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
+          {categories.map((category) => (
+            <Button
+              key={category.value}
+              variant={selectedCategory === category.value ? "default" : "outline"}
+              onClick={() => setSelectedCategory(category.value)}
+              className="mb-2"
+            >
+              {category.label}
+            </Button>
+          ))}
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-              >
-                <Card
-                  className="h-full hover:shadow-xl transition-all duration-300 group cursor-pointer"
-                  onClick={() => setSelectedProject(project)}
+        {/* Projects Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AnimatePresence>
+            {filteredProjects.map((project, index) => {
+              const CategoryIcon = categoryConfig[project.category].icon
+              const StatusIcon = statusConfig[project.status].icon
+
+              return (
+                <motion.div
+                  key={project.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ delay: index * 0.1 }}
+                  layout
                 >
-                  <CardContent className="p-0">
-                    {/* Project Image */}
+                  <Card className="h-full hover:shadow-lg transition-all duration-300 group">
                     <div className="relative overflow-hidden rounded-t-lg">
                       <img
-                        src={project.screenshots[0] || "/placeholder.svg"}
-                        alt={project.name}
+                        src={project.imageUrl || "/placeholder.svg"}
+                        alt={project.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-4 left-4 flex gap-2">
-                        <Badge className={statusConfig[project.status].color}>
+                        <Badge className={`${categoryConfig[project.category].color} text-white`}>
+                          <CategoryIcon className="h-3 w-3 mr-1" />
+                          {categoryConfig[project.category].label}
+                        </Badge>
+                        {project.featured && <Badge variant="secondary">Destaque</Badge>}
+                      </div>
+                      <div className="absolute top-4 right-4">
+                        <Badge variant="outline" className="bg-white/90">
+                          <StatusIcon className={`h-3 w-3 mr-1 ${statusConfig[project.status].color}`} />
                           {statusConfig[project.status].label}
                         </Badge>
-                        {project.featured && (
-                          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                            Destaque
-                          </Badge>
-                        )}
                       </div>
                     </div>
 
-                    <div className="p-6">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-4">
-                        <div>
-                          <h4 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                            {project.name}
-                          </h4>
-                          <p className="text-muted-foreground text-sm mb-3">{project.description}</p>
-                        </div>
-                      </div>
-
-                      {/* Problem & Solution */}
-                      <div className="space-y-3 mb-4">
-                        <div>
-                          <h5 className="font-medium text-sm text-red-600 mb-1">Problema:</h5>
-                          <p className="text-sm text-muted-foreground">{project.problem}</p>
-                        </div>
-                        <div>
-                          <h5 className="font-medium text-sm text-green-600 mb-1">Solução:</h5>
-                          <p className="text-sm text-muted-foreground">{project.solution}</p>
-                        </div>
-                      </div>
-
-                      {/* Metrics */}
-                      {Object.keys(project.metrics).length > 0 && (
-                        <div className="mb-4">
-                          <h5 className="font-medium text-sm mb-2 flex items-center gap-1">
-                            <TrendingUp className="h-4 w-4 text-primary" />
-                            Impacto:
-                          </h5>
-                          <div className="grid grid-cols-1 gap-2">
-                            {Object.entries(project.metrics).map(([key, value]) => (
-                              <div key={key} className="flex items-center gap-2 text-sm">
-                                <Target className="h-3 w-3 text-green-500" />
-                                <span className="text-muted-foreground">{value}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Tech Stack */}
-                      <div className="mb-4">
-                        <h5 className="font-medium text-sm mb-2">Stack Tecnológica:</h5>
-                        <div className="flex flex-wrap gap-1">
-                          {project.stack.slice(0, 4).map((tech) => (
-                            <Badge key={tech} variant="outline" className="text-xs">
-                              {tech}
-                            </Badge>
-                          ))}
-                          {project.stack.length > 4 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{project.stack.length - 4} mais
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Actions */}
-                      <div className="flex items-center justify-between pt-4 border-t">
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          {project.stars && (
-                            <div className="flex items-center gap-1">
-                              <Star className="h-3 w-3" />
-                              <span>{project.stars}</span>
-                            </div>
-                          )}
-                          {project.forks && (
-                            <div className="flex items-center gap-1">
-                              <GitFork className="h-3 w-3" />
-                              <span>{project.forks}</span>
-                            </div>
-                          )}
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{project.lastUpdate}</span>
-                          </div>
-                        </div>
-
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-between">
+                        {project.title}
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" asChild>
-                            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                              <Github className="h-3 w-3 mr-1" />
-                              Código
-                            </a>
-                          </Button>
+                          {project.githubUrl && (
+                            <Button variant="ghost" size="icon" asChild>
+                              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                                <Github className="h-4 w-4" />
+                              </a>
+                            </Button>
+                          )}
                           {project.liveUrl && (
-                            <Button size="sm" asChild>
+                            <Button variant="ghost" size="icon" asChild>
                               <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-3 w-3 mr-1" />
-                                Demo
+                                <ExternalLink className="h-4 w-4" />
                               </a>
                             </Button>
                           )}
                         </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+                      </CardTitle>
+                    </CardHeader>
 
-        {/* All Projects Grid */}
-        <div>
-          <h3 className="text-2xl font-semibold mb-8">Todos os Projetos</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allProjects.map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                onClick={() => setSelectedProject(project)}
-                className="cursor-pointer"
-              >
-                <Card className="h-full hover:shadow-lg transition-all duration-300 group">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        {categoryConfig[project.category] &&
-                          (() => {
-                            const Icon = categoryConfig[project.category].icon
-                            return <Icon className="h-5 w-5 text-primary" />
-                          })()}
-                        <h4 className="font-semibold group-hover:text-primary transition-colors">{project.name}</h4>
-                      </div>
-                      <Badge className={statusConfig[project.status].color}>{statusConfig[project.status].label}</Badge>
-                    </div>
+                    <CardContent className="flex-1 flex flex-col">
+                      <p className="text-muted-foreground mb-4 flex-1">{project.description}</p>
 
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3">{project.description}</p>
-
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {project.stack.slice(0, 3).map((tech) => (
-                        <Badge key={tech} variant="secondary" className="text-xs">
-                          {tech}
-                        </Badge>
-                      ))}
-                      {project.stack.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{project.stack.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-muted-foreground">
-                      <span>{project.lastUpdate}</span>
-                      <div className="flex items-center gap-2">
-                        {project.stars && (
-                          <span className="flex items-center gap-1">
-                            <Star className="h-3 w-3" />
-                            {project.stars}
-                          </span>
-                        )}
-                        <Button size="sm" variant="ghost" className="h-6 px-2">
-                          Ver detalhes
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Project Detail Modal */}
-        {selectedProject && (
-          <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-            onClick={() => setSelectedProject(null)}
-          >
-            <div
-              className="bg-background rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold mb-2">{selectedProject.name}</h3>
-                    <p className="text-muted-foreground">{selectedProject.longDescription}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" onClick={() => setSelectedProject(null)}>
-                    ×
-                  </Button>
-                </div>
-
-                <Tabs value={activeTab} onValueChange={setActiveTab}>
-                  <TabsList className="grid w-full grid-cols-4">
-                    <TabsTrigger value="overview">Visão Geral</TabsTrigger>
-                    <TabsTrigger value="technical">Técnico</TabsTrigger>
-                    <TabsTrigger value="impact">Impacto</TabsTrigger>
-                    <TabsTrigger value="lessons">Lições</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="overview" className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-semibold mb-2 text-red-600">Problema Identificado</h4>
-                        <p className="text-muted-foreground">{selectedProject.problem}</p>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold mb-2 text-green-600">Solução Implementada</h4>
-                        <p className="text-muted-foreground">{selectedProject.solution}</p>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold mb-2">Onde foi Utilizado</h4>
-                      <p className="text-muted-foreground">{selectedProject.whereUsed}</p>
-                    </div>
-
-                    <div>
-                      <h4 className="font-semibold mb-2">Stack Tecnológica Completa</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProject.stack.map((tech) => (
-                          <Badge key={tech} variant="outline">
-                            {tech}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="technical" className="space-y-6">
-                    <div>
-                      <h4 className="font-semibold mb-4">Decisões Técnicas</h4>
                       <div className="space-y-4">
-                        {selectedProject.technicalDecisions.map((decision, index) => (
-                          <Card key={index}>
-                            <CardContent className="p-4">
-                              <h5 className="font-medium mb-2">{decision.decision}</h5>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                <strong>Motivo:</strong> {decision.reason}
-                              </p>
-                              {decision.alternative && (
-                                <p className="text-sm text-muted-foreground">
-                                  <strong>Alternativa considerada:</strong> {decision.alternative}
-                                </p>
-                              )}
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  </TabsContent>
+                        <div className="flex flex-wrap gap-1">
+                          {project.technologies.slice(0, 3).map((tech) => (
+                            <Badge key={tech} variant="secondary" className="text-xs">
+                              {tech}
+                            </Badge>
+                          ))}
+                          {project.technologies.length > 3 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{project.technologies.length - 3}
+                            </Badge>
+                          )}
+                        </div>
 
-                  <TabsContent value="impact" className="space-y-6">
-                    <div>
-                      <h4 className="font-semibold mb-4">Métricas de Impacto</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {Object.entries(selectedProject.metrics).map(([key, value]) => (
-                          <Card key={key}>
-                            <CardContent className="p-4 text-center">
-                              <TrendingUp className="h-8 w-8 text-primary mx-auto mb-2" />
-                              <p className="font-semibold">{value}</p>
-                              <p className="text-sm text-muted-foreground capitalize">
-                                {key.replace(/([A-Z])/g, " $1").toLowerCase()}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  </TabsContent>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button className="w-full" onClick={() => setSelectedProject(project)}>
+                              Ver Case Study
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle className="flex items-center gap-2">
+                                <CategoryIcon className="h-5 w-5 text-primary" />
+                                {project.title}
+                              </DialogTitle>
+                            </DialogHeader>
 
-                  <TabsContent value="lessons" className="space-y-6">
-                    <div>
-                      <h4 className="font-semibold mb-4">Lições Aprendidas</h4>
-                      <div className="space-y-4">
-                        {selectedProject.lessonsLearned.map((lesson, index) => (
-                          <Card key={index}>
-                            <CardContent className="p-4">
-                              <div className="flex items-start gap-3">
-                                <Badge
-                                  variant="outline"
-                                  className={
-                                    lesson.category === "technical"
-                                      ? "bg-blue-100 text-blue-800"
-                                      : lesson.category === "business"
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-purple-100 text-purple-800"
-                                  }
-                                >
-                                  {lesson.category === "technical"
-                                    ? "Técnica"
-                                    : lesson.category === "business"
-                                      ? "Negócio"
-                                      : "Pessoal"}
-                                </Badge>
-                                <p className="text-sm text-muted-foreground flex-1">{lesson.lesson}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  </TabsContent>
-                </Tabs>
+                            <Tabs defaultValue="overview" className="w-full">
+                              <TabsList className="grid w-full grid-cols-5">
+                                <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+                                <TabsTrigger value="impact">Impacto</TabsTrigger>
+                                <TabsTrigger value="technical">Técnico</TabsTrigger>
+                                <TabsTrigger value="lessons">Aprendizados</TabsTrigger>
+                                <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                              </TabsList>
 
-                <div className="flex gap-4 mt-6 pt-6 border-t">
-                  <Button asChild>
-                    <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
-                      <Github className="h-4 w-4 mr-2" />
-                      Ver Código
-                    </a>
-                  </Button>
-                  {selectedProject.liveUrl && (
-                    <Button variant="outline" asChild>
-                      <a href={selectedProject.liveUrl} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                        Ver Demo
-                      </a>
-                    </Button>
-                  )}
-                  {selectedProject.videoUrl && (
-                    <Button variant="outline" asChild>
-                      <a href={selectedProject.videoUrl} target="_blank" rel="noopener noreferrer">
-                        <Play className="h-4 w-4 mr-2" />
-                        Ver Vídeo
-                      </a>
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+                              <TabsContent value="overview" className="space-y-4">
+                                <img
+                                  src={project.imageUrl || "/placeholder.svg"}
+                                  alt={project.title}
+                                  className="w-full h-64 object-cover rounded-lg"
+                                />
+                                <p className="text-muted-foreground">{project.longDescription}</p>
+                                <div className="flex flex-wrap gap-2">
+                                  {project.technologies.map((tech) => (
+                                    <Badge key={tech} variant="outline">
+                                      {tech}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </TabsContent>
+
+                              <TabsContent value="impact" className="space-y-6">
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                    <AlertTriangle className="h-5 w-5 text-red-500" />
+                                    Problema
+                                  </h3>
+                                  <p className="text-muted-foreground">{project.impact.problem}</p>
+                                </div>
+
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                    <Lightbulb className="h-5 w-5 text-yellow-500" />
+                                    Solução
+                                  </h3>
+                                  <p className="text-muted-foreground">{project.impact.solution}</p>
+                                </div>
+
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                    <TrendingUp className="h-5 w-5 text-green-500" />
+                                    Métricas de Impacto
+                                  </h3>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    {project.impact.metrics.map((metric, index) => (
+                                      <Card key={index}>
+                                        <CardContent className="p-4 text-center">
+                                          <div className="text-2xl font-bold text-primary mb-1">{metric.value}</div>
+                                          <div className="font-medium mb-1">{metric.label}</div>
+                                          <div className="text-sm text-muted-foreground">{metric.improvement}</div>
+                                        </CardContent>
+                                      </Card>
+                                    ))}
+                                  </div>
+                                </div>
+                              </TabsContent>
+
+                              <TabsContent value="technical" className="space-y-6">
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                    <Code className="h-5 w-5 text-blue-500" />
+                                    Decisões Técnicas
+                                  </h3>
+                                  <div className="space-y-4">
+                                    {project.impact.technicalDecisions.map((decision, index) => (
+                                      <Card key={index}>
+                                        <CardContent className="p-4">
+                                          <h4 className="font-semibold mb-2">{decision.decision}</h4>
+                                          <p className="text-muted-foreground text-sm">{decision.reasoning}</p>
+                                        </CardContent>
+                                      </Card>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                    <AlertTriangle className="h-5 w-5 text-orange-500" />
+                                    Desafios Enfrentados
+                                  </h3>
+                                  <ul className="space-y-2">
+                                    {project.impact.challenges.map((challenge, index) => (
+                                      <li key={index} className="flex items-start gap-2">
+                                        <div className="w-2 h-2 bg-orange-500 rounded-full mt-2 flex-shrink-0" />
+                                        <span className="text-muted-foreground">{challenge}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </TabsContent>
+
+                              <TabsContent value="lessons" className="space-y-4">
+                                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                  <BookOpen className="h-5 w-5 text-purple-500" />
+                                  Lições Aprendidas
+                                </h3>
+                                <ul className="space-y-3">
+                                  {project.impact.lessonsLearned.map((lesson, index) => (
+                                    <li key={index} className="flex items-start gap-3">
+                                      <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                      <span className="text-muted-foreground">{lesson}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </TabsContent>
+
+                              <TabsContent value="timeline" className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                  <Card>
+                                    <CardContent className="p-4">
+                                      <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                        <Clock className="h-4 w-4 text-primary" />
+                                        Timeline
+                                      </h3>
+                                      <div className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                          <span className="text-muted-foreground">Início:</span>
+                                          <span>{project.timeline.start}</span>
+                                        </div>
+                                        {project.timeline.end && (
+                                          <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Fim:</span>
+                                            <span>{project.timeline.end}</span>
+                                          </div>
+                                        )}
+                                        <div className="flex justify-between">
+                                          <span className="text-muted-foreground">Duração:</span>
+                                          <span className="font-medium">{project.timeline.duration}</span>
+                                        </div>
+                                      </div>
+                                    </CardContent>
+                                  </Card>
+
+                                  {project.team && (
+                                    <Card>
+                                      <CardContent className="p-4">
+                                        <h3 className="font-semibold mb-2 flex items-center gap-2">
+                                          <Users className="h-4 w-4 text-primary" />
+                                          Equipe
+                                        </h3>
+                                        <div className="space-y-2 text-sm">
+                                          <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Tamanho:</span>
+                                            <span>
+                                              {project.team.size} pessoa{project.team.size > 1 ? "s" : ""}
+                                            </span>
+                                          </div>
+                                          <div className="flex justify-between">
+                                            <span className="text-muted-foreground">Minha função:</span>
+                                            <span className="font-medium">{project.team.role}</span>
+                                          </div>
+                                        </div>
+                                      </CardContent>
+                                    </Card>
+                                  )}
+                                </div>
+                              </TabsContent>
+                            </Tabs>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              )
+            })}
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   )
