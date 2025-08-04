@@ -12,8 +12,6 @@ const knowledgeBase = {
     github: "https://github.com/HenriqueMC17",
   },
 
-  },
-
   skills: {
     backend: ["Java", "Spring Boot", "Node.js", "Python", "PostgreSQL", "MySQL"],
     frontend: ["React", "Next.js", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS"],
