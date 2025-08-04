@@ -12,7 +12,7 @@ const experiences = [
     title: "Auxiliar Comercial",
     company: "CCBEU Sorocaba - Centro Cultural Brasil - Estados Unidos",
     location: "Sorocaba, São Paulo, Brasil",
-    period: "Fevereiro 2025 - Presente (4 meses)",
+    period: "Fevereiro 2025 - Presente (7 meses)",
     description:
       "Atuo no atendimento digital via WhatsApp, realizando o primeiro contato com leads e garantindo o correto registro das interações no sistema Bitrix. Responsável pela atualização das planilhas de atendimentos receptivos e pelo acompanhamento dos testes de nível.",
     responsibilities: [

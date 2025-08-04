@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://henriquemc.dev/sitemap.xml
+
+# Disallow admin areas (if any)
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /scripts/
+
+# Allow important resources
+Allow: /icons/
+Allow: /images/
+Allow: /screenshots/
+
+# Crawl delay (optional)
+Crawl-delay: 1
