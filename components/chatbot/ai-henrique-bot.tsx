@@ -4,62 +4,177 @@ import type React from "react"
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { MessageCircle, X, Send, Bot, User, Download, Github, Mail, Code, Briefcase } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import {
-  X,
-  Send,
-  Bot,
-  User,
-  Download,
-  Briefcase,
-  Code,
-  GraduationCap,
-  Mail,
-  Lightbulb,
-  Rocket,
-  Coffee,
-  Palette,
-} from "lucide-react"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge"
 
 interface Message {
   id: string
-  role: "user" | "assistant"
+  type: "user" | "bot"
   content: string
   timestamp: Date
 }
 
-interface AIHenriqueBotProps {
-  isOpen: boolean
-  onClose: () => void
+interface QuickAction {
+  label: string
+  action: string
+  icon: React.ElementType
 }
 
-export function AIHenriqueBot({ isOpen, onClose }: AIHenriqueBotProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content:
-        "Olá! 👋 Sou o assistente virtual do Henrique Monteiro Cardoso. Posso responder sobre experiência profissional, habilidades técnicas, projetos e muito mais. Como posso ajudá-lo?",
-      timestamp: new Date(),
-    },
-  ])
-  const [inputMessage, setInputMessage] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+export function AIHenriqueBot() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [input, setInput] = useState("")
+  const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
 
-  const quickQuestions = [
-    { icon: Briefcase, text: "Experiência profissional", query: "Conte sobre sua experiência profissional" },
-    { icon: Code, text: "Habilidades técnicas", query: "Quais são suas principais habilidades técnicas?" },
-    { icon: Rocket, text: "Projetos desenvolvidos", query: "Quais projetos você já desenvolveu?" },
-    { icon: GraduationCap, text: "Formação acadêmica", query: "Qual é sua formação acadêmica?" },
-    { icon: Mail, text: "Informações de contato", query: "Como posso entrar em contato?" },
-    { icon: Lightbulb, text: "Disponibilidade", query: "Está disponível para trabalho?" },
-    { icon: Coffee, text: "Experiência com Java", query: "Qual sua experiência com Java e Spring?" },
-    { icon: Palette, text: "Frontend e React", query: "Conte sobre sua experiência com React e frontend" },
+  const quickActions: QuickAction[] = [
+    { label: "Sobre mim", action: "sobre", icon: User },
+    { label: "Projetos", action: "projetos", icon: Briefcase },
+    { label: "Habilidades", action: "skills", icon: Code },
+    { label: "Contato", action: "contato", icon: Mail },
+    { label: "Download CV", action: "cv", icon: Download },
+    { label: "GitHub", action: "github", icon: Github },
   ]
+
+  const knowledgeBase = {
+    sobre: {
+      response: `👋 **Olá! Eu sou o Henrique Monteiro Cardoso**
+
+🚀 **Desenvolvedor Full Stack** especializado em:
+• **Frontend**: React, Next.js, TypeScript, Tailwind CSS
+• **Backend**: Java, Spring Boot, Node.js
+• **Database**: PostgreSQL, MongoDB, MySQL
+• **Cloud**: AWS, Docker, Kubernetes
+
+💡 **Experiência**: 3+ anos desenvolvendo soluções web modernas
+🎯 **Foco**: Performance, UX/UI e arquitetura escalável
+🌟 **Paixão**: Criar experiências digitais inovadoras`,
+      quickReplies: ["projetos", "skills", "contato"],
+    },
+    projetos: {
+      response: `🚀 **Meus Principais Projetos**
+
+**1. Sistema de Gestão Empresarial**
+• Stack: React + Spring Boot + PostgreSQL
+• Features: Dashboard analytics, relatórios em tempo real
+• Deploy: AWS com CI/CD automatizado
+
+**2. E-commerce Platform**
+• Stack: Next.js + Node.js + MongoDB
+• Features: Pagamentos integrados, admin panel
+• Performance: 95+ no Lighthouse
+
+**3. Portfolio Futurista**
+• Stack: Next.js + TypeScript + Framer Motion
+• Features: Animações 3D, PWA, chatbot AI
+• Design: Interface cyber com efeitos holográficos
+
+🔗 **Todos os projetos estão no meu GitHub!**`,
+      quickReplies: ["github", "skills", "contato"],
+    },
+    skills: {
+      response: `⚡ **Stack Tecnológico**
+
+**Frontend (90%)**
+\`\`\`
+React • Next.js • TypeScript • Tailwind CSS
+Framer Motion • Three.js • PWA
+\`\`\`
+
+**Backend (85%)**
+\`\`\`
+Java • Spring Boot • Node.js • Express
+REST APIs • GraphQL • Microservices
+\`\`\`
+
+**Database (80%)**
+\`\`\`
+PostgreSQL • MongoDB • MySQL • Redis
+\`\`\`
+
+**DevOps (75%)**
+\`\`\`
+Docker • Kubernetes • AWS • CI/CD
+GitHub Actions • Vercel • Netlify
+\`\`\`
+
+**Soft Skills**
+• Liderança técnica • Metodologias ágeis • Mentoria`,
+      quickReplies: ["projetos", "contato", "cv"],
+    },
+    contato: {
+      response: `📞 **Vamos Conversar!**
+
+**Contatos Profissionais:**
+• 📧 **Email**: henriquemon17@gmail.com
+• 💼 **LinkedIn**: /in/henrique-monteiro-cardoso
+• 🐙 **GitHub**: /HenriqueMC17
+
+**Disponibilidade:**
+• ✅ Projetos freelance
+• ✅ Oportunidades full-time
+• ✅ Consultoria técnica
+• ✅ Mentoria em desenvolvimento
+
+**Localização**: Brasil 🇧🇷
+**Idiomas**: Português (nativo), Inglês (avançado)
+
+💬 **Respondo em até 24h!**`,
+      quickReplies: ["cv", "github", "sobre"],
+    },
+    cv: {
+      response: `📄 **Curriculum Vitae**
+
+**Download disponível em formato PDF:**
+• Experiência profissional completa
+• Projetos detalhados com tecnologias
+• Certificações e cursos
+• Referências profissionais
+
+🔽 **Clique no botão abaixo para download**
+
+*Arquivo atualizado em ${new Date().toLocaleDateString("pt-BR")}*`,
+      quickReplies: ["contato", "projetos", "sobre"],
+      action: "download_cv",
+    },
+    github: {
+      response: `🐙 **GitHub Profile**
+
+**Estatísticas:**
+• 📊 **50+** repositórios públicos
+• ⭐ **100+** stars recebidas
+• 🔄 **200+** contribuições este ano
+• 🏆 **15+** projetos em produção
+
+**Repositórios em Destaque:**
+• **portfolio-futurista** - Este site que você está vendo!
+• **ecommerce-platform** - Plataforma completa de e-commerce
+• **task-manager-api** - API REST com Spring Boot
+• **react-components-lib** - Biblioteca de componentes
+
+🔗 **GitHub**: github.com/HenriqueMC17`,
+      quickReplies: ["projetos", "skills", "contato"],
+      action: "open_github",
+    },
+    default: {
+      response: `🤖 **Assistente Virtual do Henrique**
+
+Olá! Eu posso te ajudar com informações sobre:
+
+• 👨‍💻 **Perfil profissional** e experiência
+• 🚀 **Projetos** e portfolio
+• ⚡ **Habilidades** técnicas
+• 📞 **Contato** e disponibilidade
+• 📄 **Download do CV**
+• 🐙 **Repositórios GitHub**
+
+**Como posso te ajudar hoje?**`,
+      quickReplies: ["sobre", "projetos", "skills", "contato"],
+    },
+  }
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -70,251 +185,214 @@ export function AIHenriqueBot({ isOpen, onClose }: AIHenriqueBotProps) {
   }, [messages])
 
   useEffect(() => {
-    if (isOpen && inputRef.current) {
-      inputRef.current.focus()
+    if (isOpen && messages.length === 0) {
+      const welcomeMessage: Message = {
+        id: Date.now().toString(),
+        type: "bot",
+        content: knowledgeBase.default.response,
+        timestamp: new Date(),
+      }
+      setMessages([welcomeMessage])
     }
   }, [isOpen])
 
-  const sendMessage = async (messageText: string) => {
-    if (!messageText.trim() || isLoading) return
+  const handleSend = async (message?: string) => {
+    const messageText = message || input.trim()
+    if (!messageText) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
-      role: "user",
+      type: "user",
       content: messageText,
       timestamp: new Date(),
     }
 
     setMessages((prev) => [...prev, userMessage])
-    setInputMessage("")
-    setIsLoading(true)
+    setInput("")
+    setIsTyping(true)
 
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: messageText }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Erro na resposta da API")
-      }
-
-      const data = await response.json()
-
-      const assistantMessage: Message = {
+    // Simulate typing delay
+    setTimeout(() => {
+      const response = getBotResponse(messageText.toLowerCase())
+      const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: data.response,
+        type: "bot",
+        content: response.content,
         timestamp: new Date(),
       }
 
-      setMessages((prev) => [...prev, assistantMessage])
-    } catch (error) {
-      console.error("Erro ao enviar mensagem:", error)
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: "Desculpe, ocorreu um erro. Tente novamente em alguns instantes.",
-        timestamp: new Date(),
+      setMessages((prev) => [...prev, botMessage])
+      setIsTyping(false)
+
+      // Handle special actions
+      if (response.action === "download_cv") {
+        setTimeout(() => {
+          const link = document.createElement("a")
+          link.href = "/cv-henrique-monteiro-cardoso.pdf"
+          link.download = "CV-Henrique-Monteiro-Cardoso.pdf"
+          link.click()
+        }, 1000)
+      } else if (response.action === "open_github") {
+        setTimeout(() => {
+          window.open("https://github.com/HenriqueMC17", "_blank")
+        }, 1000)
       }
-      setMessages((prev) => [...prev, errorMessage])
-    } finally {
-      setIsLoading(false)
+    }, 1500)
+  }
+
+  const getBotResponse = (input: string) => {
+    const keywords = {
+      sobre: ["sobre", "perfil", "quem", "você", "henrique"],
+      projetos: ["projeto", "portfolio", "trabalho", "desenvolvimento"],
+      skills: ["skill", "habilidade", "tecnologia", "stack", "linguagem"],
+      contato: ["contato", "email", "telefone", "linkedin", "falar"],
+      cv: ["cv", "curriculo", "download", "pdf"],
+      github: ["github", "repositorio", "codigo", "git"],
+    }
+
+    for (const [key, words] of Object.entries(keywords)) {
+      if (words.some((word) => input.includes(word))) {
+        const knowledge = knowledgeBase[key as keyof typeof knowledgeBase]
+        return {
+          content: knowledge.response,
+          action: knowledge.action,
+        }
+      }
+    }
+
+    return {
+      content: knowledgeBase.default.response,
+      action: undefined,
     }
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    sendMessage(inputMessage)
-  }
-
-  const handleQuickQuestion = (query: string) => {
-    sendMessage(query)
-  }
-
-  const handleDownloadCV = () => {
-    window.open(
-      "https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2IvYy9kZWZjNmQ2ZGIwNzRiZjUyL0VZOEtVd2FoMXo5Qmxxcm9fRk1Jd1FFQm5sQnNwS1pIY0VqNWRZWDZ0QWZUYXc%5FZT00NjZyT1k&cid=DEFC6D6DB074BF52&id=DEFC6D6DB074BF52%21s06530a8fd7a1413f96aae8fc5308c101&parId=DEFC6D6DB074BF52%21sd11ecb22e073453eaa45bf1f2f3f921a&o=OneUp",
-      "_blank",
-    )
+  const handleQuickAction = (action: string) => {
+    handleSend(action)
   }
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={onClose}
+    <>
+      {/* Chat Toggle Button */}
+      <motion.div
+        className="fixed bottom-6 right-6 z-50"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 2 }}
+      >
+        <Button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
         >
+          {isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+        </Button>
+      </motion.div>
+
+      {/* Chat Window */}
+      <AnimatePresence>
+        {isOpen && (
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl h-[80vh] max-h-[600px] bg-background rounded-2xl shadow-2xl border border-border/50 flex flex-col overflow-hidden"
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="fixed bottom-24 right-6 w-96 h-[600px] bg-background/95 backdrop-blur-md border border-border/50 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-border/50 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+            <div className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-b border-border/50 p-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="w-10 h-10 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full flex items-center justify-center">
+                  <Bot className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground">HenriqueBot</h3>
-                  <p className="text-sm text-muted-foreground">Assistente Virtual</p>
+                  <h3 className="font-orbitron font-semibold text-sm">AI Henrique Bot</h3>
+                  <p className="text-xs text-muted-foreground">
+                    <span className="inline-block w-2 h-2 bg-green-400 rounded-full mr-1 animate-pulse" />
+                    Online
+                  </p>
                 </div>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDownloadCV}
-                  className="hidden sm:flex items-center space-x-1 text-xs bg-transparent"
-                >
-                  <Download className="w-3 h-3" />
-                  <span>CV</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onClose}
-                  className="rounded-full hover:bg-red-500/10 hover:text-red-500"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
               </div>
             </div>
 
-            {/* Quick Questions */}
-            {messages.length <= 1 && (
-              <div className="p-4 border-b border-border/50 bg-muted/30">
-                <p className="text-sm text-muted-foreground mb-3">Perguntas rápidas:</p>
-                <div className="grid grid-cols-2 gap-2">
-                  {quickQuestions.map((question, index) => (
-                    <motion.button
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      onClick={() => handleQuickQuestion(question.query)}
-                      className="flex items-center space-x-2 p-2 text-xs bg-background hover:bg-muted rounded-lg border border-border/50 transition-colors text-left"
-                    >
-                      <question.icon className="w-3 h-3 text-blue-500 flex-shrink-0" />
-                      <span className="truncate">{question.text}</span>
-                    </motion.button>
-                  ))}
-                </div>
-              </div>
-            )}
-
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((message) => (
-                <motion.div
-                  key={message.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`flex items-start space-x-2 max-w-[80%] ${message.role === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {messages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        message.role === "user"
-                          ? "bg-gradient-to-r from-green-500 to-emerald-500"
-                          : "bg-gradient-to-r from-blue-600 to-purple-600"
+                      className={`max-w-[80%] p-3 rounded-2xl ${
+                        message.type === "user"
+                          ? "bg-gradient-to-r from-cyan-500 to-purple-500 text-white"
+                          : "bg-muted/50 text-foreground"
                       }`}
                     >
-                      {message.role === "user" ? (
-                        <User className="w-4 h-4 text-white" />
-                      ) : (
-                        <Bot className="w-4 h-4 text-white" />
-                      )}
-                    </div>
-                    <Card
-                      className={`p-3 ${
-                        message.role === "user"
-                          ? "bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20"
-                          : "bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20"
-                      }`}
-                    >
-                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <div className="text-sm whitespace-pre-wrap">{message.content}</div>
+                      <div className="text-xs opacity-70 mt-1">
                         {message.timestamp.toLocaleTimeString("pt-BR", {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
-                      </p>
-                    </Card>
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Loading indicator */}
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex justify-start"
-                >
-                  <div className="flex items-start space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-white" />
-                    </div>
-                    <Card className="p-3 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20">
-                      <div className="flex space-x-1">
-                        <div
-                          className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-                          style={{ animationDelay: "0ms" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-                          style={{ animationDelay: "150ms" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"
-                          style={{ animationDelay: "300ms" }}
-                        ></div>
                       </div>
-                    </Card>
-                  </div>
-                </motion.div>
-              )}
+                    </div>
+                  </motion.div>
+                ))}
 
-              <div ref={messagesEndRef} />
-            </div>
+                {isTyping && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
+                    <div className="bg-muted/50 p-3 rounded-2xl">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" />
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-100" />
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-bounce delay-200" />
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
 
-            {/* Input */}
-            <div className="p-4 border-t border-border/50 bg-muted/30">
-              <form onSubmit={handleSubmit} className="flex space-x-2">
+                <div ref={messagesEndRef} />
+              </div>
+            </ScrollArea>
+
+            {/* Quick Actions */}
+            <div className="p-4 border-t border-border/50">
+              <div className="flex flex-wrap gap-2 mb-3">
+                {quickActions.slice(0, 4).map((action) => (
+                  <Badge
+                    key={action.action}
+                    variant="secondary"
+                    className="cursor-pointer hover:bg-cyan-500/20 transition-colors"
+                    onClick={() => handleQuickAction(action.action)}
+                  >
+                    <action.icon className="h-3 w-3 mr-1" />
+                    {action.label}
+                  </Badge>
+                ))}
+              </div>
+
+              {/* Input */}
+              <div className="flex space-x-2">
                 <Input
-                  ref={inputRef}
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Digite sua pergunta..."
-                  disabled={isLoading}
-                  className="flex-1 bg-background border-border/50 focus:border-blue-500/50"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                  placeholder="Digite sua mensagem..."
+                  className="flex-1 bg-muted/50 border-border/50 focus:border-cyan-400"
                 />
                 <Button
-                  type="submit"
-                  disabled={!inputMessage.trim() || isLoading}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  onClick={() => handleSend()}
+                  disabled={!input.trim() || isTyping}
+                  className="bg-gradient-to-r from-cyan-500 to-purple-500 hover:from-cyan-600 hover:to-purple-600"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="h-4 w-4" />
                 </Button>
-              </form>
+              </div>
             </div>
           </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

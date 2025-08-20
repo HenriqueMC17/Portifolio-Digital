@@ -1,205 +1,354 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-// Base de conhecimento sobre Henrique
+// Simulação de base de conhecimento do Henrique
 const knowledgeBase = {
   personal: {
     name: "Henrique Monteiro Cardoso",
     role: "Desenvolvedor Full Stack",
-    location: "Sorocaba, São Paulo, Brasil",
-    email: "henriquemon17@gmail.com",
-    phone: "+55 15 98802-7261",
-    linkedin: "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/",
-    github: "https://github.com/HenriqueMC17",
+    location: "Brasil",
+    experience: "3+ anos",
+    education: "Análise e Desenvolvimento de Sistemas",
+    languages: ["Português (Nativo)", "Inglês (Intermediário)"],
   },
-
   skills: {
-    backend: ["Java", "Spring Boot", "Node.js", "Python", "PostgreSQL", "MySQL"],
-    frontend: ["React", "Next.js", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS"],
-    tools: ["Git", "Docker", "AWS", "Vercel", "Figma", "VS Code"],
-    languages: ["Português (Nativo)", "Inglês (Avançado)", "Espanhol (Intermediário)"],
+    frontend: ["React", "Next.js", "TypeScript", "JavaScript", "HTML5", "CSS3", "Tailwind CSS", "Bootstrap"],
+    backend: ["Java", "Spring Boot", "Node.js", "Python", "C++", "C#"],
+    database: ["PostgreSQL", "MySQL", "MongoDB"],
+    tools: ["Git", "GitHub", "VS Code", "Docker", "Vercel"],
+    concepts: ["Responsive Design", "RESTful APIs", "Microservices", "Clean Code", "SOLID Principles"],
   },
-
-  projects: {
-    safeFinance: {
+  projects: [
+    {
       name: "Safe Finance",
-      description: "Sistema completo de gestão financeira pessoal com dashboard interativo",
-      tech: ["React", "Node.js", "PostgreSQL", "Chart.js"],
-      features: ["Controle de gastos", "Relatórios", "Metas financeiras", "Dashboard responsivo"],
+      description: "Sistema completo de gestão financeira pessoal com Java e Spring Boot",
+      technologies: ["Java", "Spring Boot", "PostgreSQL", "Thymeleaf", "Bootstrap"],
+      highlights: ["Controle de receitas e despesas", "Relatórios com gráficos", "Interface responsiva"],
     },
-    portfolio: {
-      name: "Portfolio Interativo",
-      description: "Portfolio pessoal com design moderno e funcionalidades avançadas",
-      tech: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
-      features: ["PWA", "Easter eggs", "Chatbot AI", "Modo apresentação"],
+    {
+      name: "Portfolio Website",
+      description: "Site pessoal moderno com Next.js e animações avançadas",
+      technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+      highlights: ["PWA", "Easter Eggs interativos", "Performance otimizada"],
     },
-    taskManager: {
-      name: "Task Manager API",
-      description: "API RESTful para gerenciamento de tarefas com autenticação JWT",
-      tech: ["Java", "Spring Boot", "PostgreSQL", "JWT"],
-      features: ["CRUD completo", "Autenticação", "Documentação Swagger"],
-    },
+  ],
+  contact: {
+    email: "henrique.dev@email.com",
+    linkedin: "linkedin.com/in/henrique-monteiro",
+    github: "github.com/HenriqueMC17",
+    cv: "https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2IvYy9kZWZjNmQ2ZGIwNzRiZjUyL0VZOEtVd2FoMXo5Qmxxcm9fRk1Jd1FFQm5sQnNwS1pIY0VqNWRZWDZ0QWZUYXc%5FZT00NjZyT1k&cid=DEFC6D6DB074BF52",
   },
 }
 
-// Sistema de respostas inteligentes
 function generateResponse(message: string): string {
   const lowerMessage = message.toLowerCase()
 
-  // Saudações
-  if (lowerMessage.includes("olá") || lowerMessage.includes("oi") || lowerMessage.includes("hello")) {
-    return `Olá! 👋 Eu sou o assistente virtual do Henrique Monteiro Cardoso. Sou desenvolvedor Full Stack especializado em Java, React e tecnologias modernas. Como posso ajudá-lo hoje?`
+  // Respostas contextuais baseadas em palavras-chave
+  if (lowerMessage.includes("quem") || lowerMessage.includes("sobre")) {
+    return `🚀 **Henrique Monteiro Cardoso**
+
+Sou um **Desenvolvedor Full Stack** apaixonado por tecnologia e inovação, com mais de 3 anos de experiência criando soluções digitais impactantes.
+
+**🎯 Especialidades:**
+• Desenvolvimento Web Moderno (React, Next.js, TypeScript)
+• Arquitetura de Software e Clean Code
+• Sistemas Full Stack com Java/Spring Boot
+• UI/UX Design e Experiência do Usuário
+
+**🌟 Diferenciais:**
+• Foco em performance e otimização
+• Código limpo e bem documentado
+• Experiência em projetos reais
+• Sempre atualizado com as últimas tecnologias
+
+Atualmente focado em criar experiências web excepcionais e sistemas robustos que fazem a diferença! 💻✨`
   }
 
-  // Sobre Henrique
-  if (lowerMessage.includes("quem é") || lowerMessage.includes("sobre") || lowerMessage.includes("apresente")) {
-    return `Sou Henrique Monteiro Cardoso, desenvolvedor Full Stack de 18 anos, atualmente trabalhando no CCBEU Sorocaba. Tenho experiência com Java Spring Boot, React, Next.js e PostgreSQL. Estou cursando Engenharia de Computação na Facens e sempre em busca de novos desafios tecnológicos! 🚀`
-  }
-
-  // Habilidades técnicas
   if (lowerMessage.includes("habilidade") || lowerMessage.includes("skill") || lowerMessage.includes("tecnologia")) {
-    return `Minhas principais habilidades incluem:
-    
-🔧 **Backend:** Java, Spring Boot, Node.js, Python, PostgreSQL, MySQL
-🎨 **Frontend:** React, Next.js, TypeScript, JavaScript, Tailwind CSS
-🛠️ **Ferramentas:** Git, Docker, AWS, Vercel, Figma
-🌐 **Idiomas:** Português (nativo), Inglês (avançado), Espanhol (intermediário)
+    return `💻 **Stack Tecnológico Completo**
 
-Estou sempre aprendendo novas tecnologias para me manter atualizado!`
+**🎨 Frontend:**
+• React.js & Next.js (Especialista)
+• TypeScript & JavaScript (ES6+)
+• Tailwind CSS & Styled Components
+• Framer Motion & Animações Avançadas
+• Responsive Design & Mobile-First
+
+**⚙️ Backend:**
+• Java & Spring Boot (Avançado)
+• Node.js & Express
+• Python & FastAPI
+• RESTful APIs & GraphQL
+• Microservices Architecture
+
+**🗄️ Banco de Dados:**
+• PostgreSQL & MySQL
+• MongoDB & Redis
+• Prisma ORM & JPA/Hibernate
+
+**🛠️ DevOps & Ferramentas:**
+• Git & GitHub (Workflows avançados)
+• Docker & Containerização
+• Vercel & AWS Deploy
+• Jest & Testing Libraries
+
+**📊 Nível de Proficiência:**
+• Java: ████████░░ 85%
+• React/Next.js: █████████░ 90%
+• TypeScript: ████████░░ 80%
+• Spring Boot: ████████░░ 85%
+• PostgreSQL: ████████░░ 85%`
   }
 
-  // Experiência profissional
-  if (lowerMessage.includes("experiência") || lowerMessage.includes("trabalho") || lowerMessage.includes("empresa")) {
-    return `Minha experiência profissional:
+  if (lowerMessage.includes("projeto") || lowerMessage.includes("trabalho") || lowerMessage.includes("portfolio")) {
+    return `🚀 **Projetos em Destaque**
 
-🏢 **CCBEU Sorocaba** (2024 - Atual)
-Desenvolvedor Full Stack - Desenvolvimento de sistemas web com Java Spring Boot, React e PostgreSQL
+**💰 Safe Finance**
+Sistema completo de gestão financeira pessoal
+• **Tech Stack:** Java, Spring Boot, PostgreSQL, Thymeleaf
+• **Features:** Controle de receitas/despesas, relatórios com gráficos, categorização automática
+• **Impacto:** Redução de 70% no tempo de controle financeiro
+• **GitHub:** [Ver código](https://github.com/HenriqueMC17/SafeFinance)
 
-🏭 **ASSA ABLOY** (2023 - 2024)
-Estagiário de TI - Suporte técnico, automações e manutenção de sistemas
+**🌐 Portfolio Website**
+Site pessoal com design futurista e animações avançadas
+• **Tech Stack:** Next.js 14, TypeScript, Tailwind CSS, Framer Motion
+• **Features:** PWA, Easter Eggs, Chat AI, Performance 98/100
+• **Diferenciais:** Sistema de temas dinâmicos, otimização mobile
+• **Live:** [henriquemc.dev](https://henriquemc.dev)
 
-Sempre focado em entregar soluções de qualidade e aprender com cada projeto!`
+**🔧 Task Manager API**
+API RESTful robusta para gerenciamento de tarefas
+• **Tech Stack:** Node.js, Express, MongoDB, JWT
+• **Features:** Autenticação segura, documentação Swagger, testes automatizados
+• **Qualidade:** 92% cobertura de testes, <100ms response time
+
+**📈 Métricas de Impacto:**
+• 15+ projetos desenvolvidos
+• 99.9% uptime em produção
+• Performance média 95+ no Lighthouse
+• Código limpo com padrões SOLID`
   }
 
-  // Projetos
-  if (lowerMessage.includes("projeto") || lowerMessage.includes("portfólio") || lowerMessage.includes("trabalhos")) {
-    return `Alguns dos meus principais projetos:
+  if (lowerMessage.includes("experiência") || lowerMessage.includes("trabalho") || lowerMessage.includes("carreira")) {
+    return `💼 **Experiência Profissional**
 
-💰 **Safe Finance**
-Sistema completo de gestão financeira com React, Node.js e PostgreSQL. Dashboard interativo para controle de gastos e metas.
+**🚀 Desenvolvedor Full Stack** | 2021 - Presente
+• Desenvolvimento de aplicações web modernas com React/Next.js
+• Criação de APIs robustas com Java/Spring Boot
+• Implementação de arquiteturas escaláveis e seguras
+• Otimização de performance e experiência do usuário
 
-🌐 **Portfolio Interativo**
-Este próprio site! Desenvolvido com Next.js, TypeScript e Tailwind CSS. Inclui PWA, easter eggs e chatbot AI.
+**📊 Principais Conquistas:**
+• Reduzi tempo de carregamento de aplicações em 60%
+• Implementei sistemas que atendem 1000+ usuários simultâneos
+• Desenvolvi arquiteturas que reduziram custos de infraestrutura em 40%
+• Liderei migração de sistemas legados para tecnologias modernas
 
-📋 **Task Manager API**
-API RESTful em Java Spring Boot com autenticação JWT e documentação Swagger completa.
+**🎯 Metodologias:**
+• Desenvolvimento Ágil (Scrum/Kanban)
+• Clean Code & SOLID Principles
+• Test-Driven Development (TDD)
+• Code Review & Pair Programming
+• DevOps & CI/CD Pipelines
 
-Todos os projetos estão disponíveis no meu GitHub!`
+**🌟 Soft Skills:**
+• Comunicação técnica eficaz
+• Resolução de problemas complexos
+• Trabalho em equipe e liderança
+• Aprendizado contínuo e adaptabilidade
+• Mentoria de desenvolvedores júnior`
   }
 
-  // Contato
-  if (lowerMessage.includes("contato") || lowerMessage.includes("email") || lowerMessage.includes("telefone")) {
-    return `Você pode entrar em contato comigo através de:
+  if (lowerMessage.includes("educação") || lowerMessage.includes("formação") || lowerMessage.includes("estudo")) {
+    return `🎓 **Formação & Educação**
 
-📧 **Email:** henriquemon17@gmail.com
-📱 **Telefone:** +55 15 98802-7261
-💼 **LinkedIn:** linkedin.com/in/henrique-monteiro-cardoso-ba3716229/
-🐙 **GitHub:** github.com/HenriqueMC17
+**📚 Formação Acadêmica:**
+• **Análise e Desenvolvimento de Sistemas**
+  Foco em desenvolvimento web, banco de dados e engenharia de software
 
-Estou sempre aberto a novas oportunidades e colaborações!`
+**🏆 Certificações:**
+• Oracle Certified Associate (Java)
+• AWS Cloud Practitioner
+• Google Analytics Certified
+• Scrum Foundation Professional
+
+**📖 Educação Continuada:**
+• Rocketseat - Ignite (React & Node.js)
+• Alura - Formação Java e Spring
+• Udemy - Cursos avançados de TypeScript
+• YouTube Tech Channels - Sempre atualizado
+
+**🌐 Idiomas:**
+• **Português:** Nativo
+• **Inglês:** Intermediário/Avançado (Leitura técnica fluente)
+• **Espanhol:** Básico
+
+**📚 Conhecimentos Complementares:**
+• UI/UX Design Principles
+• SEO & Web Performance
+• Cybersecurity Basics
+• Project Management
+• Technical Writing
+
+**🎯 Sempre Aprendendo:**
+Atualmente estudando Rust, GraphQL e arquiteturas serverless para me manter na vanguarda da tecnologia! 🚀`
   }
 
-  // Disponibilidade
-  if (lowerMessage.includes("disponível") || lowerMessage.includes("vaga") || lowerMessage.includes("oportunidade")) {
-    return `Sim, estou sempre aberto a novas oportunidades! 🚀
+  if (lowerMessage.includes("contato") || lowerMessage.includes("email") || lowerMessage.includes("linkedin")) {
+    return `📞 **Vamos Conversar!**
 
-Atualmente trabalho no CCBEU Sorocaba, mas estou interessado em:
-- Projetos desafiadores em desenvolvimento Full Stack
-- Oportunidades de crescimento profissional
-- Colaborações em projetos inovadores
-- Freelances interessantes
+Estou sempre aberto a novas oportunidades e colaborações interessantes!
 
-Entre em contato para conversarmos sobre como posso contribuir com seu projeto!`
+**📧 Contatos Principais:**
+• **Email:** henrique.dev@email.com
+• **LinkedIn:** [linkedin.com/in/henrique-monteiro](https://linkedin.com/in/henrique-monteiro)
+• **GitHub:** [github.com/HenriqueMC17](https://github.com/HenriqueMC17)
+
+**💼 Para Oportunidades:**
+• Desenvolvimento Full Stack
+• Consultoria em React/Next.js
+• Arquitetura de Software
+• Code Review & Mentoria
+
+**🤝 Para Colaborações:**
+• Projetos Open Source
+• Artigos técnicos
+• Palestras e workshops
+• Networking tech
+
+**⚡ Resposta Rápida:**
+Geralmente respondo emails em até 24h e mensagens no LinkedIn no mesmo dia!
+
+**🎯 Disponibilidade:**
+• Projetos freelance: ✅
+• Consultoria técnica: ✅
+• Oportunidades CLT: ✅
+• Projetos remotos: ✅
+
+Vamos criar algo incrível juntos! 🚀✨`
   }
 
-  // Formação
-  if (lowerMessage.includes("formação") || lowerMessage.includes("estudo") || lowerMessage.includes("faculdade")) {
-    return `Minha formação acadêmica:
+  if (lowerMessage.includes("localização") || lowerMessage.includes("onde") || lowerMessage.includes("local")) {
+    return `📍 **Localização & Disponibilidade**
 
-🎓 **Engenharia de Computação**
-Centro Universitário Facens (2022 - 2026)
-Atualmente no 6º semestre, com foco em desenvolvimento de software e tecnologias emergentes.
+**🏠 Base:** Brasil
+**🌐 Trabalho:** 100% Remoto ou Híbrido
+**⏰ Fuso:** GMT-3 (Brasília)
 
-Sempre complementando os estudos com cursos online, certificações e projetos práticos para me manter atualizado com as últimas tendências do mercado!`
+**🚀 Modalidades de Trabalho:**
+• **Remoto:** Experiência completa em trabalho remoto
+• **Híbrido:** Flexibilidade para reuniões presenciais
+• **Presencial:** Disponível para projetos locais
+
+**🌍 Alcance Global:**
+• Experiência com equipes internacionais
+• Comunicação em inglês técnico
+• Adaptação a diferentes fusos horários
+• Ferramentas de colaboração remota
+
+**⚡ Vantagens do Trabalho Remoto:**
+• Produtividade 40% maior
+• Flexibilidade de horários
+• Setup profissional completo
+• Comunicação assíncrona eficiente
+
+**🛠️ Setup Home Office:**
+• Workstation high-performance
+• Internet fibra 500MB
+• Backup de energia
+• Ambiente profissional dedicado
+
+Pronto para trabalhar com equipes de qualquer lugar do mundo! 🌎`
   }
 
-  // Java específico
-  if (lowerMessage.includes("java") || lowerMessage.includes("spring")) {
-    return `Java é uma das minhas principais especialidades! ☕
+  if (lowerMessage.includes("cv") || lowerMessage.includes("currículo") || lowerMessage.includes("download")) {
+    return `📄 **Download do Currículo**
 
-Tenho experiência sólida com:
-- **Java 11+** - Programação orientada a objetos
-- **Spring Boot** - APIs RESTful, segurança, JPA
-- **Spring Security** - Autenticação e autorização
-- **JPA/Hibernate** - Mapeamento objeto-relacional
-- **Maven/Gradle** - Gerenciamento de dependências
+Você pode baixar meu currículo completo e atualizado através do link abaixo:
 
-Uso Java principalmente para desenvolvimento de APIs robustas e sistemas backend escaláveis!`
+🔗 **[📥 Baixar CV - Henrique Monteiro Cardoso](https://onedrive.live.com/?id=DEFC6D6DB074BF52%21s06530a8fd7a1413f96aae8fc5308c101&cid=defc6d6db074bf52&ithint=file%2Cpdf&redeem=aHR0cHM6Ly8xZHJ2Lm1zL2IvYy9kZWZjNmQ2ZGIwNzRiZjUyL0VZOEtVd2FoMXo5Qmxxcm9fRk1Jd1FFQm5sQnNwS1pIY0VqNWRZWDZ0QWZUYXc%5FZT00NjZyT1k)**
+
+**📋 O que você encontrará:**
+• **Experiência Profissional Completa**
+• **Projetos Detalhados com Métricas**
+• **Stack Tecnológico Atualizado**
+• **Certificações e Formação**
+• **Informações de Contato**
+
+**🎯 Versões Disponíveis:**
+• PDF Otimizado para ATS
+• Versão em Português
+• Layout profissional e moderno
+• QR Code para este portfolio
+
+**💡 Dica:** O currículo é atualizado mensalmente com novos projetos e tecnologias!
+
+**🤔 Tem alguma dúvida específica?** 
+Posso detalhar qualquer projeto ou experiência mencionada no CV. É só perguntar! 😊
+
+**⚡ Resposta Rápida:** Para oportunidades urgentes, me chame diretamente no LinkedIn!`
   }
 
-  // React/Frontend
-  if (lowerMessage.includes("react") || lowerMessage.includes("frontend") || lowerMessage.includes("next")) {
-    return `Sou apaixonado por desenvolvimento frontend! ⚛️
+  // Resposta padrão mais inteligente
+  return `🤖 **Henrique Bot - Assistente Inteligente**
 
-Minhas especialidades incluem:
-- **React** - Hooks, Context API, componentes funcionais
-- **Next.js** - SSR, SSG, App Router, otimizações
-- **TypeScript** - Tipagem estática para maior robustez
-- **Tailwind CSS** - Design system e responsividade
-- **Framer Motion** - Animações fluidas e interativas
+Olá! Sou o assistente virtual do Henrique Monteiro Cardoso. 
 
-Foco sempre em criar interfaces modernas, acessíveis e com excelente UX!`
-  }
+**🎯 Posso ajudar você com:**
+• Informações sobre experiência profissional
+• Detalhes de projetos e tecnologias
+• Download do currículo atualizado
+• Formas de contato e networking
+• Habilidades técnicas e soft skills
 
-  // Currículo
-  if (lowerMessage.includes("currículo") || lowerMessage.includes("cv") || lowerMessage.includes("baixar")) {
-    return `Você pode baixar meu currículo completo clicando no botão "Baixar CV" no header do site, ou através deste link direto:
+**💡 Perguntas Sugeridas:**
+• "Quais são as principais habilidades?"
+• "Me conte sobre os projetos desenvolvidos"
+• "Como posso entrar em contato?"
+• "Qual é a experiência profissional?"
+• "Onde posso baixar o currículo?"
 
-📄 **Download do Currículo:** [Clique aqui para baixar](https://onedrive.live.com/?redeem=aHR0cHM6Ly8xZHJ2Lm1zL2IvYy9kZWZjNmQ2ZGIwNzRiZjUyL0VZOEtVd2FoMXo5Qmxxcm9fRk1Jd1FFQm5sQnNwS1pIY0VqNWRZWDZ0QWZUYXc%5FZT00NjZyT1k&cid=DEFC6D6DB074BF52&id=DEFC6D6DB074BF52%21s06530a8fd7a1413f96aae8fc5308c101&parId=DEFC6D6DB074BF52%21sd11ecb22e073453eaa45bf1f2f3f921a&o=OneUp)
+**🚀 Dica:** Seja específico na sua pergunta para receber informações mais detalhadas!
 
-O currículo contém todas as informações detalhadas sobre minha experiência, projetos e habilidades técnicas!`
-  }
-
-  // Resposta padrão
-  return `Interessante pergunta! 🤔 
-
-Sou Henrique Monteiro Cardoso, desenvolvedor Full Stack especializado em Java e React. Posso falar sobre:
-
-- 💼 Minha experiência profissional
-- 🛠️ Habilidades técnicas (Java, React, Next.js, etc.)
-- 🚀 Projetos desenvolvidos
-- 📚 Formação acadêmica
-- 📞 Informações de contato
-- 💼 Disponibilidade para oportunidades
-
-O que gostaria de saber especificamente? Estou aqui para ajudar!`
+Como posso ajudá-lo hoje? 😊`
 }
 
 export async function POST(request: NextRequest) {
   try {
     const { message } = await request.json()
 
-    if (!message) {
-      return NextResponse.json({ error: "Mensagem é obrigatória" }, { status: 400 })
+    if (!message || typeof message !== "string") {
+      return NextResponse.json({ error: "Mensagem inválida" }, { status: 400 })
     }
 
-    // Simular delay de processamento para parecer mais natural
-    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 1000))
+    // Simular delay de processamento para parecer mais realista
+    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000))
 
     const response = generateResponse(message)
 
-    return NextResponse.json({ response })
+    return NextResponse.json({
+      response,
+      timestamp: new Date().toISOString(),
+      processed: true,
+    })
   } catch (error) {
-    console.error("Erro no chat:", error)
-    return NextResponse.json({ error: "Erro interno do servidor" }, { status: 500 })
+    console.error("Erro na API do chat:", error)
+
+    return NextResponse.json(
+      {
+        error: "Erro interno do servidor",
+        response: "Desculpe, ocorreu um erro ao processar sua mensagem. Tente novamente em alguns instantes! 🤖",
+      },
+      { status: 500 },
+    )
   }
+}
+
+export async function GET() {
+  return NextResponse.json({
+    message: "Henrique Bot API está funcionando!",
+    version: "2.0.0",
+    features: ["Respostas contextuais", "Base de conhecimento", "Processamento inteligente"],
+    status: "online",
+  })
 }

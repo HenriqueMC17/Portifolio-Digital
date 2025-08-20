@@ -1,172 +1,228 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Home, ArrowLeft, Search, Zap } from "lucide-react"
+import { Home, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { useEffect, useState } from "react"
 
 export default function NotFound() {
+  const [mounted, setMounted] = useState(false)
   const [glitchText, setGlitchText] = useState("404")
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   useEffect(() => {
-    const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?"
-    const originalText = "404"
-
-    const glitchInterval = setInterval(() => {
-      let newText = ""
-      for (let i = 0; i < originalText.length; i++) {
-        if (Math.random() < 0.1) {
-          newText += glitchChars[Math.floor(Math.random() * glitchChars.length)]
-        } else {
-          newText += originalText[i]
-        }
-      }
-      setGlitchText(newText)
-
-      setTimeout(() => setGlitchText(originalText), 100)
-    }, 2000)
-
-    return () => clearInterval(glitchInterval)
+    setMounted(true)
   }, [])
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
+    if (!mounted) return
+
+    const glitchChars = ["4", "0", "4", "█", "▓", "▒", "░"]
+    let glitchInterval: NodeJS.Timeout
+
+    const startGlitch = () => {
+      glitchInterval = setInterval(() => {
+        const randomText = Array.from(
+          { length: 3 },
+          () => glitchChars[Math.floor(Math.random() * glitchChars.length)],
+        ).join("")
+        setGlitchText(randomText)
+
+        setTimeout(() => setGlitchText("404"), 100)
+      }, 2000)
     }
 
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+    startGlitch()
+    return () => clearInterval(glitchInterval)
+  }, [mounted])
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-6xl font-bold mb-4">404</h1>
+          <p className="text-xl mb-8">Página não encontrada</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4 overflow-hidden relative">
-      {/* Animated Background */}
-      <div className="absolute inset-0 opacity-10">
-        {Array.from({ length: 50 }).map((_, i) => (
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(20)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 bg-primary rounded-full"
-            initial={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
+            className="absolute w-2 h-2 bg-primary/20 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
             }}
             animate={{
-              x: Math.random() * window.innerWidth,
-              y: Math.random() * window.innerHeight,
+              scale: [0, 1, 0],
+              opacity: [0, 1, 0],
             }}
             transition={{
-              duration: Math.random() * 20 + 10,
+              duration: 3,
               repeat: Number.POSITIVE_INFINITY,
-              repeatType: "reverse",
+              delay: Math.random() * 2,
             }}
           />
         ))}
       </div>
 
-      {/* Mouse Follower */}
       <motion.div
-        className="fixed w-4 h-4 bg-primary/20 rounded-full pointer-events-none z-50"
-        animate={{
-          x: mousePosition.x - 8,
-          y: mousePosition.y - 8,
-        }}
-        transition={{ type: "spring", stiffness: 500, damping: 28 }}
-      />
-
-      <div className="max-w-2xl mx-auto text-center space-y-8 relative z-10">
-        {/* 404 Glitch Effect */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, type: "spring" }}
-          className="relative"
-        >
-          <h1 className="text-8xl md:text-9xl font-bold text-primary font-mono relative">
-            {glitchText}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center z-10"
+      >
+        <Card className="glass-card border-2 border-primary/20 shadow-2xl max-w-2xl mx-auto">
+          <CardContent className="p-12">
+            {/* Glitch 404 */}
             <motion.div
-              className="absolute inset-0 text-red-500 opacity-50"
+              className="mb-8"
               animate={{
-                x: [0, -2, 2, 0],
-                y: [0, 2, -2, 0],
+                textShadow: ["0 0 0px #10b981", "2px 2px 0px #10b981, -2px -2px 0px #3b82f6", "0 0 0px #10b981"],
+              }}
+              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
+            >
+              <h1 className="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-purple-500 mb-4 font-mono">
+                {glitchText}
+              </h1>
+            </motion.div>
+
+            {/* Error Message */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Página Não Encontrada</h2>
+              <p className="text-lg text-muted-foreground mb-6 max-w-md mx-auto">
+                Ops! Parece que você se perdeu no espaço digital. A página que você está procurando não existe.
+              </p>
+            </motion.div>
+
+            {/* Animated Robot */}
+            <motion.div
+              className="mb-8"
+              animate={{
+                y: [0, -10, 0],
+                rotate: [0, 5, -5, 0],
               }}
               transition={{
-                duration: 0.2,
+                duration: 4,
                 repeat: Number.POSITIVE_INFINITY,
-                repeatType: "reverse",
+                ease: "easeInOut",
               }}
             >
-              {glitchText}
-            </motion.div>
-          </h1>
-        </motion.div>
-
-        {/* Error Message */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="space-y-4"
-        >
-          <h2 className="text-2xl md:text-3xl font-semibold">Página Não Encontrada</h2>
-          <p className="text-muted-foreground text-lg max-w-md mx-auto">
-            Parece que você se perdeu no ciberespaço. Esta página não existe ou foi movida para outra dimensão.
-          </p>
-        </motion.div>
-
-        {/* Interactive Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-        >
-          <Card className="glass border-primary/20 hover:border-primary/40 transition-all duration-300">
-            <CardContent className="p-8">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Button asChild className="group" variant="default">
-                  <Link href="/">
-                    <Home className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Início
-                  </Link>
-                </Button>
-
-                <Button asChild className="group bg-transparent" variant="outline">
-                  <Link href="javascript:history.back()">
-                    <ArrowLeft className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Voltar
-                  </Link>
-                </Button>
-
-                <Button asChild className="group" variant="secondary">
-                  <Link href="/#projects">
-                    <Search className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
-                    Projetos
-                  </Link>
-                </Button>
+              <div className="text-6xl mb-4">🤖</div>
+              <div className="text-sm text-muted-foreground italic">
+                "Erro 404: Humor não encontrado... só brincadeira! 😄"
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+            </motion.div>
 
-        {/* Easter Egg */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="text-xs text-muted-foreground/50 font-mono"
-        >
-          <p>
-            <Zap className="inline h-3 w-3 mr-1" />
-            Easter Egg: Tente mover o mouse pela tela
-          </p>
-        </motion.div>
+            {/* Action Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            >
+              <Button asChild size="lg" className="glow-primary group">
+                <Link href="/" className="flex items-center space-x-2">
+                  <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <span>Voltar ao Início</span>
+                </Link>
+              </Button>
 
-        {/* Sci-fi Elements */}
-        <div className="absolute -top-20 -left-20 w-40 h-40 border border-primary/20 rounded-full animate-spin-slow opacity-20" />
-        <div className="absolute -bottom-20 -right-20 w-60 h-60 border border-primary/10 rounded-full animate-pulse opacity-10" />
-      </div>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => window.history.back()}
+                className="flex items-center space-x-2 hover:glow-secondary"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span>Página Anterior</span>
+              </Button>
+            </motion.div>
+
+            {/* Quick Links */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.2 }}
+              className="mt-8 pt-8 border-t border-border/50"
+            >
+              <p className="text-sm text-muted-foreground mb-4">Ou explore essas seções populares:</p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[
+                  { href: "/#about", label: "Sobre", icon: "👨‍💻" },
+                  { href: "/#projects", label: "Projetos", icon: "🚀" },
+                  { href: "/#skills", label: "Habilidades", icon: "⚡" },
+                  { href: "/#contact", label: "Contato", icon: "📧" },
+                ].map((link, index) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1.4 + index * 0.1 }}
+                  >
+                    <Button
+                      asChild
+                      variant="ghost"
+                      size="sm"
+                      className="hover:bg-primary/10 hover:text-primary transition-all duration-300"
+                    >
+                      <Link href={link.href} className="flex items-center space-x-2">
+                        <span>{link.icon}</span>
+                        <span>{link.label}</span>
+                      </Link>
+                    </Button>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Easter Egg */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2 }}
+              className="mt-8 text-xs text-muted-foreground/50"
+            >
+              <p>💡 Dica: Tente alguns comandos do Konami Code para surpresas!</p>
+            </motion.div>
+          </CardContent>
+        </Card>
+
+        {/* Floating Elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          {[...Array(5)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute"
+              style={{
+                left: `${20 + i * 15}%`,
+                top: `${30 + i * 10}%`,
+              }}
+              animate={{
+                y: [0, -20, 0],
+                x: [0, 10, 0],
+                rotate: [0, 180, 360],
+                opacity: [0.3, 0.7, 0.3],
+              }}
+              transition={{
+                duration: 8 + i * 2,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+                delay: i * 0.5,
+              }}
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-primary/30 to-blue-500/30 blur-sm" />
+            </motion.div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   )
 }
