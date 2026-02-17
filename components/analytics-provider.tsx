@@ -1,13 +1,13 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState, type ReactNode, Suspense, useCallback } from "react"
-import { analytics, type EventType } from "@/lib/analytics"
+import { analytics } from "@/lib/analytics"
 import { usePathname, useSearchParams } from "next/navigation"
 import { debounce } from "@/lib/utils"
 
 interface AnalyticsContextType {
-  trackEvent: (type: EventType, data?: Record<string, any>, name?: string) => void
-  trackPageView: (path?: string) => void
+  trackEvent: (eventName: string, properties?: Record<string, any>) => void
+  trackPageView: (path: string) => void
   trackSectionView: (sectionId: string) => void
   isEnabled: boolean
   setEnabled: (enabled: boolean) => void
@@ -44,23 +44,15 @@ function SearchParamsTracker({ isEnabled }: { isEnabled: boolean }) {
   return null
 }
 
-export function AnalyticsProvider({
-  children,
-  endpoint,
-  debug = false,
-}: {
-  children: ReactNode
-  endpoint?: string
-  debug?: boolean
-}) {
+export function AnalyticsProvider({ children }: { children: ReactNode }) {
   const [isEnabled, setIsEnabled] = useState(true)
 
   // Inicializar analytics
   useEffect(() => {
     analytics.init({
-      endpoint,
+      endpoint: "/api/analytics",
       isEnabled,
-      isDebug: debug,
+      isDebug: false,
       batchSize: 10,
       flushInterval: 30000,
     })
@@ -68,7 +60,7 @@ export function AnalyticsProvider({
     return () => {
       analytics.flush()
     }
-  }, [endpoint, isEnabled, debug])
+  }, [isEnabled])
 
   // Atualizar estado de habilitado/desabilitado
   useEffect(() => {
@@ -119,20 +111,42 @@ export function AnalyticsProvider({
     }
   }, [isEnabled])
 
+  const trackEvent = (eventName: string, properties?: Record<string, any>) => {
+    if (typeof window !== "undefined") {
+      // Send to analytics endpoint
+      fetch("/api/analytics", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event: eventName,
+          properties: {
+            ...properties,
+            timestamp: new Date().toISOString(),
+            page: window.location.pathname,
+          },
+        }),
+      }).catch(console.error)
+    }
+  }
+
+  const trackPageView = (path: string) => {
+    trackEvent("page_view", { path })
+  }
+
   const value = {
     trackEvent: useCallback(
-      (type: EventType, data?: Record<string, any>, name?: string) => {
+      (eventName: string, properties?: Record<string, any>) => {
         if (isEnabled) {
-          analytics.trackEvent(type, data, name)
+          trackEvent(eventName, properties)
         }
       },
       [isEnabled],
     ),
 
     trackPageView: useCallback(
-      (path?: string) => {
+      (path: string) => {
         if (isEnabled) {
-          analytics.trackPageView(path)
+          trackPageView(path)
         }
       },
       [isEnabled],

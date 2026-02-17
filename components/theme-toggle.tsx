@@ -36,7 +36,7 @@ export function ThemeToggle() {
           <div className="absolute inset-0 rounded-md bg-gradient-to-r from-blue-500/20 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="glass-effect border-white/20">
+      <DropdownMenuContent align="end" className="bg-background/80 backdrop-blur-xl border-white/20">
         <DropdownMenuItem
           onClick={() => setTheme("light")}
           className={`cursor-pointer ${theme === "light" ? "bg-white/10" : ""}`}

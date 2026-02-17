@@ -1,19 +1,41 @@
+# *
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://henriquemc.dev/sitemap.xml
+# Sitemaps
+Sitemap: https://henriquemonteiro.dev/sitemap.xml
 
-# Disallow admin areas (if any)
-Disallow: /admin/
+# Disallow admin and API routes
 Disallow: /api/
 Disallow: /_next/
-Disallow: /scripts/
+Disallow: /admin/
 
-# Allow important resources
-Allow: /icons/
+# Allow images and assets
 Allow: /images/
-Allow: /screenshots/
+Allow: /icons/
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.png$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
 
-# Crawl delay (optional)
+# Crawl delay
 Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /

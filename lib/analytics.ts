@@ -15,16 +15,10 @@ export type EventType =
   | "custom"
 
 // Interface para eventos
-export interface AnalyticsEvent {
-  id: string
-  type: EventType
-  name?: string
+export type AnalyticsEvent = {
+  name: string
+  properties?: Record<string, any>
   timestamp: number
-  data?: Record<string, any>
-  sessionId: string
-  userId?: string
-  userAgent?: string
-  url?: string
 }
 
 // Interface para métricas de performance
@@ -38,9 +32,11 @@ export interface PerformanceMetrics {
 
 // Classe para gerenciar analytics
 export class Analytics {
+  private events: AnalyticsEvent[] = []
+  private isEnabled = true
+  private endpoint = "/api/analytics"
   private sessionId: string
   private userId?: string
-  private events: AnalyticsEvent[] = []
   private performanceMetrics: PerformanceMetrics = {
     lcp: null,
     fid: null,
@@ -48,8 +44,6 @@ export class Analytics {
     ttfb: null,
     fcp: null,
   }
-  private endpoint?: string
-  private isEnabled = true
   private isDebug = false
   private batchSize = 10
   private flushInterval = 30000
@@ -84,19 +78,13 @@ export class Analytics {
     this.trackPageView()
   }
 
-  public trackEvent(type: EventType, data?: Record<string, any>, name?: string) {
+  public trackEvent(type: string, data?: Record<string, any>, name?: string) {
     if (!this.isEnabled) return
 
     const event: AnalyticsEvent = {
-      id: generateId(),
-      type,
-      name,
+      name: name || type,
+      properties: data,
       timestamp: Date.now(),
-      data: this.sanitizeData(data),
-      sessionId: this.sessionId,
-      userId: this.userId,
-      userAgent: typeof navigator !== "undefined" ? navigator.userAgent : undefined,
-      url: typeof window !== "undefined" ? window.location.href : undefined,
     }
 
     this.events.push(event)
@@ -112,11 +100,7 @@ export class Analytics {
 
   public trackPageView(path?: string) {
     const url = path || (typeof window !== "undefined" ? window.location.pathname : "")
-    this.trackEvent("page_view", {
-      url,
-      title: typeof document !== "undefined" ? document.title : "",
-      referrer: typeof document !== "undefined" ? document.referrer : "",
-    })
+    this.trackEvent("page_view", { url })
   }
 
   public trackSectionView(sectionId: string) {

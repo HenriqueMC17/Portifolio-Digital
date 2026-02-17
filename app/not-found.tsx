@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Home, ArrowLeft } from "lucide-react"
+import { Home, ArrowLeft, Search } from "lucide-react"
 import Link from "next/link"
 
 export default function NotFound() {
@@ -64,7 +64,7 @@ export default function NotFound() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Button asChild variant="cyber" className="flex-1">
+              <Button asChild className="flex-1">
                 <Link href="/">Voltar ao Início</Link>
               </Button>
               <Button
@@ -88,7 +88,7 @@ export default function NotFound() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-[#F5F7FA] to-white dark:from-[#0D1117] dark:to-[#161B22] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 pointer-events-none">
         {[...Array(20)].map((_, i) => (
@@ -118,119 +118,34 @@ export default function NotFound() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="text-center z-10"
       >
-        <Card className="glass-card border-2 border-primary/20 shadow-2xl max-w-2xl mx-auto">
-          <CardContent className="p-12">
-            {/* Glitch 404 */}
-            <motion.div
-              className="mb-8"
-              animate={{
-                textShadow: ["0 0 0px #10b981", "2px 2px 0px #10b981, -2px -2px 0px #3b82f6", "0 0 0px #10b981"],
-              }}
-              transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
-            >
-              <h1 className="text-8xl md:text-9xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-purple-500 mb-4 font-mono">
-                {glitchText}
-              </h1>
-            </motion.div>
-
-            {/* Error Message */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">Página Não Encontrada</h2>
-              <p className="text-lg text-muted-foreground mb-6 max-w-md mx-auto">
-                Ops! Parece que você se perdeu no espaço digital. A página que você está procurando não existe.
-              </p>
-            </motion.div>
-
-            {/* Animated Robot */}
-            <motion.div
-              className="mb-8"
-              animate={{
-                y: [0, -10, 0],
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Number.POSITIVE_INFINITY,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="text-6xl mb-4">🤖</div>
-              <div className="text-sm text-muted-foreground italic">
-                "Erro 404: Humor não encontrado... só brincadeira! 😄"
-              </div>
-            </motion.div>
-
-            {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center items-center"
-            >
-              <Button asChild size="lg" className="glow-primary group">
-                <Link href="/" className="flex items-center space-x-2">
-                  <Home className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                  <span>Voltar ao Início</span>
+        <Card className="border-2 border-primary/20 shadow-2xl w-full max-w-md bg-white/80 dark:bg-[#0D1117]/80 backdrop-blur-xl rounded-2xl">
+          <CardHeader className="pb-4">
+            <div className="mx-auto mb-4 w-20 h-20 rounded-full bg-gradient-to-br from-[#0A2540] to-[#58A6FF] flex items-center justify-center">
+              <Search className="w-8 h-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl font-semibold text-primary dark:text-[#58A6FF]">
+              Página não encontrada
+            </CardTitle>
+            <CardDescription className="text-base text-[#2C2C2C] dark:text-[#8B949E]">
+              A página que você está procurando não existe ou foi movida.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="text-6xl font-bold text-primary opacity-20 select-none">{glitchText}</div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button asChild variant="default" className="flex items-center gap-2">
+                <Link href="/">
+                  <Home className="w-4 h-4" />
+                  Voltar ao início
                 </Link>
               </Button>
-
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => window.history.back()}
-                className="flex items-center space-x-2 hover:glow-secondary"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span>Página Anterior</span>
+              <Button asChild variant="outline" className="flex items-center gap-2 bg-transparent">
+                <Link href="javascript:history.back()">
+                  <ArrowLeft className="w-4 h-4" />
+                  Página anterior
+                </Link>
               </Button>
-            </motion.div>
-
-            {/* Quick Links */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2 }}
-              className="mt-8 pt-8 border-t border-border/50"
-            >
-              <p className="text-sm text-muted-foreground mb-4">Ou explore essas seções populares:</p>
-              <div className="flex flex-wrap gap-2 justify-center">
-                {[
-                  { href: "/#about", label: "Sobre", icon: "👨‍💻" },
-                  { href: "/#projects", label: "Projetos", icon: "🚀" },
-                  { href: "/#skills", label: "Habilidades", icon: "⚡" },
-                  { href: "/#contact", label: "Contato", icon: "📧" },
-                ].map((link, index) => (
-                  <motion.div
-                    key={link.href}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.4 + index * 0.1 }}
-                  >
-                    <Button
-                      asChild
-                      variant="ghost"
-                      size="sm"
-                      className="hover:bg-primary/10 hover:text-primary transition-all duration-300"
-                    >
-                      <Link href={link.href} className="flex items-center space-x-2">
-                        <span>{link.icon}</span>
-                        <span>{link.label}</span>
-                      </Link>
-                    </Button>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Easter Egg */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2 }}
-              className="mt-8 text-xs text-muted-foreground/50"
-            >
-              <p>💡 Dica: Tente alguns comandos do Konami Code para surpresas!</p>
-            </motion.div>
+            </div>
           </CardContent>
         </Card>
 
@@ -262,6 +177,11 @@ export default function NotFound() {
           ))}
         </div>
       </motion.div>
+
+      {/* Easter Egg */}
+      <div className="mt-16 opacity-50 hover:opacity-100 transition-opacity cursor-pointer">
+        <p className="text-xs font-mono text-muted-foreground">Dica: Tente o Konami Code na página inicial...</p>
+      </div>
     </div>
   )
 }

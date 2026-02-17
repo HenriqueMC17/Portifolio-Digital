@@ -1,131 +1,127 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { Card, CardContent } from "@/components/ui/card"
+import type React from "react"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, MapPin, Globe } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Mail, MapPin, Phone, Send } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
+import { useToast } from "@/hooks/use-toast"
 
 export function ContactSection() {
-  const [ref, inView] = useInView({
-    threshold: 0.2,
-    triggerOnce: true,
-  })
+  const { language } = useLanguage()
+  const { toast } = useToast()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const content = {
+    pt: {
+      title: "Entre em Contato",
+      subtitle: "Vamos conversar sobre seu próximo projeto",
+      form: {
+        name: "Nome",
+        email: "Email",
+        message: "Mensagem",
+        send: "Enviar Mensagem",
+        sending: "Enviando...",
+      },
+      info: [
+        { icon: Mail, label: "Email", value: "contato@henrique.dev" },
+        { icon: Phone, label: "Telefone", value: "+55 (11) 99999-9999" },
+        { icon: MapPin, label: "Localização", value: "São Paulo, Brasil" },
+      ],
+      success: "Mensagem enviada!",
+      successMessage: "Obrigado pelo contato. Responderei em breve.",
+    },
+    en: {
+      title: "Get in Touch",
+      subtitle: "Let's talk about your next project",
+      form: {
+        name: "Name",
+        email: "Email",
+        message: "Message",
+        send: "Send Message",
+        sending: "Sending...",
+      },
+      info: [
+        { icon: Mail, label: "Email", value: "contact@henrique.dev" },
+        { icon: Phone, label: "Phone", value: "+55 (11) 99999-9999" },
+        { icon: MapPin, label: "Location", value: "São Paulo, Brazil" },
+      ],
+      success: "Message sent!",
+      successMessage: "Thank you for contacting. I will respond soon.",
+    },
+  }
+
+  const t = content[language]
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false)
+      toast({
+        title: t.success,
+        description: t.successMessage,
+      })
+      ;(e.target as HTMLFormElement).reset()
+    }, 1500)
+  }
 
   return (
-    <section id="contact" className="py-20 bg-muted/30" ref={ref}>
+    <section id="contact" className="py-20">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl font-bold mb-4">Entre em Contato</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Vamos conversar sobre oportunidades de trabalho, projetos ou colaborações. Estou sempre aberto a novos
-            desafios!
-          </p>
-        </motion.div>
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold text-center gradient-text mb-4">{t.title}</h2>
+          <p className="text-center text-muted-foreground mb-12">{t.subtitle}</p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-6">Informações de Contato</h3>
-
-                <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Mail className="h-5 w-5 text-primary mr-3" />
-                    <a href="mailto:henriquemon17@gmail.com" className="hover:text-primary transition-colors">
-                      henriquemon17@gmail.com
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <Phone className="h-5 w-5 text-primary mr-3" />
-                    <a href="tel:+5515988027261" className="hover:text-primary transition-colors">
-                      (15) 98802-7261
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="h-5 w-5 text-primary mr-3" />
-                    <span>Nova Sorocaba, São Paulo - Brasil</span>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <h4 className="font-medium mb-4">Idiomas</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Português</span>
-                      <span className="text-muted-foreground">Nativo</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Inglês</span>
-                      <span className="text-muted-foreground">intermediário</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Espanhol</span>
-                      <span className="text-muted-foreground">Básico</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <h4 className="font-medium mb-4">Links Profissionais</h4>
-                  <div className="space-y-3">
-                    <a
-                      href="https://github.com/HenriqueMC17"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-sm hover:text-primary transition-colors"
-                    >
-                      <Globe className="h-4 w-4 mr-2" />
-                      GitHub - HenriqueMC17
-                    </a>
-                    <a
-                      href="https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-sm hover:text-primary transition-colors"
-                    >
-                      <Globe className="h-4 w-4 mr-2" />
-                      LinkedIn - Henrique Monteiro Cardoso
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
-          >
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-6">Envie uma Mensagem</h3>
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input placeholder="Seu nome" />
-                    <Input type="email" placeholder="Seu email" />
-                  </div>
-                  <Input placeholder="Assunto" />
-                  <Textarea placeholder="Sua mensagem" rows={5} />
-                  <Button type="submit" className="w-full">
-                    Enviar Mensagem
+              <CardHeader>
+                <CardTitle>{t.form.name}</CardTitle>
+                <CardDescription>Preencha o formulário abaixo</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <Input placeholder={t.form.name} required />
+                  <Input type="email" placeholder={t.form.email} required />
+                  <Textarea placeholder={t.form.message} rows={5} required />
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? (
+                      t.form.sending
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4 mr-2" />
+                        {t.form.send}
+                      </>
+                    )}
                   </Button>
                 </form>
               </CardContent>
             </Card>
-          </motion.div>
+
+            <div className="space-y-6">
+              {t.info.map((item, index) => (
+                <Card key={index}>
+                  <CardContent className="pt-6">
+                    <div className="flex items-center gap-4">
+                      <div className="bg-primary/10 p-3 rounded-lg">
+                        <item.icon className="h-6 w-6 text-primary" />
+                      </div>
+                      <div>
+                        <p className="font-semibold">{item.label}</p>
+                        <p className="text-muted-foreground">{item.value}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>
