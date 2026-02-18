@@ -1,3 +1,4 @@
+import type React from "react"
 "use client"
 
 import { useState, useEffect } from "react"
@@ -40,7 +41,7 @@ export function OptimizedImage({
   const handleError = () => setHasError(true)
 
   return (
-    <div ref={imageRef} className={`relative overflow-hidden ${className}`}>
+    <div ref={imageRef as React.RefObject<HTMLDivElement>} className={`relative overflow-hidden ${className}`}>
       {/* Placeholder */}
       <motion.div
         initial={{ opacity: 1 }}

@@ -122,7 +122,7 @@ export function GitHubProjects() {
                 {/* Topics */}
                 {repo.topics && repo.topics.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-4">
-                    {repo.topics.slice(0, 3).map((topic) => (
+                    {repo.topics.slice(0, 3).map((topic: string) => (
                       <Badge key={topic} variant="outline" className="text-xs">
                         {topic}
                       </Badge>

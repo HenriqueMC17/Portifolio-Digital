@@ -63,7 +63,7 @@ export function FloatingParticles({ count = 20 }: { count?: number }) {
             duration: Math.random() * 20 + 10,
             repeat: Number.POSITIVE_INFINITY,
             repeatType: "reverse",
-            ease: "linear",
+            ease: "linear" as const,
           }}
         />
       ))}
@@ -184,7 +184,7 @@ export function MorphingShape() {
       transition: {
         duration: 4,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "easeInOut",
+        ease: "easeInOut" as const,
       },
     },
   }
@@ -218,7 +218,7 @@ export function AdvancedSkeleton({ className = "", lines = 3 }: { className?: st
             duration: 1.5,
             repeat: Number.POSITIVE_INFINITY,
             delay: i * 0.2,
-            ease: "easeInOut",
+            ease: "easeInOut" as const,
           }}
         />
       ))}
@@ -237,7 +237,7 @@ export function AnimatedGradientText({ children, className = "" }: { children: R
       transition={{
         duration: 3,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "linear",
+        ease: "linear" as const,
       }}
       style={{
         backgroundSize: "300% 300%",

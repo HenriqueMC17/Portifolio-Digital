@@ -1,7 +1,8 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Briefcase } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Briefcase, Award, Lightbulb } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 export function ExperienceSection() {
@@ -9,54 +10,60 @@ export function ExperienceSection() {
 
   const content = {
     pt: {
-      title: "Experiência",
-      experiences: [
+      title: "Timeline Profissional",
+      items: [
         {
-          title: "Desenvolvedor Full Stack Senior",
-          company: "Tech Innovations Inc.",
-          period: "2022 - Presente",
-          description:
-            "Liderando desenvolvimento de aplicações web escaláveis com React e Node.js. Implementação de soluções de IA para otimização de processos.",
+          year: "2024 - Atual",
+          type: "Experiência",
+          title: "Desenvolvimento Full Stack e soluções sob medida",
+          description: "Construção de aplicações web, integrações e automações orientadas à eficiência operacional.",
+          icon: Briefcase,
+          tags: ["Java", "TypeScript", "Python", "SQL"],
         },
         {
-          title: "Desenvolvedor Full Stack",
-          company: "Digital Solutions Ltd.",
-          period: "2020 - 2022",
-          description:
-            "Desenvolvimento de plataformas e-commerce e sistemas de gerenciamento. Trabalho em equipe ágil com metodologia Scrum.",
+          year: "2023 - 2024",
+          type: "Projetos",
+          title: "Projetos relevantes e evolução técnica",
+          description: "Implementação de projetos com foco em arquitetura limpa, performance e manutenção sustentável.",
+          icon: Lightbulb,
+          tags: ["Next.js", "React", "Integrações", "Automação"],
         },
         {
-          title: "Desenvolvedor Frontend",
-          company: "StartUp Ventures",
-          period: "2018 - 2020",
-          description:
-            "Criação de interfaces modernas e responsivas. Implementação de animações e interações complexas.",
+          year: "2022 - 2024",
+          type: "Certificações",
+          title: "Qualificações técnicas e formação complementar",
+          description: "Consolidação de base técnica com certificações e aprendizado contínuo voltado à aplicação prática.",
+          icon: Award,
+          tags: ["Dados", "Segurança", "TI", "Gestão"],
         },
       ],
     },
     en: {
-      title: "Experience",
-      experiences: [
+      title: "Professional Timeline",
+      items: [
         {
-          title: "Senior Full Stack Developer",
-          company: "Tech Innovations Inc.",
-          period: "2022 - Present",
-          description:
-            "Leading development of scalable web applications with React and Node.js. Implementation of AI solutions for process optimization.",
+          year: "2024 - Present",
+          type: "Experience",
+          title: "Full Stack development and tailored solutions",
+          description: "Building web applications, integrations and automations focused on operational efficiency.",
+          icon: Briefcase,
+          tags: ["Java", "TypeScript", "Python", "SQL"],
         },
         {
-          title: "Full Stack Developer",
-          company: "Digital Solutions Ltd.",
-          period: "2020 - 2022",
-          description:
-            "Development of e-commerce platforms and management systems. Agile team work with Scrum methodology.",
+          year: "2023 - 2024",
+          type: "Projects",
+          title: "Relevant projects and technical growth",
+          description: "Project implementation focused on clean architecture, performance and sustainable maintenance.",
+          icon: Lightbulb,
+          tags: ["Next.js", "React", "Integrations", "Automation"],
         },
         {
-          title: "Frontend Developer",
-          company: "StartUp Ventures",
-          period: "2018 - 2020",
-          description:
-            "Creation of modern and responsive interfaces. Implementation of complex animations and interactions.",
+          year: "2022 - 2024",
+          type: "Certifications",
+          title: "Technical qualifications and complementary education",
+          description: "Strengthening technical foundations with certifications and continuous practical learning.",
+          icon: Award,
+          tags: ["Data", "Security", "IT", "Management"],
         },
       ],
     },
@@ -67,22 +74,31 @@ export function ExperienceSection() {
   return (
     <section id="experience" className="py-20">
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h2 className="text-4xl font-bold text-center gradient-text mb-12">{t.title}</h2>
 
           <div className="space-y-6">
-            {t.experiences.map((exp, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+            {t.items.map((item) => (
+              <Card key={item.title}>
                 <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary/10 p-3 rounded-lg">
-                      <Briefcase className="h-6 w-6 text-primary" />
+                  <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                      <item.icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-semibold">{exp.title}</h3>
-                      <p className="text-primary font-medium">{exp.company}</p>
-                      <p className="text-sm text-muted-foreground mb-2">{exp.period}</p>
-                      <p className="text-muted-foreground">{exp.description}</p>
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <Badge variant="outline">{item.year}</Badge>
+                        <Badge>{item.type}</Badge>
+                      </div>
+                      <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground mb-3">{item.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        {item.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </CardContent>

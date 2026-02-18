@@ -15,14 +15,16 @@ export function AIAssistant() {
 
   const content = {
     pt: {
-      title: "Assistente Virtual",
-      placeholder: "Digite sua mensagem...",
-      welcome: "Olá! Como posso ajudar você hoje?",
+      title: "HenriqueBot",
+      placeholder: "Pergunte sobre trajetória, projetos, tecnologias ou entrevista técnica...",
+      welcome: "Olá! Sou o HenriqueBot. Posso responder sobre trajetória, projetos, tecnologias e experiência profissional.",
+      fallback: "Ótima pergunta. Posso detalhar projetos, stack, experiência profissional e simular perguntas de entrevista técnica.",
     },
     en: {
-      title: "Virtual Assistant",
-      placeholder: "Type your message...",
-      welcome: "Hello! How can I help you today?",
+      title: "HenriqueBot",
+      placeholder: "Ask about journey, projects, technologies or technical interview...",
+      welcome: "Hello! I am HenriqueBot. I can answer about journey, projects, technologies and professional experience.",
+      fallback: "Great question. I can detail projects, stack, professional experience and simulate technical interview prompts.",
     },
   }
 
@@ -31,19 +33,22 @@ export function AIAssistant() {
   const handleSend = () => {
     if (!input.trim()) return
 
-    setMessages([...messages, { role: "user", content: input }])
+    const userMessage = input.trim()
+    setMessages((prev) => [...prev, { role: "user", content: userMessage }])
     setInput("")
 
-    // Simulate AI response
+    let response = t.fallback
+    if (/trajetoria|trajetória|journey/i.test(userMessage)) {
+      response = language === "pt" ? "Minha trajetória é focada em desenvolvimento full stack, integrações e automações com foco em eficiência operacional." : "My journey is focused on full stack development, integrations and automations with operational efficiency focus."
+    } else if (/projeto|project/i.test(userMessage)) {
+      response = language === "pt" ? "O projeto Safe Finance é um dos destaques: arquitetura modular, UX clara e foco em controle financeiro com previsibilidade." : "Safe Finance is a highlighted project: modular architecture, clear UX and focus on predictable financial control."
+    } else if (/tecnologia|stack|technology/i.test(userMessage)) {
+      response = language === "pt" ? "Stack principal: Java, JavaScript, TypeScript, Python, C#, SQL, React e Next.js." : "Core stack: Java, JavaScript, TypeScript, Python, C#, SQL, React and Next.js."
+    }
+
     setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Obrigado pela mensagem! Este é um assistente de demonstração. Em breve responderei suas dúvidas.",
-        },
-      ])
-    }, 1000)
+      setMessages((prev) => [...prev, { role: "assistant", content: response }])
+    }, 400)
   }
 
   return (
@@ -83,7 +88,7 @@ export function AIAssistant() {
                 placeholder={t.placeholder}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                onKeyDown={(e) => e.key === "Enter" && handleSend()}
               />
               <Button size="icon" onClick={handleSend}>
                 <Send className="h-4 w-4" />
