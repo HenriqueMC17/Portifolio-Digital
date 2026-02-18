@@ -1,185 +1,151 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+
+import { useMemo, useState } from "react"
 import { motion } from "framer-motion"
+import { Mail, Phone, MapPin, Loader2, CheckCircle, Send } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
-import { Mail, Phone, MapPin, Send, Linkedin, Github, CheckCircle, Loader2 } from "lucide-react"
+
+type ContactFormState = {
+  name: string
+  email: string
+  subject: string
+  message: string
+  website: string
+}
 
 export function ContactSection() {
-  const { t } = useLanguage()
-  const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" })
+  const { language } = useLanguage()
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle")
+  const [formState, setFormState] = useState<ContactFormState>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+    website: "",
+  })
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setStatus("sending")
-    const mailtoLink = `mailto:henriquemonteirocampos@gmail.com?subject=${encodeURIComponent(formState.subject || "Contato via Portfolio")}&body=${encodeURIComponent(`Nome: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`)}`
-    window.open(mailtoLink, "_blank")
-    setTimeout(() => {
-      setStatus("sent")
-      setFormState({ name: "", email: "", subject: "", message: "" })
-      setTimeout(() => setStatus("idle"), 4000)
-    }, 1000)
+  const suggestedSubject = useMemo(() => {
+    if (formState.message.length < 25) return ""
+    if (/projeto|orcamento|orçamento|proposal|budget/i.test(formState.message)) return language === "pt" ? "Proposta de Projeto" : "Project Proposal"
+    if (/vaga|oportunidade|job|hiring/i.test(formState.message)) return language === "pt" ? "Oportunidade Profissional" : "Career Opportunity"
+    return language === "pt" ? "Contato Profissional" : "Professional Contact"
+  }, [formState.message, language])
+
+  const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email) || formState.email.length === 0
+  const messageIsValid = formState.message.length >= 20 || formState.message.length === 0
+
+  const content = {
+    pt: {
+      title: "Contato",
+      subtitle: "Estou disponível para oportunidades, projetos e parcerias estratégicas.",
+      name: "Nome",
+      email: "E-mail",
+      subject: "Assunto",
+      message: "Mensagem",
+      response: "Tempo médio de resposta: até 24h.",
+      send: "Enviar mensagem",
+      sending: "Enviando...",
+      sent: "Mensagem enviada!",
+      honeypot: "Não preencher",
+    },
+    en: {
+      title: "Contact",
+      subtitle: "I am available for opportunities, projects and strategic partnerships.",
+      name: "Name",
+      email: "Email",
+      subject: "Subject",
+      message: "Message",
+      response: "Average response time: within 24h.",
+      send: "Send message",
+      sending: "Sending...",
+      sent: "Message sent!",
+      honeypot: "Do not fill",
+    },
   }
 
-  const contactInfo = [
-    { icon: Mail, label: "Email", value: "henriquemonteirocampos@gmail.com", href: "mailto:henriquemonteirocampos@gmail.com" },
-    { icon: Phone, label: "Telefone", value: "+55 (11) 91234-5678", href: "tel:+5511912345678" },
-    { icon: MapPin, label: t("location"), value: "Osasco, SP - Brasil", href: null },
-    { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/henrique-monteiro", href: "https://www.linkedin.com/in/henrique-monteiro-campos" },
-    { icon: Github, label: "GitHub", value: "github.com/HenriqueMC17", href: "https://github.com/HenriqueMC17" },
-  ]
+  const t = content[language]
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!emailIsValid || !messageIsValid) return
+    if (formState.website.trim()) return
+
+    setStatus("sending")
+    setTimeout(() => {
+      setStatus("sent")
+      setTimeout(() => {
+        setStatus("idle")
+        setFormState({ name: "", email: "", subject: "", message: "", website: "" })
+      }, 2000)
+    }, 1200)
+  }
 
   return (
-    <section id="contact" className="py-24 relative">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <span className="text-sm font-mono text-primary tracking-widest uppercase">
-            {t("contact")}
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-2 text-balance">
-            {t("letsWork")}
-          </h2>
-          <p className="text-muted-foreground mt-4 max-w-xl mx-auto leading-relaxed">
-            Tem um projeto em mente? Entre em contato e vamos transformar sua ideia em realidade.
-          </p>
-        </motion.div>
+    <section id="contact" className="py-20">
+      <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-5 gap-8">
+          <motion.div initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="lg:col-span-2 space-y-6">
+            <h2 className="text-4xl font-bold gradient-text">{t.title}</h2>
+            <p className="text-muted-foreground">{t.subtitle}</p>
+            <p className="text-sm text-primary">{t.response}</p>
 
-        <div className="grid lg:grid-cols-5 gap-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="lg:col-span-2 space-y-6"
-          >
-            <div className="space-y-4">
-              {contactInfo.map((item, i) => (
-                <motion.div
-                  key={item.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      target={item.href.startsWith("http") ? "_blank" : undefined}
-                      rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:bg-primary/5 transition-all group"
-                    >
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                        <item.icon className="w-5 h-5" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs text-muted-foreground">{item.label}</p>
-                        <p className="text-sm font-medium text-foreground truncate">{item.value}</p>
-                      </div>
-                    </a>
-                  ) : (
-                    <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border">
-                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                        <item.icon className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">{item.label}</p>
-                        <p className="text-sm font-medium text-foreground">{item.value}</p>
-                      </div>
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="p-6 rounded-xl bg-primary/5 border border-primary/10">
-              <p className="text-sm font-semibold text-foreground mb-1">Disponibilidade</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Respondo em ate 24 horas. Disponivel para projetos freelance e oportunidades CLT/PJ.
-              </p>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs text-green-600 dark:text-green-400 font-medium">Disponivel para novos projetos</span>
+            <div className="space-y-3">
+              <a className="flex items-center gap-3 p-4 rounded-lg border border-border" href="mailto:henriquemon17@gmail.com">
+                <Mail className="h-4 w-4 text-primary" />
+                <span className="text-sm">henriquemon17@gmail.com</span>
+              </a>
+              <a className="flex items-center gap-3 p-4 rounded-lg border border-border" href="tel:+5515988027261">
+                <Phone className="h-4 w-4 text-primary" />
+                <span className="text-sm">+55 (15) 98802-7261</span>
+              </a>
+              <div className="flex items-center gap-3 p-4 rounded-lg border border-border">
+                <MapPin className="h-4 w-4 text-primary" />
+                <span className="text-sm">Sorocaba, SP - Brasil</span>
               </div>
             </div>
           </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="lg:col-span-3"
-          >
-            <form onSubmit={handleSubmit} className="space-y-5 p-6 md:p-8 rounded-2xl bg-card border border-border">
-              <div className="grid sm:grid-cols-2 gap-5">
-                <div>
-                  <label htmlFor="contact-name" className="block text-sm font-medium text-foreground mb-1.5">{t("name")}</label>
-                  <input
-                    id="contact-name"
-                    type="text"
-                    required
-                    value={formState.name}
-                    onChange={e => setFormState(s => ({ ...s, name: e.target.value }))}
-                    className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
-                    placeholder="Seu nome"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-email" className="block text-sm font-medium text-foreground mb-1.5">{t("email")}</label>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    required
-                    value={formState.email}
-                    onChange={e => setFormState(s => ({ ...s, email: e.target.value }))}
-                    className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
-                    placeholder="seu@email.com"
-                  />
-                </div>
+          <motion.form initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} onSubmit={handleSubmit} className="lg:col-span-3 p-6 rounded-2xl border border-border bg-card space-y-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="contact-name" className="block text-sm font-medium mb-1.5">{t.name}</label>
+                <input id="contact-name" required value={formState.name} onChange={(e) => setFormState((s) => ({ ...s, name: e.target.value }))} className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-sm" />
               </div>
               <div>
-                <label htmlFor="contact-subject" className="block text-sm font-medium text-foreground mb-1.5">Assunto</label>
-                <input
-                  id="contact-subject"
-                  type="text"
-                  required
-                  value={formState.subject}
-                  onChange={e => setFormState(s => ({ ...s, subject: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
-                  placeholder="Ex: Orcamento para site institucional"
-                />
+                <label htmlFor="contact-email" className="block text-sm font-medium mb-1.5">{t.email}</label>
+                <input id="contact-email" type="email" required value={formState.email} onChange={(e) => setFormState((s) => ({ ...s, email: e.target.value }))} className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-sm" />
+                {!emailIsValid && <p className="text-xs text-destructive mt-1">{language === "pt" ? "E-mail inválido." : "Invalid email."}</p>}
               </div>
-              <div>
-                <label htmlFor="contact-message" className="block text-sm font-medium text-foreground mb-1.5">{t("message")}</label>
-                <textarea
-                  id="contact-message"
-                  required
-                  rows={5}
-                  value={formState.message}
-                  onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
-                  className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors resize-none"
-                  placeholder="Descreva seu projeto ou sua necessidade..."
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={status === "sending" || status === "sent"}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60 transition-colors"
-              >
-                {status === "sending" && <Loader2 className="w-4 h-4 animate-spin" />}
-                {status === "sent" && <CheckCircle className="w-4 h-4" />}
-                {status === "idle" && <Send className="w-4 h-4" />}
-                {status === "idle" && t("sendMessage")}
-                {status === "sending" && "Enviando..."}
-                {status === "sent" && "Mensagem enviada!"}
-              </button>
-            </form>
-          </motion.div>
+            </div>
+
+            <div>
+              <label htmlFor="contact-subject" className="block text-sm font-medium mb-1.5">{t.subject}</label>
+              <input id="contact-subject" required value={formState.subject} onChange={(e) => setFormState((s) => ({ ...s, subject: e.target.value }))} className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-sm" placeholder={suggestedSubject || (language === "pt" ? "Ex: Proposta de projeto" : "Ex: Project proposal")} />
+              {suggestedSubject && !formState.subject && <p className="text-xs text-muted-foreground mt-1">{language === "pt" ? `Sugestão automática: ${suggestedSubject}` : `Suggested subject: ${suggestedSubject}`}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="contact-message" className="block text-sm font-medium mb-1.5">{t.message}</label>
+              <textarea id="contact-message" required rows={5} value={formState.message} onChange={(e) => setFormState((s) => ({ ...s, message: e.target.value }))} className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-sm resize-none" />
+              {!messageIsValid && <p className="text-xs text-destructive mt-1">{language === "pt" ? "Mensagem deve ter ao menos 20 caracteres." : "Message must have at least 20 characters."}</p>}
+            </div>
+
+            <div className="hidden" aria-hidden="true">
+              <label htmlFor="contact-website">{t.honeypot}</label>
+              <input id="contact-website" tabIndex={-1} autoComplete="off" value={formState.website} onChange={(e) => setFormState((s) => ({ ...s, website: e.target.value }))} />
+            </div>
+
+            <button type="submit" disabled={status !== "idle" || !emailIsValid || !messageIsValid} className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-sm disabled:opacity-60">
+              {status === "sending" && <Loader2 className="w-4 h-4 animate-spin" />}
+              {status === "sent" && <CheckCircle className="w-4 h-4" />}
+              {status === "idle" && <Send className="w-4 h-4" />}
+              {status === "idle" && t.send}
+              {status === "sending" && t.sending}
+              {status === "sent" && t.sent}
+            </button>
+          </motion.form>
         </div>
       </div>
     </section>

@@ -830,9 +830,10 @@ export function PresentationMode() {
 
               <motion.div
                 initial={{ scale: 0, rotate: -180, opacity: 0 }}
-                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
                 transition={{ delay: 1.5, type: "spring", stiffness: 200 }}
                 className="absolute -bottom-2 -right-2 w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center border-4 border-white shadow-lg"
+                whileHover={{ scale: 1.05 }}
                 animate={pulseAnimation}
               >
                 <CheckCircle className="h-8 w-8 text-white" />
@@ -1141,7 +1142,7 @@ export function PresentationMode() {
                         initial={{ scale: 0, rotate: -180 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ delay: 1 + index * 0.2, type: "spring", stiffness: 300 }}
-                        animate={{
+                        whileInView={{
                           textShadow: [
                             "0 0 5px rgba(255,255,255,0.5)",
                             "0 0 15px rgba(255,255,255,0.8)",
@@ -1285,7 +1286,7 @@ export function PresentationMode() {
                         initial={{ scale: 0, rotate: 180 }}
                         animate={{ scale: 1, rotate: 0 }}
                         transition={{ delay: 1.2 + index * 0.2, type: "spring", stiffness: 300 }}
-                        animate={{
+                        whileInView={{
                           textShadow: [
                             "0 0 5px rgba(255,255,255,0.5)",
                             "0 0 15px rgba(255,255,255,0.8)",
@@ -1487,7 +1488,7 @@ export function PresentationMode() {
                             initial={{ y: -30, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: project.delay + 0.6, duration: 0.8 }}
-                            animate={{
+                            whileInView={{
                               textShadow: [
                                 "0 0 10px rgba(255,255,255,0.3)",
                                 "0 0 20px rgba(255,255,255,0.6)",
@@ -1685,7 +1686,7 @@ export function PresentationMode() {
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 1 + index * 0.5, type: "spring", stiffness: 300 }}
-                  animate={{
+                  whileInView={{
                     boxShadow: [
                       "0 0 0 0 rgba(59, 130, 246, 0.4)",
                       "0 0 0 20px rgba(59, 130, 246, 0)",
@@ -1755,7 +1756,7 @@ export function PresentationMode() {
                           rotate: index === 0 ? 5 : -5,
                           boxShadow: "0 20px 40px rgba(0,0,0,0.3)",
                         }}
-                        animate={{
+                        whileInView={{
                           boxShadow: [
                             "0 10px 30px rgba(0,0,0,0.2)",
                             "0 20px 40px rgba(0,0,0,0.3)",
@@ -1773,7 +1774,7 @@ export function PresentationMode() {
                       <motion.div
                         className="absolute -top-1 -right-1 w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg"
                         initial={{ scale: 0, rotate: -90 }}
-                        animate={{ scale: 1, rotate: 0 }}
+                        whileInView={{ scale: 1, rotate: 0 }}
                         transition={{ delay: job.delay + 0.4, type: "spring" }}
                         animate={pulseAnimation}
                       >

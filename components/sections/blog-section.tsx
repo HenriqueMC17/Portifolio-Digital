@@ -1,9 +1,9 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock } from "lucide-react"
+import { QrCode, ListChecks, BarChart3, Boxes } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 export function BlogSection() {
@@ -11,60 +11,26 @@ export function BlogSection() {
 
   const content = {
     pt: {
-      title: "Blog",
-      subtitle: "Compartilhando conhecimento e experiências",
-      posts: [
-        {
-          title: "Como implementar IA em aplicações web",
-          description: "Um guia completo para integrar inteligência artificial em seus projetos",
-          date: "15 Jan 2024",
-          readTime: "5 min",
-          tags: ["IA", "Web Development"],
-        },
-        {
-          title: "Next.js 14: O que há de novo",
-          description: "Explorando as novidades e melhorias da versão mais recente do Next.js",
-          date: "10 Jan 2024",
-          readTime: "8 min",
-          tags: ["Next.js", "React"],
-        },
-        {
-          title: "Performance em aplicações React",
-          description: "Técnicas avançadas para otimizar suas aplicações React",
-          date: "5 Jan 2024",
-          readTime: "10 min",
-          tags: ["React", "Performance"],
-        },
+      title: "Mini Aplicações",
+      subtitle: "Demonstrações práticas de capacidade técnica",
+      apps: [
+        { icon: QrCode, title: "Gerador de QR Code", status: "Explorando", description: "Entrada de texto/URL com geração instantânea de QR." },
+        { icon: ListChecks, title: "To-do List Funcional", status: "Dominando", description: "CRUD de tarefas com feedback visual e organização." },
+        { icon: BarChart3, title: "Dashboard Financeiro", status: "Em evolução", description: "Indicadores e visualização de entradas/saídas." },
+        { icon: Boxes, title: "Componentes Interativos", status: "Dominando", description: "Conjunto de componentes reutilizáveis para UI de produção." },
       ],
-      readMore: "Ler mais",
+      cta: "Solicitar demonstração",
     },
     en: {
-      title: "Blog",
-      subtitle: "Sharing knowledge and experiences",
-      posts: [
-        {
-          title: "How to implement AI in web applications",
-          description: "A complete guide to integrate artificial intelligence in your projects",
-          date: "Jan 15, 2024",
-          readTime: "5 min",
-          tags: ["AI", "Web Development"],
-        },
-        {
-          title: "Next.js 14: What's new",
-          description: "Exploring the news and improvements of the latest Next.js version",
-          date: "Jan 10, 2024",
-          readTime: "8 min",
-          tags: ["Next.js", "React"],
-        },
-        {
-          title: "Performance in React applications",
-          description: "Advanced techniques to optimize your React applications",
-          date: "Jan 5, 2024",
-          readTime: "10 min",
-          tags: ["React", "Performance"],
-        },
+      title: "Mini Applications",
+      subtitle: "Practical demonstrations of technical capability",
+      apps: [
+        { icon: QrCode, title: "QR Code Generator", status: "Exploring", description: "Text/URL input with instant QR generation." },
+        { icon: ListChecks, title: "Functional To-do List", status: "Mastering", description: "Task CRUD with visual feedback and organization." },
+        { icon: BarChart3, title: "Financial Dashboard", status: "Growing", description: "Indicators and income/expense visualization." },
+        { icon: Boxes, title: "Interactive Components", status: "Mastering", description: "Reusable component set for production UI." },
       ],
-      readMore: "Read more",
+      cta: "Request demo",
     },
   }
 
@@ -75,39 +41,29 @@ export function BlogSection() {
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center gradient-text mb-4">{t.title}</h2>
-          <p className="text-center text-muted-foreground mb-12">{t.subtitle}</p>
+          <p className="text-center text-muted-foreground mb-10">{t.subtitle}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {t.posts.map((post, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {t.apps.map((app) => (
+              <Card key={app.title}>
                 <CardHeader>
-                  <CardTitle className="line-clamp-2">{post.title}</CardTitle>
-                  <CardDescription className="line-clamp-3">{post.description}</CardDescription>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <app.icon className="h-5 w-5 text-primary" />
+                    {app.title}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {post.date}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="h-4 w-4" />
-                      {post.readTime}
-                    </div>
-                  </div>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag, tagIndex) => (
-                      <Badge key={tagIndex} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    {t.readMore}
-                  </Button>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <Badge variant="secondary">{app.status}</Badge>
+                  <p>{app.description}</p>
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          <div className="text-center">
+            <Button asChild>
+              <a href="#contact">{t.cta}</a>
+            </Button>
           </div>
         </div>
       </div>

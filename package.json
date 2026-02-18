@@ -5,8 +5,9 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
-    "start": "next start"
+    "lint": "tsc --noEmit",
+    "start": "next start",
+    "audit:portfolio": "node scripts/audit-portfolio.mjs"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",

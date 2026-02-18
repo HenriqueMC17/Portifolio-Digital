@@ -11,60 +11,39 @@ export function SkillsSection() {
   const content = {
     pt: {
       title: "Habilidades Técnicas",
-      subtitle: "Tecnologias e ferramentas que domino",
+      subtitle: "Dashboard de competências, evolução e radar tecnológico",
       categories: [
+        { title: "Front-end", skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"] },
+        { title: "Back-end", skills: ["Java", "Node.js", "Python", "C#", "APIs REST", "Integração de serviços"] },
+        { title: "Banco de Dados", skills: ["SQL", "PostgreSQL", "MySQL", "Modelagem relacional"] },
+        { title: "DevOps & Infraestrutura", skills: ["Git", "GitHub", "CI/CD", "Deploy em nuvem", "Versionamento"] },
+        { title: "Automação e Produtividade", skills: ["VBA", "Google Apps Script", "Arduino", "Integração entre sistemas"] },
         {
-          title: "Linguagens de Programação",
-          skills: ["Java", "JavaScript", "TypeScript", "Python", "C++", "C#", "HTML5", "CSS3", "SQL"],
+          title: "Soft Skills",
+          skills: ["Pensamento analítico", "Organização", "Comunicação técnica", "Resolução estruturada", "Aprendizado contínuo"],
         },
-        {
-          title: "Frameworks & Bibliotecas",
-          skills: ["React", "Next.js", "Node.js", "Express", "Tailwind CSS", "Framer Motion"],
-        },
-        {
-          title: "Ferramentas & Plataformas",
-          skills: ["GitHub", "VS Code", "Eclipse", "Arduino", "VBA", "Apps Script", "Docker"],
-        },
-        {
-          title: "Competências Profissionais",
-          skills: [
-            "Microsoft Excel",
-            "Sistemas Integrados",
-            "Suporte Técnico",
-            "Gestão de Processos",
-            "Análise de Dados",
-            "Treinamento",
-          ],
-        },
+      ],
+      levels: [
+        { label: "🔵 Dominando", items: ["Java", "JavaScript", "SQL", "HTML/CSS"] },
+        { label: "🟣 Em evolução", items: ["TypeScript", "React", "Next.js"] },
+        { label: "🟢 Explorando", items: ["Arquitetura avançada", "Performance web", "IA aplicada"] },
       ],
     },
     en: {
       title: "Technical Skills",
-      subtitle: "Technologies and tools I master",
+      subtitle: "Skills dashboard, growth track and technology radar",
       categories: [
-        {
-          title: "Programming Languages",
-          skills: ["Java", "JavaScript", "TypeScript", "Python", "C++", "C#", "HTML5", "CSS3", "SQL"],
-        },
-        {
-          title: "Frameworks & Libraries",
-          skills: ["React", "Next.js", "Node.js", "Express", "Tailwind CSS", "Framer Motion"],
-        },
-        {
-          title: "Tools & Platforms",
-          skills: ["GitHub", "VS Code", "Eclipse", "Arduino", "VBA", "Apps Script", "Docker"],
-        },
-        {
-          title: "Professional Skills",
-          skills: [
-            "Microsoft Excel",
-            "Integrated Systems",
-            "Technical Support",
-            "Process Management",
-            "Data Analysis",
-            "Training",
-          ],
-        },
+        { title: "Front-end", skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"] },
+        { title: "Back-end", skills: ["Java", "Node.js", "Python", "C#", "REST APIs", "Service integration"] },
+        { title: "Databases", skills: ["SQL", "PostgreSQL", "MySQL", "Relational modeling"] },
+        { title: "DevOps & Infrastructure", skills: ["Git", "GitHub", "CI/CD", "Cloud deploy", "Versioning"] },
+        { title: "Automation & Productivity", skills: ["VBA", "Google Apps Script", "Arduino", "Systems integration"] },
+        { title: "Soft Skills", skills: ["Analytical thinking", "Organization", "Technical communication", "Structured problem solving", "Continuous learning"] },
+      ],
+      levels: [
+        { label: "🔵 Mastering", items: ["Java", "JavaScript", "SQL", "HTML/CSS"] },
+        { label: "🟣 Growing", items: ["TypeScript", "React", "Next.js"] },
+        { label: "🟢 Exploring", items: ["Advanced architecture", "Web performance", "Applied AI"] },
       ],
     },
   }
@@ -72,42 +51,44 @@ export function SkillsSection() {
   const t = content[language]
 
   return (
-    <section id="skills" className="py-20">
+    <section id="skills" className="py-20 bg-secondary/20">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <h2 className="text-4xl font-bold text-center gradient-text mb-4">{t.title}</h2>
             <p className="text-center text-muted-foreground mb-12">{t.subtitle}</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {t.categories.map((category, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-xl">{category.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {category.skills.map((skill, skillIndex) => (
-                          <Badge key={skillIndex} variant="secondary" className="text-sm">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {t.categories.map((category) => (
+                <Card key={category.title} className="h-full">
+                  <CardHeader>
+                    <CardTitle className="text-xl">{category.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {category.skills.map((skill) => (
+                        <Badge key={skill} variant="secondary" className="text-sm">
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              {t.levels.map((level) => (
+                <Card key={level.label}>
+                  <CardContent className="pt-6">
+                    <h3 className="font-semibold mb-3">{level.label}</h3>
+                    <ul className="space-y-2 text-sm text-muted-foreground list-disc pl-5">
+                      {level.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </motion.div>

@@ -39,7 +39,7 @@ export function AIHenriqueBot() {
     { label: "GitHub", action: "github", icon: Github },
   ]
 
-  const knowledgeBase = {
+  const knowledgeBase: Record<string, { response: string; quickReplies: string[]; action?: string }> = {
     sobre: {
       response: `👋 **Olá! Eu sou o Henrique Monteiro Cardoso**
 
