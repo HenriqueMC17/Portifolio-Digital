@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowDown, Github, Linkedin, Mail, Phone } from "lucide-react"
+import { ArrowDown, Github, Linkedin, Mail, Phone, Download } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 const stats = [
   { value: "15+", labelPt: "Certificacoes", labelEn: "Certifications" },
   { value: "5+", labelPt: "Projetos Entregues", labelEn: "Projects Delivered" },
   { value: "3+", labelPt: "Anos de Experiencia", labelEn: "Years Experience" },
+  { value: "6+", labelPt: "Linguagens", labelEn: "Languages" },
 ]
 
 export function HeroSection() {
@@ -28,20 +29,24 @@ export function HeroSection() {
     pt: {
       greeting: "Ola, eu sou",
       name: "Henrique Monteiro Cardoso",
-      title: "Desenvolvedor Full Stack & Estudante de ADS",
+      title: "Desenvolvedor de Software",
+      headline: "Focado em arquitetura, performance e solucoes inteligentes.",
       description:
-        "Transformo ideias em solucoes digitais de alta performance. Especializado em React, Next.js, Java e Python, com experiencia em administracao, TI e suporte ao cliente.",
-      cta: "Solicitar Orcamento",
+        "Transformo problemas complexos em sistemas escalaveis, seguros e orientados a resultados reais.",
       viewProjects: "Ver Projetos",
+      contactMe: "Falar Comigo",
+      downloadCV: "Baixar Curriculo",
     },
     en: {
       greeting: "Hello, I'm",
       name: "Henrique Monteiro Cardoso",
-      title: "Full Stack Developer & ADS Student",
+      title: "Software Developer",
+      headline: "Focused on architecture, performance and intelligent solutions.",
       description:
-        "I turn ideas into high-performance digital solutions. Specialized in React, Next.js, Java and Python, with experience in administration, IT and customer support.",
-      cta: "Request a Quote",
+        "I transform complex problems into scalable, secure systems driven by real results.",
       viewProjects: "View Projects",
+      contactMe: "Contact Me",
+      downloadCV: "Download CV",
     },
   }
 
@@ -82,8 +87,11 @@ export function HeroSection() {
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <p className="text-lg text-muted-foreground mb-4 font-medium">{t.greeting}</p>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text text-balance">{t.name}</h1>
-            <p className="text-2xl md:text-3xl text-primary mb-6 font-semibold">{t.title}</p>
+            <h1 className="text-5xl md:text-7xl font-bold mb-4 gradient-text text-balance">{t.name}</h1>
+            <p className="text-2xl md:text-3xl text-primary mb-3 font-semibold">{t.title}</p>
+            <p className="text-xl md:text-2xl text-foreground/80 mb-4 font-medium text-balance">
+              {t.headline}
+            </p>
             <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed text-pretty">
               {t.description}
             </p>
@@ -120,10 +128,16 @@ export function HeroSection() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button size="lg" asChild className="text-base px-8">
-                <a href="#contact">{t.cta}</a>
+                <a href="#projects">{t.viewProjects}</a>
               </Button>
               <Button size="lg" variant="outline" asChild className="text-base px-8 bg-transparent">
-                <a href="#projects">{t.viewProjects}</a>
+                <a href="#contact">{t.contactMe}</a>
+              </Button>
+              <Button size="lg" variant="secondary" asChild className="text-base px-8">
+                <a href="#cv">
+                  <Download className="h-4 w-4 mr-2" />
+                  {t.downloadCV}
+                </a>
               </Button>
             </div>
 

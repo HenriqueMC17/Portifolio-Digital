@@ -9,10 +9,10 @@ import { useLanguage } from "@/components/language-provider"
 const navigationItems = [
   { label: { pt: "Inicio", en: "Home" }, href: "#hero" },
   { label: { pt: "Sobre", en: "About" }, href: "#about" },
-  { label: { pt: "Servicos", en: "Services" }, href: "#services" },
+  { label: { pt: "Habilidades", en: "Skills" }, href: "#skills" },
   { label: { pt: "Projetos", en: "Projects" }, href: "#projects" },
-  { label: { pt: "Depoimentos", en: "Testimonials" }, href: "#testimonials" },
-  { label: { pt: "Blog", en: "Blog" }, href: "#blog" },
+  { label: { pt: "Experiencia", en: "Experience" }, href: "#experience" },
+  { label: { pt: "Certificacoes", en: "Certifications" }, href: "#certifications" },
   { label: { pt: "Contato", en: "Contact" }, href: "#contact" },
 ]
 

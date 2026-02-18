@@ -2,67 +2,91 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Monitor,
+  Server,
+  Database,
+  GitBranch,
+  Cog,
+  Brain,
+} from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { motion } from "framer-motion"
+
+const categoryIcons = [Monitor, Server, Database, GitBranch, Cog, Brain]
 
 export function SkillsSection() {
   const { language } = useLanguage()
 
   const content = {
     pt: {
-      title: "Habilidades Técnicas",
-      subtitle: "Tecnologias e ferramentas que domino",
+      title: "Habilidades Tecnicas",
+      subtitle: "Tecnologias, ferramentas e competencias que domino",
       categories: [
         {
-          title: "Linguagens de Programação",
-          skills: ["Java", "JavaScript", "TypeScript", "Python", "C++", "C#", "HTML5", "CSS3", "SQL"],
+          title: "Front-end",
+          skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"],
         },
         {
-          title: "Frameworks & Bibliotecas",
-          skills: ["React", "Next.js", "Node.js", "Express", "Tailwind CSS", "Framer Motion"],
+          title: "Back-end",
+          skills: ["Java", "Node.js", "Python", "C#", "APIs REST", "Integracao de servicos"],
         },
         {
-          title: "Ferramentas & Plataformas",
-          skills: ["GitHub", "VS Code", "Eclipse", "Arduino", "VBA", "Apps Script", "Docker"],
+          title: "Banco de Dados",
+          skills: ["SQL", "PostgreSQL", "MySQL", "Modelagem relacional"],
         },
         {
-          title: "Competências Profissionais",
+          title: "DevOps & Infraestrutura",
+          skills: ["Git & GitHub", "CI/CD", "Deploy em nuvem", "Versionamento e organizacao de projetos"],
+        },
+        {
+          title: "Automacao e Produtividade",
+          skills: ["VBA", "Google Apps Script", "Arduino", "Integracao entre sistemas"],
+        },
+        {
+          title: "Soft Skills",
           skills: [
-            "Microsoft Excel",
-            "Sistemas Integrados",
-            "Suporte Técnico",
-            "Gestão de Processos",
-            "Análise de Dados",
-            "Treinamento",
+            "Pensamento analitico",
+            "Organizacao",
+            "Comunicacao tecnica clara",
+            "Resolucao estruturada de problemas",
+            "Aprendizado continuo",
           ],
         },
       ],
     },
     en: {
       title: "Technical Skills",
-      subtitle: "Technologies and tools I master",
+      subtitle: "Technologies, tools and competencies I master",
       categories: [
         {
-          title: "Programming Languages",
-          skills: ["Java", "JavaScript", "TypeScript", "Python", "C++", "C#", "HTML5", "CSS3", "SQL"],
+          title: "Front-end",
+          skills: ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Next.js", "Tailwind CSS"],
         },
         {
-          title: "Frameworks & Libraries",
-          skills: ["React", "Next.js", "Node.js", "Express", "Tailwind CSS", "Framer Motion"],
+          title: "Back-end",
+          skills: ["Java", "Node.js", "Python", "C#", "REST APIs", "Service integration"],
         },
         {
-          title: "Tools & Platforms",
-          skills: ["GitHub", "VS Code", "Eclipse", "Arduino", "VBA", "Apps Script", "Docker"],
+          title: "Databases",
+          skills: ["SQL", "PostgreSQL", "MySQL", "Relational modeling"],
         },
         {
-          title: "Professional Skills",
+          title: "DevOps & Infrastructure",
+          skills: ["Git & GitHub", "CI/CD", "Cloud deploy", "Versioning and project organization"],
+        },
+        {
+          title: "Automation & Productivity",
+          skills: ["VBA", "Google Apps Script", "Arduino", "Systems integration"],
+        },
+        {
+          title: "Soft Skills",
           skills: [
-            "Microsoft Excel",
-            "Integrated Systems",
-            "Technical Support",
-            "Process Management",
-            "Data Analysis",
-            "Training",
+            "Analytical thinking",
+            "Organization",
+            "Clear technical communication",
+            "Structured problem solving",
+            "Continuous learning",
           ],
         },
       ],
@@ -84,31 +108,39 @@ export function SkillsSection() {
             <h2 className="text-4xl font-bold text-center gradient-text mb-4">{t.title}</h2>
             <p className="text-center text-muted-foreground mb-12">{t.subtitle}</p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {t.categories.map((category, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                >
-                  <Card className="h-full hover:shadow-lg transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-xl">{category.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-wrap gap-2">
-                        {category.skills.map((skill, skillIndex) => (
-                          <Badge key={skillIndex} variant="secondary" className="text-sm">
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {t.categories.map((category, index) => {
+                const Icon = categoryIcons[index]
+                return (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    viewport={{ once: true }}
+                  >
+                    <Card className="h-full hover:shadow-lg transition-shadow group">
+                      <CardHeader>
+                        <div className="flex items-center gap-3">
+                          <div className="bg-primary/10 w-10 h-10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                            <Icon className="h-5 w-5 text-primary" />
+                          </div>
+                          <CardTitle className="text-xl">{category.title}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-wrap gap-2">
+                          {category.skills.map((skill, skillIndex) => (
+                            <Badge key={skillIndex} variant="secondary" className="text-sm">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                )
+              })}
             </div>
           </motion.div>
         </div>

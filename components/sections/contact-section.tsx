@@ -14,7 +14,7 @@ export function ContactSection() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setStatus("sending")
-    const mailtoLink = `mailto:henriquemonteirocampos@gmail.com?subject=${encodeURIComponent(formState.subject || "Contato via Portfolio")}&body=${encodeURIComponent(`Nome: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`)}`
+    const mailtoLink = `mailto:henriquemon17@gmail.com?subject=${encodeURIComponent(formState.subject || "Contato via Portfolio")}&body=${encodeURIComponent(`Nome: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`)}`
     window.open(mailtoLink, "_blank")
     setTimeout(() => {
       setStatus("sent")
@@ -24,10 +24,10 @@ export function ContactSection() {
   }
 
   const contactInfo = [
-    { icon: Mail, label: "Email", value: "henriquemonteirocampos@gmail.com", href: "mailto:henriquemonteirocampos@gmail.com" },
-    { icon: Phone, label: "Telefone", value: "+55 (11) 91234-5678", href: "tel:+5511912345678" },
-    { icon: MapPin, label: t("location"), value: "Osasco, SP - Brasil", href: null },
-    { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/henrique-monteiro", href: "https://www.linkedin.com/in/henrique-monteiro-campos" },
+    { icon: Mail, label: "Email", value: "henriquemon17@gmail.com", href: "mailto:henriquemon17@gmail.com" },
+    { icon: Phone, label: "Telefone", value: "+55 (15) 98802-7261", href: "tel:+5515988027261" },
+    { icon: MapPin, label: t("location"), value: "Sorocaba, SP - Brasil", href: null },
+    { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/henrique-monteiro-cardoso", href: "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/" },
     { icon: Github, label: "GitHub", value: "github.com/HenriqueMC17", href: "https://github.com/HenriqueMC17" },
   ]
 

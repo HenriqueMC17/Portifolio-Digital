@@ -29,11 +29,11 @@ const firaCode = Fira_Code({
 export const metadata: Metadata = {
   metadataBase: new URL("https://henriquemonteiro.dev"),
   title: {
-    default: "Henrique Monteiro Cardoso | Full Stack Developer & AI Specialist",
+    default: "Henrique Monteiro Cardoso | Desenvolvedor de Software",
     template: "%s | Henrique Monteiro",
   },
   description:
-    "Desenvolvedor Full Stack especializado em Java, JavaScript, TypeScript, Python e soluções de IA. Criando experiências digitais inovadoras com foco em performance e usabilidade.",
+    "Desenvolvedor de Software focado em arquitetura, performance e solucoes inteligentes. Especializado em Java, JavaScript, TypeScript, Python, React e Next.js.",
   keywords: [
     "Henrique Monteiro Cardoso",
     "desenvolvedor full stack",
@@ -60,8 +60,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
     url: "https://henriquemonteiro.dev",
-    title: "Henrique Monteiro Cardoso | Full Stack Developer",
-    description: "Desenvolvedor Full Stack especializado em criar soluções inovadoras com React, Java e Python",
+    title: "Henrique Monteiro Cardoso | Desenvolvedor de Software",
+    description: "Desenvolvedor de Software focado em arquitetura, performance e solucoes inteligentes",
     siteName: "Henrique Monteiro Portfolio",
     images: [
       {
@@ -74,8 +74,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Henrique Monteiro Cardoso | Full Stack Developer",
-    description: "Desenvolvedor Full Stack & AI Specialist",
+    title: "Henrique Monteiro Cardoso | Desenvolvedor de Software",
+    description: "Desenvolvedor de Software focado em arquitetura, performance e solucoes inteligentes",
     images: ["/og-image.png"],
     creator: "@henriquemonteiro",
   },
@@ -162,7 +162,7 @@ export default function RootLayout({
               "https://github.com/HenriqueMC17",
               "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/",
             ],
-            jobTitle: "Full Stack Developer",
+            jobTitle: "Software Developer",
             worksFor: {
               "@type": "Organization",
               name: "CCBEU Sorocaba",

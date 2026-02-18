@@ -15,24 +15,29 @@ export function FAQSection() {
       title: "Perguntas Frequentes",
       faqs: [
         {
-          question: "Quais tecnologias você utiliza?",
+          question: "Quais tecnologias voce utiliza?",
           answer:
-            "Trabalho principalmente com React, Next.js, Node.js, TypeScript, e tenho especialização em soluções de IA com OpenAI e LangChain.",
+            "Trabalho com Java, JavaScript, TypeScript, Python, C#, React, Next.js, Node.js, Tailwind CSS, SQL, PostgreSQL, MySQL, VBA, Google Apps Script e Arduino.",
         },
         {
           question: "Quanto tempo leva um projeto?",
           answer:
-            "O prazo varia conforme a complexidade do projeto. Projetos simples podem levar 2-4 semanas, enquanto projetos mais complexos podem levar 2-3 meses.",
+            "O prazo varia conforme a complexidade. Projetos simples de automacao levam de 1-2 semanas, sites institucionais de 2-4 semanas, e sistemas mais complexos de 1-3 meses.",
         },
         {
-          question: "Você trabalha remotamente?",
+          question: "Voce esta disponivel para projetos freelance?",
           answer:
-            "Sim! Trabalho 100% remoto e tenho experiência com equipes distribuídas em diferentes fusos horários.",
+            "Sim! Estou disponivel para projetos freelance, oportunidades CLT e PJ. Respondo em ate 24 horas pelo email ou LinkedIn.",
         },
         {
           question: "Como funciona o processo de desenvolvimento?",
           answer:
-            "Sigo metodologia ágil com sprints semanais, entregas incrementais e comunicação constante. Você terá visibilidade total do progresso.",
+            "Sigo uma abordagem estruturada: descoberta e planejamento, design e prototipagem, desenvolvimento com testes, e deploy com suporte continuo.",
+        },
+        {
+          question: "Voce faz automacoes com Excel e planilhas?",
+          answer:
+            "Sim! Tenho experiencia solida com VBA, Google Apps Script e Excel avancado para automacao de processos, relatorios e integracao de dados.",
         },
       ],
     },
@@ -42,21 +47,27 @@ export function FAQSection() {
         {
           question: "What technologies do you use?",
           answer:
-            "I mainly work with React, Next.js, Node.js, TypeScript, and I have specialization in AI solutions with OpenAI and LangChain.",
+            "I work with Java, JavaScript, TypeScript, Python, C#, React, Next.js, Node.js, Tailwind CSS, SQL, PostgreSQL, MySQL, VBA, Google Apps Script and Arduino.",
         },
         {
           question: "How long does a project take?",
           answer:
-            "The timeline varies depending on project complexity. Simple projects can take 2-4 weeks, while more complex projects can take 2-3 months.",
+            "The timeline varies by complexity. Simple automation projects take 1-2 weeks, institutional sites 2-4 weeks, and more complex systems 1-3 months.",
         },
         {
-          question: "Do you work remotely?",
-          answer: "Yes! I work 100% remotely and have experience with distributed teams across different time zones.",
+          question: "Are you available for freelance projects?",
+          answer:
+            "Yes! I am available for freelance projects, full-time and contract opportunities. I respond within 24 hours via email or LinkedIn.",
         },
         {
           question: "How does the development process work?",
           answer:
-            "I follow agile methodology with weekly sprints, incremental deliveries and constant communication. You will have full visibility of progress.",
+            "I follow a structured approach: discovery and planning, design and prototyping, development with testing, and deployment with continuous support.",
+        },
+        {
+          question: "Do you do Excel and spreadsheet automation?",
+          answer:
+            "Yes! I have solid experience with VBA, Google Apps Script and advanced Excel for process automation, reports and data integration.",
         },
       ],
     },
