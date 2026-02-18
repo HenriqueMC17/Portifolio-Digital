@@ -1,130 +1,184 @@
 "use client"
 
+import type React from "react"
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { useInView } from "react-intersection-observer"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Mail, Phone, MapPin, Globe } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
+import { Mail, Phone, MapPin, Send, Linkedin, Github, CheckCircle, Loader2 } from "lucide-react"
 
 export function ContactSection() {
-  const [ref, inView] = useInView({
-    threshold: 0.2,
-    triggerOnce: true,
-  })
+  const { t } = useLanguage()
+  const [formState, setFormState] = useState({ name: "", email: "", subject: "", message: "" })
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle")
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus("sending")
+    const mailtoLink = `mailto:henriquemonteirocampos@gmail.com?subject=${encodeURIComponent(formState.subject || "Contato via Portfolio")}&body=${encodeURIComponent(`Nome: ${formState.name}\nEmail: ${formState.email}\n\n${formState.message}`)}`
+    window.open(mailtoLink, "_blank")
+    setTimeout(() => {
+      setStatus("sent")
+      setFormState({ name: "", email: "", subject: "", message: "" })
+      setTimeout(() => setStatus("idle"), 4000)
+    }, 1000)
+  }
+
+  const contactInfo = [
+    { icon: Mail, label: "Email", value: "henriquemonteirocampos@gmail.com", href: "mailto:henriquemonteirocampos@gmail.com" },
+    { icon: Phone, label: "Telefone", value: "+55 (11) 91234-5678", href: "tel:+5511912345678" },
+    { icon: MapPin, label: t("location"), value: "Osasco, SP - Brasil", href: null },
+    { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/henrique-monteiro", href: "https://www.linkedin.com/in/henrique-monteiro-campos" },
+    { icon: Github, label: "GitHub", value: "github.com/HenriqueMC17", href: "https://github.com/HenriqueMC17" },
+  ]
 
   return (
-    <section id="contact" className="py-20 bg-muted/30" ref={ref}>
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-24 relative">
+      <div className="container mx-auto px-4 max-w-6xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl font-bold mb-4">Entre em Contato</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Vamos conversar sobre oportunidades de trabalho, projetos ou colaborações. Estou sempre aberto a novos
-            desafios!
+          <span className="text-sm font-mono text-primary tracking-widest uppercase">
+            {t("contact")}
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-2 text-balance">
+            {t("letsWork")}
+          </h2>
+          <p className="text-muted-foreground mt-4 max-w-xl mx-auto leading-relaxed">
+            Tem um projeto em mente? Entre em contato e vamos transformar sua ideia em realidade.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-5 gap-12">
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-2 space-y-6"
           >
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-6">Informações de Contato</h3>
-
-                <div className="space-y-4">
-                  <div className="flex items-center">
-                    <Mail className="h-5 w-5 text-primary mr-3" />
-                    <a href="mailto:henriquemon17@gmail.com" className="hover:text-primary transition-colors">
-                      henriquemon17@gmail.com
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <Phone className="h-5 w-5 text-primary mr-3" />
-                    <a href="tel:+5515988027261" className="hover:text-primary transition-colors">
-                      (15) 98802-7261
-                    </a>
-                  </div>
-                  <div className="flex items-center">
-                    <MapPin className="h-5 w-5 text-primary mr-3" />
-                    <span>Nova Sorocaba, São Paulo - Brasil</span>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <h4 className="font-medium mb-4">Idiomas</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span>Português</span>
-                      <span className="text-muted-foreground">Nativo</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Inglês</span>
-                      <span className="text-muted-foreground">intermediário</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Espanhol</span>
-                      <span className="text-muted-foreground">Básico</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <h4 className="font-medium mb-4">Links Profissionais</h4>
-                  <div className="space-y-3">
+            <div className="space-y-4">
+              {contactInfo.map((item, i) => (
+                <motion.div
+                  key={item.label}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  {item.href ? (
                     <a
-                      href="https://github.com/HenriqueMC17"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-sm hover:text-primary transition-colors"
+                      href={item.href}
+                      target={item.href.startsWith("http") ? "_blank" : undefined}
+                      rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/30 hover:bg-primary/5 transition-all group"
                     >
-                      <Globe className="h-4 w-4 mr-2" />
-                      GitHub - HenriqueMC17
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs text-muted-foreground">{item.label}</p>
+                        <p className="text-sm font-medium text-foreground truncate">{item.value}</p>
+                      </div>
                     </a>
-                    <a
-                      href="https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center text-sm hover:text-primary transition-colors"
-                    >
-                      <Globe className="h-4 w-4 mr-2" />
-                      LinkedIn - Henrique Monteiro Cardoso
-                    </a>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  ) : (
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                        <item.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">{item.label}</p>
+                        <p className="text-sm font-medium text-foreground">{item.value}</p>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="p-6 rounded-xl bg-primary/5 border border-primary/10">
+              <p className="text-sm font-semibold text-foreground mb-1">Disponibilidade</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Respondo em ate 24 horas. Disponivel para projetos freelance e oportunidades CLT/PJ.
+              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-xs text-green-600 dark:text-green-400 font-medium">Disponivel para novos projetos</span>
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="lg:col-span-3"
           >
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-lg mb-6">Envie uma Mensagem</h3>
-                <form className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input placeholder="Seu nome" />
-                    <Input type="email" placeholder="Seu email" />
-                  </div>
-                  <Input placeholder="Assunto" />
-                  <Textarea placeholder="Sua mensagem" rows={5} />
-                  <Button type="submit" className="w-full">
-                    Enviar Mensagem
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+            <form onSubmit={handleSubmit} className="space-y-5 p-6 md:p-8 rounded-2xl bg-card border border-border">
+              <div className="grid sm:grid-cols-2 gap-5">
+                <div>
+                  <label htmlFor="contact-name" className="block text-sm font-medium text-foreground mb-1.5">{t("name")}</label>
+                  <input
+                    id="contact-name"
+                    type="text"
+                    required
+                    value={formState.name}
+                    onChange={e => setFormState(s => ({ ...s, name: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    placeholder="Seu nome"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-email" className="block text-sm font-medium text-foreground mb-1.5">{t("email")}</label>
+                  <input
+                    id="contact-email"
+                    type="email"
+                    required
+                    value={formState.email}
+                    onChange={e => setFormState(s => ({ ...s, email: e.target.value }))}
+                    className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                    placeholder="seu@email.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="contact-subject" className="block text-sm font-medium text-foreground mb-1.5">Assunto</label>
+                <input
+                  id="contact-subject"
+                  type="text"
+                  required
+                  value={formState.subject}
+                  onChange={e => setFormState(s => ({ ...s, subject: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                  placeholder="Ex: Orcamento para site institucional"
+                />
+              </div>
+              <div>
+                <label htmlFor="contact-message" className="block text-sm font-medium text-foreground mb-1.5">{t("message")}</label>
+                <textarea
+                  id="contact-message"
+                  required
+                  rows={5}
+                  value={formState.message}
+                  onChange={e => setFormState(s => ({ ...s, message: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-lg bg-background border border-input text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors resize-none"
+                  placeholder="Descreva seu projeto ou sua necessidade..."
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={status === "sending" || status === "sent"}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60 transition-colors"
+              >
+                {status === "sending" && <Loader2 className="w-4 h-4 animate-spin" />}
+                {status === "sent" && <CheckCircle className="w-4 h-4" />}
+                {status === "idle" && <Send className="w-4 h-4" />}
+                {status === "idle" && t("sendMessage")}
+                {status === "sending" && "Enviando..."}
+                {status === "sent" && "Mensagem enviada!"}
+              </button>
+            </form>
           </motion.div>
         </div>
       </div>

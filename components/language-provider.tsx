@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
+import React, { createContext, useContext, useState, useCallback } from "react"
 
 type Language = "pt" | "en"
 
@@ -12,105 +12,98 @@ interface LanguageContextType {
 
 const translations = {
   pt: {
-    // Navigation
+    "nav.home": "Início",
     "nav.about": "Sobre",
-    "nav.experience": "Experiência",
-    "nav.projects": "Projetos",
     "nav.skills": "Habilidades",
-    "nav.certifications": "Certificações",
-    "nav.contributions": "Contribuições",
+    "nav.projects": "Projetos",
+    "nav.experience": "Experiência",
+    "nav.blog": "Blog",
     "nav.contact": "Contato",
-
-    // Hero
-    "hero.title": "Desenvolvedor Full Stack",
-    "hero.subtitle":
-      "Estudante de Análise e Desenvolvimento de Sistemas com foco em soluções práticas e inovadoras. Transformando ideias em produtos digitais funcionais.",
-    "hero.cta.contact": "Vamos Conversar",
-    "hero.cta.projects": "Ver Projetos",
-    "hero.location": "São Paulo, Brasil",
-    "hero.availability": "Disponível para novos projetos",
-
-    // About
+    "hero.title": "Desenvolvedor Full Stack & Especialista em IA",
+    "hero.subtitle": "Criando experiências digitais inovadoras com React, Next.js e Inteligência Artificial",
+    "hero.cta": "Ver Projetos",
     "about.title": "Sobre Mim",
-    "about.subtitle": "Desenvolvedor em crescimento com visão prática",
-    "about.description":
-      "Estudante dedicado de Análise e Desenvolvimento de Sistemas, com experiência prática em desenvolvimento full stack e administração de sistemas. Focado em criar soluções eficientes que resolvem problemas reais.",
-
-    // Experience
-    "experience.title": "Experiência Profissional",
-    "experience.subtitle": "Trajetória de crescimento e aprendizado técnico",
-
-    // Projects
+    "skills.title": "Habilidades Técnicas",
     "projects.title": "Projetos em Destaque",
-    "projects.subtitle": "Soluções que geram impacto real",
-
-    // Skills
-    "skills.title": "Stack Tecnológico",
-    "skills.subtitle": "Expertise em tecnologias modernas",
-
-    // Contributions
-    "contributions.title": "Contribuições GitHub",
-    "contributions.subtitle": "Atividade e engajamento na comunidade",
-
-    // Contact
-    "contact.title": "Vamos Trabalhar Juntos",
-    "contact.subtitle": "Pronto para o próximo desafio",
+    "projects.filter.all": "Todos",
+    "projects.filter.web": "Web",
+    "projects.filter.mobile": "Mobile",
+    "projects.filter.ai": "IA",
+    "experience.title": "Experiência Profissional",
+    "blog.title": "Artigos Recentes",
+    "contact.title": "Entre em Contato",
+    "contact.name": "Nome",
+    "contact.email": "E-mail",
+    "contact.message": "Mensagem",
+    "contact.send": "Enviar Mensagem",
+    "newsletter.title": "Assine a Newsletter",
+    "newsletter.subtitle": "Receba atualizações sobre novos projetos e artigos",
+    "newsletter.placeholder": "Seu melhor e-mail",
+    "newsletter.button": "Inscrever-se",
+    "faq.title": "Perguntas Frequentes",
+    "footer.rights": "Todos os direitos reservados",
   },
   en: {
-    // Navigation
+    "nav.home": "Home",
     "nav.about": "About",
-    "nav.experience": "Experience",
-    "nav.projects": "Projects",
     "nav.skills": "Skills",
-    "nav.certifications": "Certifications",
-    "nav.contributions": "Contributions",
+    "nav.projects": "Projects",
+    "nav.experience": "Experience",
+    "nav.blog": "Blog",
     "nav.contact": "Contact",
-
-    // Hero
-    "hero.title": "Full Stack Developer",
-    "hero.subtitle":
-      "Systems Analysis and Development student focused on practical and innovative solutions. Transforming ideas into functional digital products.",
-    "hero.cta.contact": "Let's Talk",
-    "hero.cta.projects": "View Projects",
-    "hero.location": "São Paulo, Brazil",
-    "hero.availability": "Available for new projects",
-
-    // About
+    "hero.title": "Full Stack Developer & AI Specialist",
+    "hero.subtitle": "Creating innovative digital experiences with React, Next.js and Artificial Intelligence",
+    "hero.cta": "View Projects",
     "about.title": "About Me",
-    "about.subtitle": "Growing developer with practical vision",
-    "about.description":
-      "Dedicated Systems Analysis and Development student with practical experience in full stack development and systems administration. Focused on creating efficient solutions that solve real problems.",
-
-    // Experience
-    "experience.title": "Professional Experience",
-    "experience.subtitle": "Growth trajectory and technical learning",
-
-    // Projects
+    "skills.title": "Technical Skills",
     "projects.title": "Featured Projects",
-    "projects.subtitle": "Solutions that generate real impact",
-
-    // Skills
-    "skills.title": "Technology Stack",
-    "skills.subtitle": "Expertise in modern technologies",
-
-    // Contributions
-    "contributions.title": "GitHub Contributions",
-    "contributions.subtitle": "Activity and community engagement",
-
-    // Contact
-    "contact.title": "Let's Work Together",
-    "contact.subtitle": "Ready for the next challenge",
+    "projects.filter.all": "All",
+    "projects.filter.web": "Web",
+    "projects.filter.mobile": "Mobile",
+    "projects.filter.ai": "AI",
+    "experience.title": "Professional Experience",
+    "blog.title": "Recent Articles",
+    "contact.title": "Get in Touch",
+    "contact.name": "Name",
+    "contact.email": "Email",
+    "contact.message": "Message",
+    "contact.send": "Send Message",
+    "newsletter.title": "Subscribe to Newsletter",
+    "newsletter.subtitle": "Receive updates about new projects and articles",
+    "newsletter.placeholder": "Your best email",
+    "newsletter.button": "Subscribe",
+    "faq.title": "Frequently Asked Questions",
+    "footer.rights": "All rights reserved",
   },
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("pt")
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [language, setLanguageState] = useState<Language>("pt")
 
-  const t = (key: string): string => {
-    return translations[language][key] || key
-  }
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang)
+    if (typeof window !== "undefined") {
+      localStorage.setItem("language", lang)
+    }
+  }, [])
+
+  const t = useCallback(
+    (key: string): string => {
+      return translations[language][key as keyof typeof translations.pt] || key
+    },
+    [language],
+  )
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedLang = localStorage.getItem("language") as Language
+      if (savedLang && (savedLang === "pt" || savedLang === "en")) {
+        setLanguageState(savedLang)
+      }
+    }
+  }, [])
 
   return <LanguageContext.Provider value={{ language, setLanguage, t }}>{children}</LanguageContext.Provider>
 }

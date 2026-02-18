@@ -1,183 +1,166 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { Github, Linkedin, Mail, Heart, Code, Coffee, ArrowUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Github, Linkedin, Mail, Phone, MapPin } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 
 export function ModernFooter() {
-  const { t } = useLanguage()
+  const { language } = useLanguage()
   const currentYear = new Date().getFullYear()
 
-  const socialLinks = [
-    {
-      icon: Github,
-      href: "https://github.com/HenriqueMC17",
-      label: "GitHub",
+  const content = {
+    pt: {
+      tagline: "Construindo o futuro, uma linha de codigo por vez.",
+      navigation: "Navegacao",
+      services: "Servicos",
+      contact: "Contato",
+      rights: "Todos os direitos reservados.",
+      navLinks: [
+        { label: "Inicio", href: "#hero" },
+        { label: "Sobre", href: "#about" },
+        { label: "Projetos", href: "#projects" },
+        { label: "Blog", href: "#blog" },
+        { label: "Contato", href: "#contact" },
+      ],
+      serviceLinks: [
+        { label: "Desenvolvimento Web", href: "#services" },
+        { label: "Aplicacoes Mobile", href: "#services" },
+        { label: "Solucoes com IA", href: "#services" },
+        { label: "Consultoria Digital", href: "#services" },
+      ],
     },
-    {
-      icon: Linkedin,
-      href: "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/",
-      label: "LinkedIn",
+    en: {
+      tagline: "Building the future, one line of code at a time.",
+      navigation: "Navigation",
+      services: "Services",
+      contact: "Contact",
+      rights: "All rights reserved.",
+      navLinks: [
+        { label: "Home", href: "#hero" },
+        { label: "About", href: "#about" },
+        { label: "Projects", href: "#projects" },
+        { label: "Blog", href: "#blog" },
+        { label: "Contact", href: "#contact" },
+      ],
+      serviceLinks: [
+        { label: "Web Development", href: "#services" },
+        { label: "Mobile Apps", href: "#services" },
+        { label: "AI Solutions", href: "#services" },
+        { label: "Digital Consulting", href: "#services" },
+      ],
     },
-    {
-      icon: Mail,
-      href: "mailto:henriquemon17@gmail.com",
-      label: "Email",
-    },
-  ]
-
-  const techStack = ["Next.js", "React", "TypeScript", "Tailwind CSS", "Framer Motion", "Java", "Spring Boot"]
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
+  const t = content[language]
+
   return (
-    <footer className="relative border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-green-500/10" />
-        <div className="absolute top-1/2 left-1/4 w-32 h-32 bg-cyan-400/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-24 h-24 bg-purple-400/20 rounded-full blur-2xl animate-pulse delay-1000" />
-      </div>
+    <footer className="border-t border-border bg-secondary/20">
+      <div className="container mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+          {/* Brand */}
+          <div>
+            <h3 className="text-2xl font-bold gradient-text mb-4">HM</h3>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-6">{t.tagline}</p>
+            <div className="flex gap-3">
+              <a
+                href="https://github.com/HenriqueMC17"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+              <a
+                href="mailto:henriquemon17@gmail.com"
+                className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label="Email"
+              >
+                <Mail className="h-5 w-5" />
+              </a>
+            </div>
+          </div>
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand & Description */}
-          <div className="md:col-span-2 space-y-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="font-orbitron font-bold text-2xl gradient-text"
-            >
-              {"<HMC />"}
-            </motion.div>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-md">
-              Desenvolvedor Full Stack apaixonado por criar soluções inovadoras e experiências digitais excepcionais.
-              Especializado em tecnologias modernas e sempre em busca de novos desafios.
-            </p>
-            <div className="flex items-center space-x-4">
-              {socialLinks.map((link, index) => (
-                <motion.div
-                  key={link.label}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    asChild
-                    className="hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 hover:scale-110"
+          {/* Navigation */}
+          <div>
+            <h4 className="font-semibold text-foreground mb-4">{t.navigation}</h4>
+            <ul className="space-y-2">
+              {t.navLinks.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
-                    <a href={link.href} target="_blank" rel="noopener noreferrer" aria-label={link.label}>
-                      <link.icon className="h-5 w-5" />
-                    </a>
-                  </Button>
-                </motion.div>
+                    {link.label}
+                  </a>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
 
-          {/* Quick Links */}
-          <div className="space-y-4">
-            <h3 className="font-orbitron font-semibold text-sm uppercase tracking-wider text-cyan-400">
-              Links Rápidos
-            </h3>
-            <nav className="space-y-2">
-              {[
-                { label: "Sobre", href: "#about" },
-                { label: "Projetos", href: "#projects" },
-                { label: "Habilidades", href: "#skills" },
-                { label: "Experiência", href: "#experience" },
-                { label: "Contato", href: "#contact" },
-              ].map((item, index) => (
-                <motion.a
-                  key={item.label}
-                  href={item.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="block text-sm text-muted-foreground hover:text-cyan-400 transition-colors duration-300 hover:translate-x-1"
-                >
-                  {item.label}
-                </motion.a>
+          {/* Services */}
+          <div>
+            <h4 className="font-semibold text-foreground mb-4">{t.services}</h4>
+            <ul className="space-y-2">
+              {t.serviceLinks.map((link, index) => (
+                <li key={index}>
+                  <a
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </a>
+                </li>
               ))}
-            </nav>
+            </ul>
           </div>
 
-          {/* Tech Stack */}
-          <div className="space-y-4">
-            <h3 className="font-orbitron font-semibold text-sm uppercase tracking-wider text-purple-400">Tech Stack</h3>
-            <div className="flex flex-wrap gap-2">
-              {techStack.map((tech, index) => (
-                <motion.span
-                  key={tech}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className="text-xs px-3 py-1 bg-muted/50 hover:bg-cyan-400/10 rounded-full font-fira-code text-muted-foreground hover:text-cyan-400 transition-all duration-300 cursor-default hover:scale-105"
-                >
-                  {tech}
-                </motion.span>
-              ))}
-            </div>
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              className="flex items-center text-xs text-muted-foreground space-x-1 pt-2"
-            >
-              <span>Feito com</span>
-              <Heart className="h-3 w-3 text-red-500 fill-current animate-pulse" />
-              <span>e muito</span>
-              <Coffee className="h-3 w-3 text-amber-500" />
-            </motion.div>
+          {/* Contact Info */}
+          <div>
+            <h4 className="font-semibold text-foreground mb-4">{t.contact}</h4>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Mail className="h-4 w-4 text-primary flex-shrink-0" />
+                <a href="mailto:henriquemon17@gmail.com" className="hover:text-primary transition-colors">
+                  henriquemon17@gmail.com
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <Phone className="h-4 w-4 text-primary flex-shrink-0" />
+                <a href="tel:+5515988027261" className="hover:text-primary transition-colors">
+                  +55 (15) 98802-7261
+                </a>
+              </li>
+              <li className="flex items-center gap-3 text-sm text-muted-foreground">
+                <MapPin className="h-4 w-4 text-primary flex-shrink-0" />
+                <span>Sorocaba, SP - Brasil</span>
+              </li>
+            </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-12 pt-8 border-t border-border/40"
-        >
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
-              <p className="text-xs text-muted-foreground">
-                © {currentYear} Henrique Monteiro Cardoso. Todos os direitos reservados.
-              </p>
-              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                <span className="flex items-center space-x-1">
-                  <Code className="h-3 w-3" />
-                  <span>Open Source</span>
-                </span>
-                <span>•</span>
-                <span className="font-fira-code">v2.0.0</span>
-              </div>
-            </div>
-
-            <Button
-              onClick={scrollToTop}
-              variant="ghost"
-              size="icon"
-              className="hover:text-cyan-400 hover:bg-cyan-400/10 transition-all duration-300 hover:scale-110"
-            >
-              <ArrowUp className="h-4 w-4" />
-            </Button>
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">
+            &copy; {currentYear} Henrique Monteiro Cardoso. {t.rights}
+          </p>
+          <div className="flex gap-6">
+            <a href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+              {language === "pt" ? "Politica de Privacidade" : "Privacy Policy"}
+            </a>
+            <a href="#" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+              {language === "pt" ? "Termos de Uso" : "Terms of Use"}
+            </a>
           </div>
-        </motion.div>
-      </div>
-
-      {/* Scan Lines Effect */}
-      <div className="absolute inset-0 pointer-events-none opacity-5">
-        <div className="scan-lines w-full h-full" />
+        </div>
       </div>
     </footer>
   )

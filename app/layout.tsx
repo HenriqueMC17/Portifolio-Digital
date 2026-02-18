@@ -2,18 +2,11 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Orbitron, Fira_Code } from "next/font/google"
 import "./globals.css"
-import { ThemeProvider } from "next-themes"
-import DynamicBackground from "@/components/dynamic-background"
-import { VisualEasterEggs } from "@/components/visual-easter-eggs"
+import { ThemeProvider } from "@/components/theme-provider"
 import { LanguageProvider } from "@/components/language-provider"
-import { PerformanceProvider } from "@/components/performance-provider"
 import { AnalyticsProvider } from "@/components/analytics-provider"
-import { EasterEggProvider } from "@/components/easter-egg-provider"
-import { PWAInstaller } from "@/components/pwa-installer"
-import { AnalyticsConsent } from "@/components/analytics-consent"
-import { AccessibilityImprovements } from "@/components/accessibility-improvements"
 import { Toaster } from "@/components/ui/toaster"
-import { Suspense } from "react"
+import Script from "next/script"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,27 +27,28 @@ const firaCode = Fira_Code({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://henriquemonteiro.dev"),
   title: {
-    default: "Henrique Monteiro Cardoso | Full Stack Developer",
-    template: "%s | Henrique Monteiro Cardoso",
+    default: "Henrique Monteiro Cardoso | Full Stack Developer & AI Specialist",
+    template: "%s | Henrique Monteiro",
   },
   description:
-    "Desenvolvedor Full Stack especializado em React, Next.js, Java e Spring Boot. Criando soluções digitais inovadoras com foco em performance e experiência do usuário.",
+    "Desenvolvedor Full Stack especializado em Java, JavaScript, TypeScript, Python e soluções de IA. Criando experiências digitais inovadoras com foco em performance e usabilidade.",
   keywords: [
     "Henrique Monteiro Cardoso",
-    "Full Stack Developer",
-    "React Developer",
-    "Next.js",
-    "Java Developer",
-    "Spring Boot",
-    "TypeScript",
-    "Frontend",
-    "Backend",
-    "Web Development",
-    "Portfolio",
-    "Brasil",
+    "desenvolvedor full stack",
+    "java developer",
+    "javascript developer",
+    "typescript",
+    "python",
+    "react",
+    "next.js",
+    "inteligência artificial",
+    "machine learning",
+    "portfolio desenvolvedor",
+    "sorocaba desenvolvedor",
   ],
-  authors: [{ name: "Henrique Monteiro Cardoso" }],
+  authors: [{ name: "Henrique Monteiro Cardoso", url: "https://github.com/HenriqueMC17" }],
   creator: "Henrique Monteiro Cardoso",
   publisher: "Henrique Monteiro Cardoso",
   formatDetection: {
@@ -65,30 +59,30 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    url: "https://henriquemc.dev",
+    url: "https://henriquemonteiro.dev",
     title: "Henrique Monteiro Cardoso | Full Stack Developer",
-    description:
-      "Desenvolvedor Full Stack especializado em React, Next.js, Java e Spring Boot. Criando soluções digitais inovadoras.",
-    siteName: "Henrique Monteiro Cardoso Portfolio",
+    description: "Desenvolvedor Full Stack especializado em criar soluções inovadoras com React, Java e Python",
+    siteName: "Henrique Monteiro Portfolio",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Henrique Monteiro Cardoso - Full Stack Developer",
+        alt: "Henrique Monteiro - Full Stack Developer",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Henrique Monteiro Cardoso | Full Stack Developer",
-    description: "Desenvolvedor Full Stack especializado em React, Next.js, Java e Spring Boot.",
-    images: ["/og-image.jpg"],
-    creator: "@henriquemc17",
+    description: "Desenvolvedor Full Stack & AI Specialist",
+    images: ["/og-image.png"],
+    creator: "@henriquemonteiro",
   },
   robots: {
     index: true,
     follow: true,
+    nocache: true,
     googleBot: {
       index: true,
       follow: true,
@@ -97,20 +91,30 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  verification: {
-    google: "your-google-verification-code",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/safari-pinned-tab.svg",
+      },
+    ],
   },
-  category: "technology",
-  manifest: "/manifest.json",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
-  ],
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
+  manifest: "/site.webmanifest",
+  verification: {
+    google: "seu-codigo-google-search-console",
+  },
+  alternates: {
+    canonical: "https://henriquemonteiro.dev",
+    languages: {
+      "pt-BR": "https://henriquemonteiro.dev",
+      "en-US": "https://henriquemonteiro.dev/en",
+    },
   },
     generator: 'v0.app'
 }
@@ -129,83 +133,68 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="theme-color" content="#00ffff" />
-        <meta name="color-scheme" content="dark light" />
+        <link rel="dns-prefetch" href="https://api.github.com" />
+        <meta name="theme-color" content="#7a7fee" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
       </head>
-      <body className="font-sans antialiased overflow-x-hidden">
-        {/* Skip to main content for accessibility */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-50 bg-primary text-primary-foreground px-4 py-2 rounded-md font-medium"
-        >
-          Pular para o conteúdo principal
-        </a>
-
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange={false}>
+      <body className={`${inter.className} antialiased`}>
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <LanguageProvider>
-            <PerformanceProvider>
-              <AnalyticsProvider>
-                <EasterEggProvider>
-                  <Suspense
-                    fallback={
-                      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-                        <div className="relative">
-                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400"></div>
-                          <div className="absolute inset-0 animate-ping rounded-full h-12 w-12 border border-cyan-400 opacity-20"></div>
-                        </div>
-                      </div>
-                    }
-                  >
-                    {/* Futuristic Background System */}
-                    <DynamicBackground />
-
-                    {/* Visual Effects */}
-                    <VisualEasterEggs />
-
-                    {/* Main Content */}
-                    <main id="main-content" className="relative z-10">
-                      {children}
-                    </main>
-
-                    {/* Interactive Components */}
-                    <AccessibilityImprovements />
-                    <PWAInstaller />
-
-                    {/* Toast Notifications */}
-                    <Toaster />
-
-                    {/* Analytics Consent */}
-                    <AnalyticsConsent />
-                  </Suspense>
-                </EasterEggProvider>
-              </AnalyticsProvider>
-            </PerformanceProvider>
+            <AnalyticsProvider>
+              <a href="#main-content" className="skip-to-content">
+                Pular para o conteúdo principal
+              </a>
+              {children}
+              <Toaster />
+            </AnalyticsProvider>
           </LanguageProvider>
         </ThemeProvider>
 
-        {/* Service Worker Registration */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if ('serviceWorker' in navigator) {
-                window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/service-worker.js')
-                    .then(function(registration) {
-                      console.log('SW registered: ', registration);
-                    })
-                    .catch(function(registrationError) {
-                      console.log('SW registration failed: ', registrationError);
-                    });
-                });
-              }
-            `,
-          }}
-        />
+        {/* Schema.org structured data */}
+        <Script id="schema-org" type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            name: "Henrique Monteiro Cardoso",
+            url: "https://henriquemonteiro.dev",
+            image: "https://henriquemonteiro.dev/og-image.png",
+            sameAs: [
+              "https://github.com/HenriqueMC17",
+              "https://www.linkedin.com/in/henrique-monteiro-cardoso-ba3716229/",
+            ],
+            jobTitle: "Full Stack Developer",
+            worksFor: {
+              "@type": "Organization",
+              name: "CCBEU Sorocaba",
+            },
+            alumniOf: {
+              "@type": "EducationalOrganization",
+              name: "Centro Universitário Facens",
+            },
+            knowsAbout: [
+              "Java",
+              "JavaScript",
+              "TypeScript",
+              "Python",
+              "C++",
+              "C#",
+              "HTML5",
+              "CSS3",
+              "SQL",
+              "React",
+              "Next.js",
+              "Node.js",
+            ],
+            email: "henriquemon17@gmail.com",
+            telephone: "+5515988027261",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Sorocaba",
+              addressRegion: "SP",
+              addressCountry: "BR",
+            },
+          })}
+        </Script>
       </body>
     </html>
   )
